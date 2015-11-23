@@ -171,11 +171,11 @@ Itself to allow chaining.
 
 Tell the entity what endpoint resource it belongs to.
 
-  ### Parameters
-  
-  | Parameter | Type   | Description               |
-  | --------- | ------ | ------------------------- |
-  | resource  | string | The name of the resource. |
+### Parameters
+
+| Parameter | Type   | Description               |
+| --------- | ------ | ------------------------- |
+| resource  | string | The name of the resource. |
 
 ### Returns
 Itself to allow chaining.
