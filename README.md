@@ -28,4 +28,4 @@ Installing this module is fairly simple.
 Run `jspm install github:spoonx/aurelia-orm` from your project root.
 
 ## Usage
-[TBD]
+You can find documentation for usage in the `doc/` directory.
