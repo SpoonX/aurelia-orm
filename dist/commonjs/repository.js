@@ -52,7 +52,7 @@ var Repository = (function () {
   }, {
     key: 'create',
     value: function create(data) {
-      this.getPopulatedEntity(data);
+      return this.getPopulatedEntity(data);
     }
   }, {
     key: 'populateEntities',
