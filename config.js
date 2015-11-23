@@ -8,6 +8,7 @@ System.config({
 
   map: {
     "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1",
+    "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-beta.1",
     "aurelia-framework": "npm:aurelia-framework@1.0.0-beta.1.0.1",
     "aurelia-validation": "npm:aurelia-validation@0.6.0",
     "spoonx/aurelia-api": "github:spoonx/aurelia-api@master",

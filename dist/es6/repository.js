@@ -30,7 +30,7 @@ export class Repository {
   }
 
   create (data) {
-    this.getPopulatedEntity(data);
+    return this.getPopulatedEntity(data);
   }
 
   populateEntities (data) {
