@@ -124,6 +124,11 @@ Itself to allow chaining.
 For this example, I've made use of [aurelia-form](https://github.com/SpoonX/aurelia-form).
 For docs on how to make a form, head over to that repository.
 
+------
+
+## Example
+Following is a small, but more complete example of how you would implement a create.
+
 ### File: entity/user-entity.js
 
 ```javascript
