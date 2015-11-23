@@ -108,7 +108,7 @@ import {inject} from 'aurelia-framework';
 class MyViewModel {
   constructor (entity) {
     entity.username = 'Bacon';
-    entity.email    = bacon@example.org';
+    entity.email    = 'bacon@example.org';
     entity.password = 'Super secure';
 
     entity.save()
