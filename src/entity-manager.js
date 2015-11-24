@@ -18,6 +18,7 @@ export class EntityManager {
    * Get a repository. Some notes:
    *  - If supplied `repository` is a string, a repository and entity will be made for you.
    *  - If supplied `repository` is an instance of Entity, a default repository will be made for you.
+   *  - If supplied `repository` is a custom Repository reference, you'll get just that.
    *
    * @param {Entity|Repository|string} repository
    *
@@ -38,10 +39,20 @@ export class EntityManager {
     if (repositoryInstance instanceof Entity) {
 
       // Yeah... Okay, let's get the default repository and set the entity.
-      return this.container.get(DefaultRepository).setEntity(repositoryInstance);
+      repositoryInstance = this.container.get(DefaultRepository)
+        .setEntity(repositoryInstance)
+        .setEntityReference(repository);
+    } else {
+      /*
+       * the else is just here for the docs.
+       *
+       * When we get here, we can't set an entity or entityReference, because we don't have enough info for that.
+       * We get here if the supplied argument is a custom Repository reference, which should implement this info itself.
+       */
     }
 
-    // We got a custom Repository.
+    repositoryInstance.entityManager = this;
+
     return repositoryInstance;
   }
 
@@ -54,7 +65,12 @@ export class EntityManager {
    */
   createRepository (repository) {
     if (!this.repositories[repository]) {
-      this.repositories[repository] = this.container.get(DefaultRepository).setEntity(this.getEntity(repository));
+      this.repositories[repository] = this.container
+        .get(DefaultRepository)
+        .setEntity(this.getEntity(repository))
+        .setEntityReference(repository);
+
+      this.repositories[repository].entityManager = this;
     }
 
     return this.repositories[repository];

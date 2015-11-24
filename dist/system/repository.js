@@ -1,33 +1,37 @@
-System.register(['aurelia-dependency-injection', 'aurelia-framework', 'spoonx/aurelia-api'], function (_export) {
+System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) {
   'use strict';
 
-  var Container, inject, Rest, Repository;
+  var inject, Rest, Repository;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   return {
-    setters: [function (_aureliaDependencyInjection) {
-      Container = _aureliaDependencyInjection.Container;
-    }, function (_aureliaFramework) {
+    setters: [function (_aureliaFramework) {
       inject = _aureliaFramework.inject;
     }, function (_spoonxAureliaApi) {
       Rest = _spoonxAureliaApi.Rest;
     }],
     execute: function () {
       Repository = (function () {
-        function Repository(restClient, container) {
+        function Repository(restClient) {
           _classCallCheck(this, _Repository);
 
           this.api = restClient;
-          this.container = container;
         }
 
         _createClass(Repository, [{
           key: 'setEntity',
           value: function setEntity(entity) {
             this.entity = entity;
+
+            return this;
+          }
+        }, {
+          key: 'setEntityReference',
+          value: function setEntityReference(entityReference) {
+            this.entityReference = entityReference;
 
             return this;
           }
@@ -71,8 +75,8 @@ System.register(['aurelia-dependency-injection', 'aurelia-framework', 'spoonx/au
 
             var collection = [];
 
-            data.forEach(function (entity) {
-              collection.push(_this2.getPopulatedEntity(entity));
+            data.forEach(function (source) {
+              collection.push(_this2.getPopulatedEntity(source));
             });
 
             return collection;
@@ -85,12 +89,12 @@ System.register(['aurelia-dependency-injection', 'aurelia-framework', 'spoonx/au
         }, {
           key: 'getNewEntity',
           value: function getNewEntity() {
-            return this.container.get(this.entity);
+            return this.entityManager.getEntity(this.entityReference);
           }
         }]);
 
         var _Repository = Repository;
-        Repository = inject(Rest, Container)(Repository) || Repository;
+        Repository = inject(Rest)(Repository) || Repository;
         return Repository;
       })();
 

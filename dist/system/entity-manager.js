@@ -37,8 +37,10 @@ System.register(['./entity', './default-repository', 'aurelia-framework', 'aurel
             var repositoryInstance = this.container.get(typeof repository === 'function' || typeof repository === 'object' ? repository : DefaultRepository);
 
             if (repositoryInstance instanceof Entity) {
-              return this.container.get(DefaultRepository).setEntity(repositoryInstance);
-            }
+              repositoryInstance = this.container.get(DefaultRepository).setEntity(repositoryInstance).setEntityReference(repository);
+            } else {}
+
+            repositoryInstance.entityManager = this;
 
             return repositoryInstance;
           }
@@ -46,7 +48,9 @@ System.register(['./entity', './default-repository', 'aurelia-framework', 'aurel
           key: 'createRepository',
           value: function createRepository(repository) {
             if (!this.repositories[repository]) {
-              this.repositories[repository] = this.container.get(DefaultRepository).setEntity(this.getEntity(repository));
+              this.repositories[repository] = this.container.get(DefaultRepository).setEntity(this.getEntity(repository)).setEntityReference(repository);
+
+              this.repositories[repository].entityManager = this;
             }
 
             return this.repositories[repository];
