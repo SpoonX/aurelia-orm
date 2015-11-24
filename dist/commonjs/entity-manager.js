@@ -35,8 +35,10 @@ var EntityManager = (function () {
       var repositoryInstance = this.container.get(typeof repository === 'function' || typeof repository === 'object' ? repository : _defaultRepository.DefaultRepository);
 
       if (repositoryInstance instanceof _entity.Entity) {
-        return this.container.get(_defaultRepository.DefaultRepository).setEntity(repositoryInstance);
-      }
+        repositoryInstance = this.container.get(_defaultRepository.DefaultRepository).setEntity(repositoryInstance).setEntityReference(repository);
+      } else {}
+
+      repositoryInstance.entityManager = this;
 
       return repositoryInstance;
     }
@@ -44,7 +46,9 @@ var EntityManager = (function () {
     key: 'createRepository',
     value: function createRepository(repository) {
       if (!this.repositories[repository]) {
-        this.repositories[repository] = this.container.get(_defaultRepository.DefaultRepository).setEntity(this.getEntity(repository));
+        this.repositories[repository] = this.container.get(_defaultRepository.DefaultRepository).setEntity(this.getEntity(repository)).setEntityReference(repository);
+
+        this.repositories[repository].entityManager = this;
       }
 
       return this.repositories[repository];

@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', 'aurelia-framework', 'spoonx/aurelia-api'], function (exports, _aureliaDependencyInjection, _aureliaFramework, _spoonxAureliaApi) {
+define(['exports', 'aurelia-framework', 'spoonx/aurelia-api'], function (exports, _aureliaFramework, _spoonxAureliaApi) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -10,17 +10,23 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-framework', 'spoonx/
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
   var Repository = (function () {
-    function Repository(restClient, container) {
+    function Repository(restClient) {
       _classCallCheck(this, _Repository);
 
       this.api = restClient;
-      this.container = container;
     }
 
     _createClass(Repository, [{
       key: 'setEntity',
       value: function setEntity(entity) {
         this.entity = entity;
+
+        return this;
+      }
+    }, {
+      key: 'setEntityReference',
+      value: function setEntityReference(entityReference) {
+        this.entityReference = entityReference;
 
         return this;
       }
@@ -64,8 +70,8 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-framework', 'spoonx/
 
         var collection = [];
 
-        data.forEach(function (entity) {
-          collection.push(_this2.getPopulatedEntity(entity));
+        data.forEach(function (source) {
+          collection.push(_this2.getPopulatedEntity(source));
         });
 
         return collection;
@@ -78,12 +84,12 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-framework', 'spoonx/
     }, {
       key: 'getNewEntity',
       value: function getNewEntity() {
-        return this.container.get(this.entity);
+        return this.entityManager.getEntity(this.entityReference);
       }
     }]);
 
     var _Repository = Repository;
-    Repository = (0, _aureliaFramework.inject)(_spoonxAureliaApi.Rest, _aureliaDependencyInjection.Container)(Repository) || Repository;
+    Repository = (0, _aureliaFramework.inject)(_spoonxAureliaApi.Rest)(Repository) || Repository;
     return Repository;
   })();
 
