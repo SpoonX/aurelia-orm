@@ -83,7 +83,7 @@ export class EntityManager {
    * @return {*}
    */
   getEntity (entity) {
-    if (typeof entity === 'object') {
+    if (typeof entity === 'function') {
       return this.container.get(entity);
     }
 
