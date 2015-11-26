@@ -41,6 +41,15 @@ var Entity = (function () {
       return this.api.create(this.resource, this.asObject());
     }
   }, {
+    key: 'destroy',
+    value: function destroy() {
+      if (!this.id) {
+        throw new Error('Required value "id" missing on entity.');
+      }
+
+      return this.api.destroy(this.resource, this.id);
+    }
+  }, {
     key: 'setData',
     value: function setData(data) {
       Object.assign(this, data);
@@ -99,7 +108,7 @@ var Entity = (function () {
       try {
         json = JSON.stringify(this.asObject());
       } catch (error) {
-        json = null;
+        json = '';
       }
 
       return json;
