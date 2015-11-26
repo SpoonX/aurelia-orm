@@ -49,6 +49,42 @@ class MyViewModel {
 
 ---------
 
+.destroy()
+------
+
+Delete the entity server-side.
+
+### Parameters
+
+* None
+
+### Returns
+A new `Promise` to be resolved when `.destroy()` has completed.
+
+### Examples
+
+```javascript
+import {inject}        from 'aurelia-framework';
+import {EntityManager} from 'spoonx/aurelia-orm';
+
+@inject(EntityManager)
+export class SomeViewModel {
+  constructor (entityManager) {
+    let repository = entityManager.getRepository('user');
+    
+    // Find a single record.
+    repository.find(7)
+      .then(entity => {
+        return entity.destroy()
+      })
+      .then(() => console.log('All done!'))
+      .catch(console.error);
+  }
+}
+```
+
+---------
+
 .asObject()
 ------
 
