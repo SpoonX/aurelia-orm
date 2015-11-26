@@ -49,7 +49,7 @@ define(['exports', './entity', './default-repository', 'aurelia-framework', 'aur
     }, {
       key: 'getEntity',
       value: function getEntity(entity) {
-        if (typeof entity === 'object') {
+        if (typeof entity === 'function') {
           return this.container.get(entity);
         }
 

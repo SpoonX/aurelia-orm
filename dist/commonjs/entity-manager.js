@@ -56,7 +56,7 @@ var EntityManager = (function () {
   }, {
     key: 'getEntity',
     value: function getEntity(entity) {
-      if (typeof entity === 'object') {
+      if (typeof entity === 'function') {
         return this.container.get(entity);
       }
 
