@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'], function (exports, _aureliaValidation, _aureliaFramework, _spoonxAureliaApi) {
+define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', './association-metadata'], function (exports, _aureliaValidation, _aureliaFramework, _spoonxAureliaApi, _aureliaMetadata, _associationMetadata) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -33,7 +33,7 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
           return this.update();
         }
 
-        return this.api.create(this.resource, this.asObject());
+        return this.api.create(this.resource, this.asObject(true));
       }
     }, {
       key: 'destroy',
@@ -69,7 +69,7 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
           throw new Error('Required value "id" missing on entity.');
         }
 
-        return this.api.update(this.resource, this.id, this.asObject());
+        return this.api.update(this.resource, this.id, this.asObject(true));
       }
     }, {
       key: 'enableValidation',
@@ -84,24 +84,59 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
       }
     }, {
       key: 'asObject',
-      value: function asObject() {
+      value: function asObject(shallow) {
         var _this = this;
 
         var pojo = {};
+        var associationsMetadata = _aureliaMetadata.metadata.getOwn(_associationMetadata.AssociationMetaData.key, this);
 
         Object.keys(this).forEach(function (propertyName) {
-          pojo[propertyName] = _this[propertyName];
+          var value = _this[propertyName];
+
+          if (!associationsMetadata || !associationsMetadata.has(propertyName)) {
+            return pojo[propertyName] = value;
+          }
+
+          if (shallow && typeof value === 'object' && value.id) {
+            return pojo[propertyName] = value.id;
+          }
+
+          if (Array.isArray(value)) {
+            var _ret = (function () {
+              var asObjects = [];
+
+              value.forEach(function (childValue, index) {
+                if (!(childValue instanceof Entity)) {
+                  return asObjects[index] = childValue;
+                }
+
+                asObjects[index] = childValue.asObject();
+              });
+
+              return {
+                v: pojo[propertyName] = asObjects
+              };
+            })();
+
+            if (typeof _ret === 'object') return _ret.v;
+          }
+
+          if (!(value instanceof Entity)) {
+            return pojo[propertyName] = value;
+          }
+
+          pojo[propertyName] = value.asObject();
         });
 
         return pojo;
       }
     }, {
       key: 'asJson',
-      value: function asJson() {
+      value: function asJson(shallow) {
         var json = undefined;
 
         try {
-          json = JSON.stringify(this.asObject());
+          json = JSON.stringify(this.asObject(shallow));
         } catch (error) {
           json = '';
         }

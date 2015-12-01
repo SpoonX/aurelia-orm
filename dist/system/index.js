@@ -1,4 +1,4 @@
-System.register(['./default-repository', './repository', './entity', './entity-manager'], function (_export) {
+System.register(['./default-repository', './repository', './entity', './entity-manager', './association'], function (_export) {
   'use strict';
 
   return {
@@ -10,6 +10,8 @@ System.register(['./default-repository', './repository', './entity', './entity-m
       _export('Entity', _entity.Entity);
     }, function (_entityManager) {
       _export('EntityManager', _entityManager.EntityManager);
+    }, function (_association) {
+      _export('association', _association.association);
     }],
     execute: function () {}
   };
