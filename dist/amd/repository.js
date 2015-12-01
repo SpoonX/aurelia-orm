@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', 'spoonx/aurelia-api'], function (exports, _aureliaFramework, _spoonxAureliaApi) {
+define(['exports', 'aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', './association-metadata'], function (exports, _aureliaFramework, _spoonxAureliaApi, _aureliaMetadata, _associationMetadata) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -79,7 +79,28 @@ define(['exports', 'aurelia-framework', 'spoonx/aurelia-api'], function (exports
     }, {
       key: 'getPopulatedEntity',
       value: function getPopulatedEntity(data) {
-        return this.getNewEntity().setData(data);
+        var entity = this.getNewEntity();
+        var associationsMetadata = _aureliaMetadata.metadata.getOwn(_associationMetadata.AssociationMetaData.key, entity);
+        var populatedData = {};
+        var key = undefined;
+
+        for (key in data) {
+          if (!data.hasOwnProperty(key)) {
+            continue;
+          }
+
+          if (!associationsMetadata || !associationsMetadata.has(key) || typeof data[key] !== 'object') {
+            populatedData[key] = data[key];
+
+            continue;
+          }
+
+          var reference = associationsMetadata.fetch(key);
+
+          populatedData[key] = this.entityManager.getRepository(reference).populateEntities(data[key]);
+        }
+
+        return entity.setData(populatedData);
       }
     }, {
       key: 'getNewEntity',

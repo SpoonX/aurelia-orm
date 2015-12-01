@@ -1,4 +1,4 @@
-define(['exports', './default-repository', './repository', './entity', './entity-manager'], function (exports, _defaultRepository, _repository, _entity, _entityManager) {
+define(['exports', './default-repository', './repository', './entity', './entity-manager', './association'], function (exports, _defaultRepository, _repository, _entity, _entityManager, _association) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -26,6 +26,12 @@ define(['exports', './default-repository', './repository', './entity', './entity
     enumerable: true,
     get: function get() {
       return _entityManager.EntityManager;
+    }
+  });
+  Object.defineProperty(exports, 'association', {
+    enumerable: true,
+    get: function get() {
+      return _association.association;
     }
   });
 });

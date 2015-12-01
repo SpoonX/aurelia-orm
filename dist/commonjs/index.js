@@ -39,3 +39,12 @@ Object.defineProperty(exports, 'EntityManager', {
     return _entityManager.EntityManager;
   }
 });
+
+var _association = require('./association');
+
+Object.defineProperty(exports, 'association', {
+  enumerable: true,
+  get: function get() {
+    return _association.association;
+  }
+});

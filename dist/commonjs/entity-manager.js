@@ -35,6 +35,9 @@ var EntityManager = (function () {
       var repositoryInstance = this.container.get(typeof repository === 'function' || typeof repository === 'object' ? repository : _defaultRepository.DefaultRepository);
 
       if (repositoryInstance instanceof _entity.Entity) {
+
+        repositoryInstance.setEntityManager(this);
+
         repositoryInstance = this.container.get(_defaultRepository.DefaultRepository).setEntity(repositoryInstance).setEntityReference(repository);
       } else {}
 
@@ -56,11 +59,14 @@ var EntityManager = (function () {
   }, {
     key: 'getEntity',
     value: function getEntity(entity) {
+      var entityInstance = undefined;
       if (typeof entity === 'function') {
-        return this.container.get(entity);
+        entityInstance = this.container.get(entity);
+      } else {
+        entityInstance = this.container.get(_entity.Entity).setResource(entity);
       }
 
-      return this.container.get(_entity.Entity).setResource(entity);
+      return entityInstance.setEntityManager(this);
     }
   }]);
 

@@ -1,6 +1,8 @@
 import {Validation} from 'aurelia-validation';
 import {transient, inject} from 'aurelia-framework';
 import {Rest} from 'spoonx/aurelia-api';
+import {metadata} from 'aurelia-metadata';
+import {AssociationMetaData} from './association-metadata';
 
 @transient()
 @inject(Validation, Rest)
@@ -19,6 +21,16 @@ export class Entity {
     });
   }
 
+  setEntityManager (entityManager) {
+    Object.defineProperty(this, 'entityManager', {
+      value     : entityManager,
+      writable  : false,
+      enumerable: false
+    });
+
+    return this;
+  }
+
   /**
    * Persist the entity's state to the server.
    * Either creates a new record (POST) or updates an existing one (PUT) based on the entity's state,
@@ -30,7 +42,7 @@ export class Entity {
       return this.update();
     }
 
-    return this.api.create(this.resource, this.asObject());
+    return this.api.create(this.resource, this.asObject(true));
   }
 
   /**
@@ -86,7 +98,7 @@ export class Entity {
       throw new Error('Required value "id" missing on entity.');
     }
 
-    return this.api.update(this.resource, this.id, this.asObject());
+    return this.api.update(this.resource, this.id, this.asObject(true));
   }
 
   /**
@@ -108,12 +120,50 @@ export class Entity {
    * Get the data in this entity as a POJO.
    *
    * @return {{}}
+   *
+   * @todo check for associations meta data.
+   *  Should use id's if `associations` !== true
+   *
+   *  Now let's check if the object has an ID. If so, set that as the value.
    */
-  asObject () {
-    let pojo = {};
+  asObject (shallow) {
+    let pojo                 = {};
+    let associationsMetadata = metadata.getOwn(AssociationMetaData.key, this);
 
     Object.keys(this).forEach(propertyName => {
-      pojo[propertyName] = this[propertyName];
+      let value = this[propertyName];
+
+      // No meta data or no association property: simple assignment.
+      if (!associationsMetadata || !associationsMetadata.has(propertyName)) {
+        return pojo[propertyName] = value;
+      }
+
+      // If shallow and is object, set id.
+      if (shallow && typeof value === 'object' && value.id) {
+        return pojo[propertyName] = value.id;
+      }
+
+      // Array, treat children as potential entities.
+      if (Array.isArray(value)) {
+        let asObjects = [];
+
+        value.forEach((childValue, index) => {
+          if (!(childValue instanceof Entity)) {
+            return asObjects[index] = childValue;
+          }
+
+          asObjects[index] = childValue.asObject();
+        });
+
+        return pojo[propertyName] = asObjects;
+      }
+
+      // Single value not an instance of entity? Simple assignment.
+      if (!(value instanceof Entity)) {
+        return pojo[propertyName] = value;
+      }
+
+      pojo[propertyName] = value.asObject();
     });
 
     return pojo;
@@ -124,11 +174,11 @@ export class Entity {
    *
    * @return {string}
    */
-  asJson () {
+  asJson (shallow) {
     let json;
 
     try {
-      json = JSON.stringify(this.asObject());
+      json = JSON.stringify(this.asObject(shallow));
     } catch (error) {
       json = '';
     }
