@@ -28,9 +28,6 @@ define(['exports', './entity', './default-repository', 'aurelia-framework', 'aur
         var repositoryInstance = this.container.get(typeof repository === 'function' || typeof repository === 'object' ? repository : _defaultRepository.DefaultRepository);
 
         if (repositoryInstance instanceof _entity.Entity) {
-
-          repositoryInstance.setEntityManager(this);
-
           repositoryInstance = this.container.get(_defaultRepository.DefaultRepository).setEntity(repositoryInstance).setEntityReference(repository);
         } else {}
 
@@ -52,14 +49,11 @@ define(['exports', './entity', './default-repository', 'aurelia-framework', 'aur
     }, {
       key: 'getEntity',
       value: function getEntity(entity) {
-        var entityInstance = undefined;
         if (typeof entity === 'function') {
-          entityInstance = this.container.get(entity);
-        } else {
-          entityInstance = this.container.get(_entity.Entity).setResource(entity);
+          return this.container.get(entity);
         }
 
-        return entityInstance.setEntityManager(this);
+        return this.container.get(_entity.Entity).setResource(entity);
       }
     }]);
 

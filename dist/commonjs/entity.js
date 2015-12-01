@@ -36,17 +36,6 @@ var Entity = (function () {
   }
 
   _createClass(Entity, [{
-    key: 'setEntityManager',
-    value: function setEntityManager(entityManager) {
-      Object.defineProperty(this, 'entityManager', {
-        value: entityManager,
-        writable: false,
-        enumerable: false
-      });
-
-      return this;
-    }
-  }, {
     key: 'save',
     value: function save() {
       if (this.id) {

@@ -38,8 +38,6 @@ export class EntityManager {
     // Did the caller supply an Entity in stead of a Repository?
     if (repositoryInstance instanceof Entity) {
 
-      repositoryInstance.setEntityManager(this);
-
       // Yeah... Okay, let's get the default repository and set the entity.
       repositoryInstance = this.container.get(DefaultRepository)
         .setEntity(repositoryInstance)
@@ -85,13 +83,10 @@ export class EntityManager {
    * @return {*}
    */
   getEntity (entity) {
-    let entityInstance;
     if (typeof entity === 'function') {
-      entityInstance = this.container.get(entity);
-    } else {
-      entityInstance = this.container.get(Entity).setResource(entity);
+      return this.container.get(entity);
     }
 
-    return entityInstance.setEntityManager(this);
+    return this.container.get(Entity).setResource(entity);
   }
 }

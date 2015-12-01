@@ -21,16 +21,6 @@ export class Entity {
     });
   }
 
-  setEntityManager (entityManager) {
-    Object.defineProperty(this, 'entityManager', {
-      value     : entityManager,
-      writable  : false,
-      enumerable: false
-    });
-
-    return this;
-  }
-
   /**
    * Persist the entity's state to the server.
    * Either creates a new record (POST) or updates an existing one (PUT) based on the entity's state,
