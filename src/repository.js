@@ -1,5 +1,7 @@
 import {inject} from 'aurelia-framework';
 import {Rest} from 'spoonx/aurelia-api';
+import {metadata} from 'aurelia-metadata';
+import {AssociationMetaData} from './association-metadata';
 
 @inject(Rest)
 export class Repository {
@@ -106,7 +108,31 @@ export class Repository {
    * @return {Entity}
    */
   getPopulatedEntity (data) {
-    return this.getNewEntity().setData(data);
+    let entity               = this.getNewEntity();
+    let associationsMetadata = metadata.getOwn(AssociationMetaData.key, entity);
+    let populatedData        = {};
+    let key;
+
+    for (key in data) {
+      if (!data.hasOwnProperty(key)) {
+        continue;
+      }
+
+      if (!associationsMetadata || !associationsMetadata.has(key) || typeof data[key] !== 'object') {
+        // Not an association, or not an object. clean copy.
+        populatedData[key] = data[key];
+
+        continue;
+      }
+
+      // Fetch the reference
+      let reference = associationsMetadata.fetch(key);
+
+      // Get the populated entities.
+      populatedData[key] = this.entityManager.getRepository(reference).populateEntities(data[key]);
+    }
+
+    return entity.setData(populatedData);
   }
 
   /**
