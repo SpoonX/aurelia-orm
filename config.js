@@ -1,7 +1,16 @@
 System.config({
   defaultJSExtensions: true,
-  transpiler: "traceur",
+  transpiler: "babel",
+  babelOptions: {
+    "optional": [
+      "runtime",
+      "optimisation.modules.system",
+      "es7.decorators",
+      "es7.classProperties"
+    ]
+  },
   paths: {
+    "*": "dist/*",
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
@@ -9,11 +18,14 @@ System.config({
   map: {
     "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-beta.1",
-    "aurelia-framework": "npm:aurelia-framework@1.0.0-beta.1.0.1",
+    "aurelia-framework": "npm:aurelia-framework@1.0.0-beta.1.0.2",
+    "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1",
+    "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0-beta.1",
     "aurelia-validation": "npm:aurelia-validation@0.6.0",
+    "babel": "npm:babel-core@5.8.34",
+    "babel-runtime": "npm:babel-runtime@5.8.34",
+    "core-js": "npm:core-js@1.2.6",
     "spoonx/aurelia-api": "github:spoonx/aurelia-api@master",
-    "traceur": "github:jmcriffey/bower-traceur@0.0.91",
-    "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.91",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
@@ -31,7 +43,7 @@ System.config({
     },
     "github:spoonx/aurelia-api@master": {
       "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-beta.1",
-      "aurelia-framework": "npm:aurelia-framework@1.0.0-beta.1.0.1",
+      "aurelia-framework": "npm:aurelia-framework@1.0.0-beta.1.0.2",
       "querystring": "github:jspm/nodelibs-querystring@0.1.0"
     },
     "npm:assert@1.3.0": {
@@ -52,7 +64,7 @@ System.config({
     "npm:aurelia-fetch-client@1.0.0-beta.1": {
       "core-js": "npm:core-js@1.2.6"
     },
-    "npm:aurelia-framework@1.0.0-beta.1.0.1": {
+    "npm:aurelia-framework@1.0.0-beta.1.0.2": {
       "aurelia-binding": "npm:aurelia-binding@1.0.0-beta.1.0.1",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1",
       "aurelia-loader": "npm:aurelia-loader@1.0.0-beta.1",
@@ -71,6 +83,9 @@ System.config({
     "npm:aurelia-metadata@1.0.0-beta.1": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1",
       "core-js": "npm:core-js@1.2.6"
+    },
+    "npm:aurelia-pal-browser@1.0.0-beta.1": {
+      "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1"
     },
     "npm:aurelia-task-queue@1.0.0-beta.1": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1"
@@ -92,6 +107,9 @@ System.config({
       "aurelia-logging": "npm:aurelia-logging@1.0.0-beta.1",
       "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1",
       "aurelia-templating": "npm:aurelia-templating@1.0.0-beta.1"
+    },
+    "npm:babel-runtime@5.8.34": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:core-js@1.2.6": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
