@@ -14,9 +14,7 @@ var _aureliaFramework = require('aurelia-framework');
 
 var _spoonxAureliaApi = require('spoonx/aurelia-api');
 
-var _aureliaMetadata = require('aurelia-metadata');
-
-var _associationMetadata = require('./association-metadata');
+var _ormMetadata = require('./orm-metadata');
 
 var Entity = (function () {
   function Entity(validator, restClient) {
@@ -33,6 +31,12 @@ var Entity = (function () {
       writable: false,
       enumerable: false
     });
+
+    var metaData = _ormMetadata.OrmMetadata.forTarget(this);
+
+    if (metaData.fetch('validation')) {
+      this.enableValidation();
+    }
   }
 
   _createClass(Entity, [{
@@ -43,6 +47,16 @@ var Entity = (function () {
       }
 
       return this.api.create(this.resource, this.asObject(true));
+    }
+  }, {
+    key: 'getResource',
+    value: function getResource() {
+      return _ormMetadata.OrmMetadata.forTarget(this).fetch('resource');
+    }
+  }, {
+    key: 'setResource',
+    value: function setResource(resource) {
+      return _ormMetadata.OrmMetadata.forTarget(this).put('resource', resource);
     }
   }, {
     key: 'destroy',
@@ -56,18 +70,9 @@ var Entity = (function () {
   }, {
     key: 'setData',
     value: function setData(data) {
-      Object.assign(this, data);
+      console.log('Assign', data, this);
 
-      return this;
-    }
-  }, {
-    key: 'setResource',
-    value: function setResource(resource) {
-      Object.defineProperty(this, 'resource', {
-        value: resource,
-        writable: false,
-        enumerable: false
-      });
+      Object.assign(this, data);
 
       return this;
     }
@@ -97,12 +102,12 @@ var Entity = (function () {
       var _this = this;
 
       var pojo = {};
-      var associationsMetadata = _aureliaMetadata.metadata.getOwn(_associationMetadata.AssociationMetaData.key, this);
+      var ormMetadata = _ormMetadata.OrmMetadata.forTarget(this);
 
       Object.keys(this).forEach(function (propertyName) {
         var value = _this[propertyName];
 
-        if (!associationsMetadata || !associationsMetadata.has(propertyName)) {
+        if (!ormMetadata.has('associations', propertyName)) {
           return pojo[propertyName] = value;
         }
 
@@ -151,6 +156,11 @@ var Entity = (function () {
       }
 
       return json;
+    }
+  }], [{
+    key: 'getResource',
+    value: function getResource() {
+      return _ormMetadata.OrmMetadata.forTarget(this).fetch('resource');
     }
   }]);
 
