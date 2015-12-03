@@ -2,91 +2,136 @@ import {Entity} from './entity';
 import {DefaultRepository} from './default-repository';
 import {inject} from 'aurelia-framework';
 import {Container} from 'aurelia-dependency-injection';
+import {OrmMetadata} from './orm-metadata';
 
-/**
- * @todo remove api from entity and inject repository in api (?).
- */
 @inject(Container)
 export class EntityManager {
   repositories = {};
+  entities     = {};
 
+  /**
+   * Construct a new EntityManager.
+   *
+   * @param {Container} container aurelia-dependency-injection container
+   */
   constructor (container) {
     this.container = container;
   }
 
   /**
-   * Get a repository. Some notes:
-   *  - If supplied `repository` is a string, a repository and entity will be made for you.
-   *  - If supplied `repository` is an instance of Entity, a default repository will be made for you.
-   *  - If supplied `repository` is a custom Repository reference, you'll get just that.
+   * Register an array of entity references.
    *
-   * @param {Entity|Repository|string} repository
+   * @param {Entity[]} entities
    *
-   * @return {Repository}
+   * @return {EntityManager}
    */
-  getRepository (repository) {
-    if (typeof repository === 'string') {
-      return this.createRepository(repository);
-    }
+  registerEntities (entities) {
+    entities.forEach(entity => {
+      this.registerEntity(entity);
+    });
 
-    let repositoryInstance = this.container.get(
-      typeof repository === 'function' || typeof repository === 'object'
-        ? repository
-        : DefaultRepository
-    );
-
-    // Did the caller supply an Entity in stead of a Repository?
-    if (repositoryInstance instanceof Entity) {
-
-      // Yeah... Okay, let's get the default repository and set the entity.
-      repositoryInstance = this.container.get(DefaultRepository)
-        .setEntity(repositoryInstance)
-        .setEntityReference(repository);
-    } else {
-      /*
-       * the else is just here for the docs.
-       *
-       * When we get here, we can't set an entity or entityReference, because we don't have enough info for that.
-       * We get here if the supplied argument is a custom Repository reference, which should implement this info itself.
-       */
-    }
-
-    repositoryInstance.entityManager = this;
-
-    return repositoryInstance;
+    return this;
   }
 
   /**
-   * Create a new DefaultRepository for `repository`.
+   * Register a Entity reference.
    *
-   * @param {string} repository
-   *
-   * @return {*}
+   * @param {Entity} entity
    */
-  createRepository (repository) {
-    if (!this.repositories[repository]) {
-      this.repositories[repository] = this.container
-        .get(DefaultRepository)
-        .setEntity(this.getEntity(repository))
-        .setEntityReference(repository);
+  registerEntity (entity) {
+    this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+  }
 
-      this.repositories[repository].entityManager = this;
+  /**
+   * Get a repository instance.
+   *
+   * @param {Entity} entity
+   *
+   * @return {Repository}
+   *
+   * @throws {Error}
+   */
+  getRepository (entity) {
+    let reference = this.resolveEntityReference(entity);
+    let resource  = entity;
+
+    if (typeof reference.getResource === 'function') {
+      resource = reference.getResource() || resource;
     }
 
-    return this.repositories[repository];
+    if (typeof resource !== 'string') {
+      throw new Error('Unable to find resource for entity.');
+    }
+
+    // Cached instance available. Return.
+    if (this.repositories[resource]) {
+      return this.repositories[resource];
+    }
+
+    // Get instance of repository
+    let repository = OrmMetadata.forTarget(reference).fetch('repository');
+    let instance   = this.container.get(repository);
+
+    // Already setup instance? Return.
+    if (instance.resource && instance.entityManager) {
+      return instance;
+    }
+
+    // Tell the repository instance what resource it should use.
+    instance.resource      = resource;
+    instance.entityManager = this;
+
+    if (instance instanceof DefaultRepository) {
+      // This is a default repository. We'll cache this instance.
+      this.repositories[resource] = instance;
+    }
+
+    return instance;
+  }
+
+  /**
+   * Resolve given resource value to an entityReference
+   *
+   * @param {Entity|string} resource
+   *
+   * @return {Entity}
+   * @throws {Error}
+   */
+  resolveEntityReference (resource) {
+    let entityReference = resource;
+
+    if (typeof resource === 'string') {
+      entityReference = this.entities[resource] || Entity;
+    }
+
+    if (typeof entityReference === 'function') {
+      return entityReference;
+    }
+
+    throw new Error('Unable to resolve to entity reference. Expected string or function.');
   }
 
   /**
    * Get an instance for `entity`
    *
-   * @param {Object|string} entity
-   * @return {*}
+   * @param {string|Entity} entity
+   *
+   * @return {Entity}
    */
   getEntity (entity) {
-    if (typeof entity === 'function') {
-      return this.container.get(entity);
+    let reference = this.resolveEntityReference(entity);
+    let instance  = this.container.get(reference);
+
+    if (reference.getResource()) {
+      return instance.setResource(reference.getResource());
     }
 
-    return this.container.get(Entity).setResource(entity);
+    if (typeof entity !== 'string') {
+      throw new Error('Unable to find resource for entity.');
+    }
+
+    instance.setResource(entity);
+
+    return instance;
   }
 }
