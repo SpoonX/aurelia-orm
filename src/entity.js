@@ -1,24 +1,33 @@
 import {Validation} from 'aurelia-validation';
 import {transient, inject} from 'aurelia-framework';
 import {Rest} from 'spoonx/aurelia-api';
-import {metadata} from 'aurelia-metadata';
-import {AssociationMetaData} from './association-metadata';
+import {OrmMetadata} from './orm-metadata';
 
 @transient()
 @inject(Validation, Rest)
 export class Entity {
   constructor (validator, restClient) {
-    Object.defineProperty(this, 'validator', {
+    Object.defineProperty(this, '__validator', {
       value     : validator,
       writable  : false,
       enumerable: false
     });
 
-    Object.defineProperty(this, 'api', {
+    Object.defineProperty(this, '__api', {
       value     : restClient,
       writable  : false,
       enumerable: false
     });
+
+    Object.defineProperty(this, '__meta', {
+      value     : OrmMetadata.forTarget(this.constructor),
+      writable  : false,
+      enumerable: false
+    });
+
+    if (this.__meta.fetch('validation')) {
+      this.enableValidation();
+    }
   }
 
   /**
@@ -32,7 +41,61 @@ export class Entity {
       return this.update();
     }
 
-    return this.api.create(this.resource, this.asObject(true));
+    return this.__api.create(this.getResource(), this.asObject(true));
+  }
+
+  /**
+   * Persist the changes made to this entity to the server.
+   *
+   * @see .save()
+   * @return {Promise}
+   * @throws {Error}
+   */
+  update () {
+    if (!this.id) {
+      throw new Error('Required value "id" missing on entity.');
+    }
+
+    let requestBody = this.asObject(true);
+
+    delete requestBody.id;
+
+    return this.__api.update(this.getResource(), this.id, requestBody);
+  }
+
+  /**
+   * Get the resource name of this entity's reference (static).
+   *
+   * @return {string|null}
+   */
+  static getResource () {
+    return OrmMetadata.forTarget(this).fetch('resource');
+  }
+
+  /**
+   * Get the resource name of this entity instance
+   *
+   * @return {string|null}
+   */
+  getResource () {
+    return this.__resource || this.__meta.fetch('resource');
+  }
+
+  /**
+   * Set this instance's resource.
+   *
+   * @param {string} resource
+   *
+   * @return {Entity} Fluent interface
+   */
+  setResource (resource) {
+    Object.defineProperty(this, '__resource', {
+      value     : resource,
+      writable  : false,
+      enumerable: false
+    });
+
+    return this;
   }
 
   /**
@@ -45,7 +108,7 @@ export class Entity {
       throw new Error('Required value "id" missing on entity.');
     }
 
-    return this.api.destroy(this.resource, this.id)
+    return this.__api.destroy(this.getResource(), this.id);
   }
 
   /**
@@ -61,49 +124,36 @@ export class Entity {
   }
 
   /**
-   * Set the resource (endpoint) this entity should represent.
-   *
-   * @param {string} resource
-   * @return {Entity}
-   */
-  setResource (resource) {
-    Object.defineProperty(this, 'resource', {
-      value     : resource,
-      writable  : false,
-      enumerable: false
-    });
-
-    return this;
-  }
-
-  /**
-   * Persist the changes made to this entity to the server.
-   *
-   * @see .save()
-   * @return {Promise}
-   * @throws Error
-   */
-  update () {
-    if (!this.id) {
-      throw new Error('Required value "id" missing on entity.');
-    }
-
-    return this.api.update(this.resource, this.id, this.asObject(true));
-  }
-
-  /**
    * Enable validation for this entity.
    *
    * @return {Entity}
    */
   enableValidation () {
-    Object.defineProperty(this, 'validation', {
-      value     : this.validator.on(this),
+    Object.defineProperty(this, '__validation', {
+      value     : this.__validator.on(this),
       writable  : false,
       enumerable: false
     });
 
     return this;
+  }
+
+  /**
+   * Get the validation instance.
+   *
+   * @return {Validation}
+   */
+  getValidation () {
+    return this.__validation;
+  }
+
+  /**
+   * Check if entity has validation enabled.
+   *
+   * @return {boolean}
+   */
+  hasValidation () {
+    return !!this.__validation;
   }
 
   /**
@@ -111,20 +161,17 @@ export class Entity {
    *
    * @return {{}}
    *
-   * @todo check for associations meta data.
-   *  Should use id's if `associations` !== true
-   *
    *  Now let's check if the object has an ID. If so, set that as the value.
    */
   asObject (shallow) {
-    let pojo                 = {};
-    let associationsMetadata = metadata.getOwn(AssociationMetaData.key, this);
+    let pojo     = {};
+    let metadata = this.__meta;
 
     Object.keys(this).forEach(propertyName => {
       let value = this[propertyName];
 
       // No meta data or no association property: simple assignment.
-      if (!associationsMetadata || !associationsMetadata.has(propertyName)) {
+      if (!metadata.has('associations', propertyName)) {
         return pojo[propertyName] = value;
       }
 
