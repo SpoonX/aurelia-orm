@@ -48,7 +48,11 @@ var EntityManager = (function () {
     key: 'getRepository',
     value: function getRepository(entity) {
       var reference = this.resolveEntityReference(entity);
-      var resource = reference.getResource() || entity;
+      var resource = entity;
+
+      if (typeof reference.getResource === 'function') {
+        resource = reference.getResource() || resource;
+      }
 
       if (typeof resource !== 'string') {
         throw new Error('Unable to find resource for entity.');
@@ -95,8 +99,8 @@ var EntityManager = (function () {
       var reference = this.resolveEntityReference(entity);
       var instance = this.container.get(reference);
 
-      if (instance.getResource()) {
-        return instance;
+      if (reference.getResource()) {
+        return instance.setResource(reference.getResource());
       }
 
       if (typeof entity !== 'string') {

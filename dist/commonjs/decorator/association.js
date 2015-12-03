@@ -9,6 +9,6 @@ var _ormMetadata = require('../orm-metadata');
 
 function association(resource) {
   return function (target, propertyName) {
-    _ormMetadata.OrmMetadata.forTarget(target).put('associations', propertyName, resource || propertyName);
+    _ormMetadata.OrmMetadata.forTarget(target.constructor).put('associations', propertyName, resource || propertyName);
   };
 }

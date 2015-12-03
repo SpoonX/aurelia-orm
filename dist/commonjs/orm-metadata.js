@@ -73,6 +73,8 @@ var Metadata = (function () {
       }
 
       this.metadata[key][valueOrNestedKey] = valueOrNull;
+
+      return this;
     }
   }, {
     key: 'has',
@@ -87,7 +89,7 @@ var Metadata = (function () {
     key: 'fetch',
     value: function fetch(key, nested) {
       if (!nested) {
-        return this.metadata[key];
+        return this.has(key) ? this.metadata[key] : null;
       }
 
       if (!this.has(key, nested)) {

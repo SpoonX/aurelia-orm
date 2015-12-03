@@ -20,21 +20,25 @@ var Entity = (function () {
   function Entity(validator, restClient) {
     _classCallCheck(this, _Entity);
 
-    Object.defineProperty(this, 'validator', {
+    Object.defineProperty(this, '__validator', {
       value: validator,
       writable: false,
       enumerable: false
     });
 
-    Object.defineProperty(this, 'api', {
+    Object.defineProperty(this, '__api', {
       value: restClient,
       writable: false,
       enumerable: false
     });
 
-    var metaData = _ormMetadata.OrmMetadata.forTarget(this);
+    Object.defineProperty(this, '__meta', {
+      value: _ormMetadata.OrmMetadata.forTarget(this.constructor),
+      writable: false,
+      enumerable: false
+    });
 
-    if (metaData.fetch('validation')) {
+    if (this.__meta.fetch('validation')) {
       this.enableValidation();
     }
   }
@@ -46,35 +50,7 @@ var Entity = (function () {
         return this.update();
       }
 
-      return this.api.create(this.resource, this.asObject(true));
-    }
-  }, {
-    key: 'getResource',
-    value: function getResource() {
-      return _ormMetadata.OrmMetadata.forTarget(this).fetch('resource');
-    }
-  }, {
-    key: 'setResource',
-    value: function setResource(resource) {
-      return _ormMetadata.OrmMetadata.forTarget(this).put('resource', resource);
-    }
-  }, {
-    key: 'destroy',
-    value: function destroy() {
-      if (!this.id) {
-        throw new Error('Required value "id" missing on entity.');
-      }
-
-      return this.api.destroy(this.resource, this.id);
-    }
-  }, {
-    key: 'setData',
-    value: function setData(data) {
-      console.log('Assign', data, this);
-
-      Object.assign(this, data);
-
-      return this;
+      return this.__api.create(this.getResource(), this.asObject(true));
     }
   }, {
     key: 'update',
@@ -83,13 +59,22 @@ var Entity = (function () {
         throw new Error('Required value "id" missing on entity.');
       }
 
-      return this.api.update(this.resource, this.id, this.asObject(true));
+      var requestBody = this.asObject(true);
+
+      delete requestBody.id;
+
+      return this.__api.update(this.getResource(), this.id, requestBody);
     }
   }, {
-    key: 'enableValidation',
-    value: function enableValidation() {
-      Object.defineProperty(this, 'validation', {
-        value: this.validator.on(this),
+    key: 'getResource',
+    value: function getResource() {
+      return this.__resource || this.__meta.fetch('resource');
+    }
+  }, {
+    key: 'setResource',
+    value: function setResource(resource) {
+      Object.defineProperty(this, '__resource', {
+        value: resource,
         writable: false,
         enumerable: false
       });
@@ -97,17 +82,54 @@ var Entity = (function () {
       return this;
     }
   }, {
+    key: 'destroy',
+    value: function destroy() {
+      if (!this.id) {
+        throw new Error('Required value "id" missing on entity.');
+      }
+
+      return this.__api.destroy(this.getResource(), this.id);
+    }
+  }, {
+    key: 'setData',
+    value: function setData(data) {
+      Object.assign(this, data);
+
+      return this;
+    }
+  }, {
+    key: 'enableValidation',
+    value: function enableValidation() {
+      Object.defineProperty(this, '__validation', {
+        value: this.__validator.on(this),
+        writable: false,
+        enumerable: false
+      });
+
+      return this;
+    }
+  }, {
+    key: 'getValidation',
+    value: function getValidation() {
+      return this.__validation;
+    }
+  }, {
+    key: 'hasValidation',
+    value: function hasValidation() {
+      return !!this.__validation;
+    }
+  }, {
     key: 'asObject',
     value: function asObject(shallow) {
       var _this = this;
 
       var pojo = {};
-      var ormMetadata = _ormMetadata.OrmMetadata.forTarget(this);
+      var metadata = this.__meta;
 
       Object.keys(this).forEach(function (propertyName) {
         var value = _this[propertyName];
 
-        if (!ormMetadata.has('associations', propertyName)) {
+        if (!metadata.has('associations', propertyName)) {
           return pojo[propertyName] = value;
         }
 
