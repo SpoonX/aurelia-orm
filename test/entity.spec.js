@@ -1,7 +1,8 @@
 import {EntityManager} from '../src/index';
-import {OrmMetadata} from '../src/orm-metadata';
+import {OrmMetadata, Metadata} from '../src/orm-metadata';
 import {WithResource} from './resources/entity/with-resource';
 import {WithValidation} from './resources/entity/with-validation';
+import {SimpleCustom} from './resources/repository/simple-custom';
 import {Foo} from './resources/entity/foo';
 import {Custom} from './resources/entity/custom';
 import {WithAssociations} from './resources/entity/with-associations';
@@ -197,6 +198,14 @@ describe('Entity', function () {
 
         done();
       });
+    });
+  });
+
+  describe('.getMeta()', function () {
+    it('Should return the entity metadata', function () {
+      var instance = new WithResource();
+
+      expect(instance.getMeta() instanceof Metadata).toBe(true);
     });
   });
 

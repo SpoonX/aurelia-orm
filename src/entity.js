@@ -31,6 +31,15 @@ export class Entity {
   }
 
   /**
+   * Get the metadata for this entity.
+   *
+   * return {Metadata}
+   */
+  getMeta () {
+    return this.__meta;
+  }
+
+  /**
    * Persist the entity's state to the server.
    * Either creates a new record (POST) or updates an existing one (PUT) based on the entity's state,
    *
@@ -78,7 +87,7 @@ export class Entity {
    * @return {string|null}
    */
   getResource () {
-    return this.__resource || this.__meta.fetch('resource');
+    return this.__resource || this.getMeta().fetch('resource');
   }
 
   /**
@@ -165,7 +174,7 @@ export class Entity {
    */
   asObject (shallow) {
     let pojo     = {};
-    let metadata = this.__meta;
+    let metadata = this.getMeta();
 
     Object.keys(this).forEach(propertyName => {
       let value = this[propertyName];
