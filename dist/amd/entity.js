@@ -37,6 +37,11 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     }
 
     _createClass(Entity, [{
+      key: 'getMeta',
+      value: function getMeta() {
+        return this.__meta;
+      }
+    }, {
       key: 'save',
       value: function save() {
         if (this.id) {
@@ -61,7 +66,7 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     }, {
       key: 'getResource',
       value: function getResource() {
-        return this.__resource || this.__meta.fetch('resource');
+        return this.__resource || this.getMeta().fetch('resource');
       }
     }, {
       key: 'setResource',
@@ -117,7 +122,7 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
         var _this = this;
 
         var pojo = {};
-        var metadata = this.__meta;
+        var metadata = this.getMeta();
 
         Object.keys(this).forEach(function (propertyName) {
           var value = _this[propertyName];

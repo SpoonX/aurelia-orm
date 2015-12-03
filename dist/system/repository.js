@@ -53,11 +53,6 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', './entity', './orm-m
             return this.api.find(this.resource + '/count', criteria);
           }
         }, {
-          key: 'create',
-          value: function create(data) {
-            return this.getPopulatedEntity(data);
-          }
-        }, {
           key: 'populateEntities',
           value: function populateEntities(data) {
             var _this2 = this;
@@ -82,7 +77,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', './entity', './orm-m
           key: 'getPopulatedEntity',
           value: function getPopulatedEntity(data) {
             var entity = this.getNewEntity();
-            var entityMetadata = OrmMetadata.forTarget(entity);
+            var entityMetadata = entity.getMeta();
             var populatedData = {};
             var key = undefined;
 

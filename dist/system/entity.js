@@ -47,6 +47,11 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
         }
 
         _createClass(Entity, [{
+          key: 'getMeta',
+          value: function getMeta() {
+            return this.__meta;
+          }
+        }, {
           key: 'save',
           value: function save() {
             if (this.id) {
@@ -71,7 +76,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
         }, {
           key: 'getResource',
           value: function getResource() {
-            return this.__resource || this.__meta.fetch('resource');
+            return this.__resource || this.getMeta().fetch('resource');
           }
         }, {
           key: 'setResource',
@@ -127,7 +132,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
             var _this = this;
 
             var pojo = {};
-            var metadata = this.__meta;
+            var metadata = this.getMeta();
 
             Object.keys(this).forEach(function (propertyName) {
               var value = _this[propertyName];

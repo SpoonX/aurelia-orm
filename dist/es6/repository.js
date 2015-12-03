@@ -57,16 +57,6 @@ export class Repository {
   }
 
   /**
-   * Create a new, populated entity based on supplied `data`.
-   *
-   * @param {{}} data
-   * @return {*}
-   */
-  create (data) {
-    return this.getPopulatedEntity(data);
-  }
-
-  /**
    * Populate entities based on supplied data.
    *
    * @param {{}} data
@@ -97,7 +87,7 @@ export class Repository {
    */
   getPopulatedEntity (data) {
     let entity         = this.getNewEntity();
-    let entityMetadata = OrmMetadata.forTarget(entity);
+    let entityMetadata = entity.getMeta();
     let populatedData  = {};
     let key;
 

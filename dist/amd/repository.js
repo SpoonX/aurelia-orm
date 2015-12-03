@@ -44,11 +44,6 @@ define(['exports', 'aurelia-framework', 'spoonx/aurelia-api', './entity', './orm
         return this.api.find(this.resource + '/count', criteria);
       }
     }, {
-      key: 'create',
-      value: function create(data) {
-        return this.getPopulatedEntity(data);
-      }
-    }, {
       key: 'populateEntities',
       value: function populateEntities(data) {
         var _this2 = this;
@@ -73,7 +68,7 @@ define(['exports', 'aurelia-framework', 'spoonx/aurelia-api', './entity', './orm
       key: 'getPopulatedEntity',
       value: function getPopulatedEntity(data) {
         var entity = this.getNewEntity();
-        var entityMetadata = _ormMetadata.OrmMetadata.forTarget(entity);
+        var entityMetadata = entity.getMeta();
         var populatedData = {};
         var key = undefined;
 
