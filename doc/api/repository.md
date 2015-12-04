@@ -1,10 +1,8 @@
 Docs for the {`Repository`} class
 =======
 
-A `Repository` allows you to retrieve entities, populate them with data and more. 
+A `Repository` allows you to retrieve entities, populate them with data and more.
 It can also be extended, allowing you to supply your custom `Repository`.
-
-It depends on [aurelia-api](https://github.com/SpoonX/aurelia-api), which it uses to talk to the server.
 
 -----
 
@@ -44,10 +42,12 @@ export class SomeViewModel {
 
 --------
 
-.create(data)
+.getPopulatedEntity(data)
 ------
 
-Populates a fresh entity with supplied data. This is a convenience method.
+Populates a fresh entity with supplied data.
+
+**Note:** This method also populates **associations** on the entity.
 
 ### Parameters
 
@@ -56,6 +56,7 @@ Populates a fresh entity with supplied data. This is a convenience method.
 | data      | object | Data to populate the new entity with. |
 
 ### Returns
+
 A new `Entity` instance with the populated data.
 
 ### Examples
@@ -71,10 +72,44 @@ export class SomeViewModel {
     
     // Create a new entity
     repository
-      .create({username: 'bob', password: 'bacon'})
+      .getPopulatedEntity({username: 'bob', password: 'bacon'})
       .save()
       .then(console.log)
       .catch(console.error);
+  }
+}
+```
+
+--------
+
+.populateEntities(data)
+-------
+
+Calls [.getPopulatedEntity()](#getpopulatedentitydata) for every object in data (also works when given an object in stead of an array).
+
+### Parameters
+
+| Parameter | Type   | Description                                 |
+| --------- | ------ | ------------------------------------------- |
+| data      | object/array | Data to populate the new entity with. |
+
+### Returns
+
+A new `Entity` instance with the populated data, or an array or `Entity` instances.
+
+### Examples
+
+```javascript
+import {inject}        from 'aurelia-framework';
+import {EntityManager} from 'spoonx/aurelia-orm';
+
+@inject(EntityManager)
+export class SomeViewModel {
+  constructor (entityManager) {
+    let repository = entityManager.getRepository('notes');
+    
+    // entities is an array of Entity instances.
+    let entities = repository.populateEntities([{note: 'laundry'}, {note: 'bacon'}]);
   }
 }
 ```
