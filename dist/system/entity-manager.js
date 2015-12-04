@@ -45,6 +45,8 @@ System.register(['./entity', './default-repository', 'aurelia-framework', 'aurel
           key: 'registerEntity',
           value: function registerEntity(entity) {
             this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+
+            return this;
           }
         }, {
           key: 'getRepository',

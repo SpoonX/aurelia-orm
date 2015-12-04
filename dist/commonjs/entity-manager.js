@@ -43,6 +43,8 @@ var EntityManager = (function () {
     key: 'registerEntity',
     value: function registerEntity(entity) {
       this.entities[_ormMetadata.OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+
+      return this;
     }
   }, {
     key: 'getRepository',

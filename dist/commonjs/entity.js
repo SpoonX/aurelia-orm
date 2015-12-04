@@ -138,6 +138,10 @@ var Entity = (function () {
           return pojo[propertyName] = value;
         }
 
+        if (!value) {
+          return pojo[propertyName] = value;
+        }
+
         if (shallow && typeof value === 'object' && value.id) {
           return pojo[propertyName] = value.id;
         }

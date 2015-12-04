@@ -37,9 +37,13 @@ export class EntityManager {
    * Register a Entity reference.
    *
    * @param {Entity} entity
+   *
+   * @return {EntityManager}
    */
   registerEntity (entity) {
     this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+
+    return this;
   }
 
   /**

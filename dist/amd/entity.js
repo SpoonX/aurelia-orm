@@ -131,6 +131,10 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
             return pojo[propertyName] = value;
           }
 
+          if (!value) {
+            return pojo[propertyName] = value;
+          }
+
           if (shallow && typeof value === 'object' && value.id) {
             return pojo[propertyName] = value.id;
           }
