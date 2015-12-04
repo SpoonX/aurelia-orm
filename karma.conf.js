@@ -1,8 +1,5 @@
-// Karma configuration
-// Generated on Tue Sep 01 2015 15:18:00 GMT+0200 (Romance Daylight Time)
-
 module.exports = function (config) {
-  config.set({
+  var configuration = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -30,7 +27,7 @@ module.exports = function (config) {
       }
     },
 
-    // list of files / patterns to load in the browser
+    // list of files / patterns to load in the browser.
     files: [],
 
     // list of files to exclude
@@ -60,10 +57,23 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'Firefox', 'ChromeCanary'],
+
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base : 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false
-  })
-}
+  };
+
+  if (process.env.TRAVIS) {
+    configuration.browsers = ['Chrome_travis_ci', 'Firefox'];
+  }
+
+  config.set(configuration);
+};
