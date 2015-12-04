@@ -184,6 +184,11 @@ export class Entity {
         return pojo[propertyName] = value;
       }
 
+      // If there's no true value set, perform a simple assignment.
+      if (!value) {
+        return pojo[propertyName] = value;
+      }
+
       // If shallow and is object, set id.
       if (shallow && typeof value === 'object' && value.id) {
         return pojo[propertyName] = value.id;

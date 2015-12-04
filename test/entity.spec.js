@@ -409,6 +409,32 @@ describe('Entity', function () {
         test: 'case'
       });
     });
+
+    it('Should return a POJO and not break on empty association.', function () {
+      var parentEntity = new WithAssociations(),
+          fooEntityOne = new Foo(),
+          fooEntityTwo = new Foo(),
+          customEntity = new Custom();
+
+      fooEntityOne.some  = 'value';
+      fooEntityOne.other = 'other value';
+      fooEntityTwo.what  = 'Jup';
+      customEntity.baby  = 'steps';
+
+      parentEntity.setData({
+        test: 'case',
+        foo : null,
+        bar : customEntity
+      });
+
+      expect(parentEntity.asObject()).toEqual({
+        foo : null,
+        bar : {
+          baby: 'steps'
+        },
+        test: 'case'
+      });
+    });
   });
 
   describe('.asJson()', function () {
