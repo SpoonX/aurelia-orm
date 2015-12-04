@@ -16,9 +16,21 @@ describe('EntityManager', function() {
 
       expect(entityManager.entities).toEqual({'with-resource': WithResource});
     });
+
+    it('Should return self.', function () {
+      var entityManager = new EntityManager(new Container());
+
+      expect(entityManager.registerEntities([WithResource])).toBe(entityManager);
+    });
   });
 
   describe('.registerEntity()', function () {
+    it('Should return self.', function () {
+      var entityManager = new EntityManager(new Container());
+
+      expect(entityManager.registerEntity(WithResource)).toBe(entityManager);
+    });
+
     it('Should register an entity with the manager', function () {
       var entityManager = new EntityManager(new Container());
 
