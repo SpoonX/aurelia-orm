@@ -1,7 +1,7 @@
-System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', './association-metadata'], function (_export) {
+System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api', './orm-metadata'], function (_export) {
   'use strict';
 
-  var Validation, transient, inject, Rest, metadata, AssociationMetaData, Entity;
+  var Validation, transient, inject, Rest, OrmMetadata, Entity;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -15,37 +15,79 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
       inject = _aureliaFramework.inject;
     }, function (_spoonxAureliaApi) {
       Rest = _spoonxAureliaApi.Rest;
-    }, function (_aureliaMetadata) {
-      metadata = _aureliaMetadata.metadata;
-    }, function (_associationMetadata) {
-      AssociationMetaData = _associationMetadata.AssociationMetaData;
+    }, function (_ormMetadata) {
+      OrmMetadata = _ormMetadata.OrmMetadata;
     }],
     execute: function () {
       Entity = (function () {
         function Entity(validator, restClient) {
           _classCallCheck(this, _Entity);
 
-          Object.defineProperty(this, 'validator', {
+          Object.defineProperty(this, '__validator', {
             value: validator,
             writable: false,
             enumerable: false
           });
 
-          Object.defineProperty(this, 'api', {
+          Object.defineProperty(this, '__api', {
             value: restClient,
             writable: false,
             enumerable: false
           });
+
+          Object.defineProperty(this, '__meta', {
+            value: OrmMetadata.forTarget(this.constructor),
+            writable: false,
+            enumerable: false
+          });
+
+          if (this.__meta.fetch('validation')) {
+            this.enableValidation();
+          }
         }
 
         _createClass(Entity, [{
+          key: 'getMeta',
+          value: function getMeta() {
+            return this.__meta;
+          }
+        }, {
           key: 'save',
           value: function save() {
             if (this.id) {
               return this.update();
             }
 
-            return this.api.create(this.resource, this.asObject(true));
+            return this.__api.create(this.getResource(), this.asObject(true));
+          }
+        }, {
+          key: 'update',
+          value: function update() {
+            if (!this.id) {
+              throw new Error('Required value "id" missing on entity.');
+            }
+
+            var requestBody = this.asObject(true);
+
+            delete requestBody.id;
+
+            return this.__api.update(this.getResource(), this.id, requestBody);
+          }
+        }, {
+          key: 'getResource',
+          value: function getResource() {
+            return this.__resource || this.getMeta().fetch('resource');
+          }
+        }, {
+          key: 'setResource',
+          value: function setResource(resource) {
+            Object.defineProperty(this, '__resource', {
+              value: resource,
+              writable: false,
+              enumerable: false
+            });
+
+            return this;
           }
         }, {
           key: 'destroy',
@@ -54,7 +96,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
               throw new Error('Required value "id" missing on entity.');
             }
 
-            return this.api.destroy(this.resource, this.id);
+            return this.__api.destroy(this.getResource(), this.id);
           }
         }, {
           key: 'setData',
@@ -64,35 +106,25 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
             return this;
           }
         }, {
-          key: 'setResource',
-          value: function setResource(resource) {
-            Object.defineProperty(this, 'resource', {
-              value: resource,
-              writable: false,
-              enumerable: false
-            });
-
-            return this;
-          }
-        }, {
-          key: 'update',
-          value: function update() {
-            if (!this.id) {
-              throw new Error('Required value "id" missing on entity.');
-            }
-
-            return this.api.update(this.resource, this.id, this.asObject(true));
-          }
-        }, {
           key: 'enableValidation',
           value: function enableValidation() {
-            Object.defineProperty(this, 'validation', {
-              value: this.validator.on(this),
+            Object.defineProperty(this, '__validation', {
+              value: this.__validator.on(this),
               writable: false,
               enumerable: false
             });
 
             return this;
+          }
+        }, {
+          key: 'getValidation',
+          value: function getValidation() {
+            return this.__validation;
+          }
+        }, {
+          key: 'hasValidation',
+          value: function hasValidation() {
+            return !!this.__validation;
           }
         }, {
           key: 'asObject',
@@ -100,12 +132,16 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
             var _this = this;
 
             var pojo = {};
-            var associationsMetadata = metadata.getOwn(AssociationMetaData.key, this);
+            var metadata = this.getMeta();
 
             Object.keys(this).forEach(function (propertyName) {
               var value = _this[propertyName];
 
-              if (!associationsMetadata || !associationsMetadata.has(propertyName)) {
+              if (!metadata.has('associations', propertyName)) {
+                return pojo[propertyName] = value;
+              }
+
+              if (!value) {
                 return pojo[propertyName] = value;
               }
 
@@ -154,6 +190,11 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
             }
 
             return json;
+          }
+        }], [{
+          key: 'getResource',
+          value: function getResource() {
+            return OrmMetadata.forTarget(this).fetch('resource');
           }
         }]);
 

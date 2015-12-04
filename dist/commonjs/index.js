@@ -3,6 +3,9 @@
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+exports.configure = configure;
+
+var _entityManager = require('./entity-manager');
 
 var _defaultRepository = require('./default-repository');
 
@@ -30,9 +33,6 @@ Object.defineProperty(exports, 'Entity', {
     return _entity.Entity;
   }
 });
-
-var _entityManager = require('./entity-manager');
-
 Object.defineProperty(exports, 'EntityManager', {
   enumerable: true,
   get: function get() {
@@ -40,11 +40,53 @@ Object.defineProperty(exports, 'EntityManager', {
   }
 });
 
-var _association = require('./association');
+var _decoratorAssociation = require('./decorator/association');
 
 Object.defineProperty(exports, 'association', {
   enumerable: true,
   get: function get() {
-    return _association.association;
+    return _decoratorAssociation.association;
   }
 });
+
+var _decoratorResource = require('./decorator/resource');
+
+Object.defineProperty(exports, 'resource', {
+  enumerable: true,
+  get: function get() {
+    return _decoratorResource.resource;
+  }
+});
+
+var _decoratorRepository = require('./decorator/repository');
+
+Object.defineProperty(exports, 'repository', {
+  enumerable: true,
+  get: function get() {
+    return _decoratorRepository.repository;
+  }
+});
+
+var _decoratorValidation = require('./decorator/validation');
+
+Object.defineProperty(exports, 'validation', {
+  enumerable: true,
+  get: function get() {
+    return _decoratorValidation.validation;
+  }
+});
+
+var _decoratorValidatedResource = require('./decorator/validated-resource');
+
+Object.defineProperty(exports, 'validatedResource', {
+  enumerable: true,
+  get: function get() {
+    return _decoratorValidatedResource.validatedResource;
+  }
+});
+
+function configure(aurelia, configCallback) {
+  var entityManagerInstance = aurelia.container.get(_entityManager.EntityManager);
+
+  configCallback(entityManagerInstance);
+}

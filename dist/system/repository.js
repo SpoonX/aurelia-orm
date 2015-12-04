@@ -1,7 +1,7 @@
-System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', './association-metadata'], function (_export) {
+System.register(['aurelia-framework', 'spoonx/aurelia-api', './entity', './orm-metadata'], function (_export) {
   'use strict';
 
-  var inject, Rest, metadata, AssociationMetaData, Repository;
+  var inject, Rest, Entity, OrmMetadata, Repository;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -12,10 +12,10 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', 
       inject = _aureliaFramework.inject;
     }, function (_spoonxAureliaApi) {
       Rest = _spoonxAureliaApi.Rest;
-    }, function (_aureliaMetadata) {
-      metadata = _aureliaMetadata.metadata;
-    }, function (_associationMetadata) {
-      AssociationMetaData = _associationMetadata.AssociationMetaData;
+    }, function (_entity) {
+      Entity = _entity.Entity;
+    }, function (_ormMetadata) {
+      OrmMetadata = _ormMetadata.OrmMetadata;
     }],
     execute: function () {
       Repository = (function () {
@@ -26,16 +26,9 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', 
         }
 
         _createClass(Repository, [{
-          key: 'setEntity',
-          value: function setEntity(entity) {
-            this.entity = entity;
-
-            return this;
-          }
-        }, {
-          key: 'setEntityReference',
-          value: function setEntityReference(entityReference) {
-            this.entityReference = entityReference;
+          key: 'setResource',
+          value: function setResource(resource) {
+            this.resource = resource;
 
             return this;
           }
@@ -44,7 +37,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', 
           value: function find(criteria, raw) {
             var _this = this;
 
-            var findQuery = this.api.find(this.entity.resource, criteria);
+            var findQuery = this.api.find(this.resource, criteria);
 
             if (raw) {
               return findQuery;
@@ -57,12 +50,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', 
         }, {
           key: 'count',
           value: function count(criteria) {
-            return this.api.find(this.entity.resource + '/count', criteria);
-          }
-        }, {
-          key: 'create',
-          value: function create(data) {
-            return this.getPopulatedEntity(data);
+            return this.api.find(this.resource + '/count', criteria);
           }
         }, {
           key: 'populateEntities',
@@ -89,7 +77,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', 
           key: 'getPopulatedEntity',
           value: function getPopulatedEntity(data) {
             var entity = this.getNewEntity();
-            var associationsMetadata = metadata.getOwn(AssociationMetaData.key, entity);
+            var entityMetadata = entity.getMeta();
             var populatedData = {};
             var key = undefined;
 
@@ -98,15 +86,16 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', 
                 continue;
               }
 
-              if (!associationsMetadata || !associationsMetadata.has(key) || typeof data[key] !== 'object') {
-                populatedData[key] = data[key];
+              var value = data[key];
+
+              if (!entityMetadata.has('associations', key) || typeof value !== 'object') {
+                populatedData[key] = value;
 
                 continue;
               }
 
-              var reference = associationsMetadata.fetch(key);
-
-              populatedData[key] = this.entityManager.getRepository(reference).populateEntities(data[key]);
+              var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key));
+              populatedData[key] = repository.populateEntities(value);
             }
 
             return entity.setData(populatedData);
@@ -114,7 +103,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', 'aurelia-metadata', 
         }, {
           key: 'getNewEntity',
           value: function getNewEntity() {
-            return this.entityManager.getEntity(this.entityReference);
+            return this.entityManager.getEntity(this.resource);
           }
         }]);
 

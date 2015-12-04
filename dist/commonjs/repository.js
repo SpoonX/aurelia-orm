@@ -12,9 +12,9 @@ var _aureliaFramework = require('aurelia-framework');
 
 var _spoonxAureliaApi = require('spoonx/aurelia-api');
 
-var _aureliaMetadata = require('aurelia-metadata');
+var _entity = require('./entity');
 
-var _associationMetadata = require('./association-metadata');
+var _ormMetadata = require('./orm-metadata');
 
 var Repository = (function () {
   function Repository(restClient) {
@@ -24,16 +24,9 @@ var Repository = (function () {
   }
 
   _createClass(Repository, [{
-    key: 'setEntity',
-    value: function setEntity(entity) {
-      this.entity = entity;
-
-      return this;
-    }
-  }, {
-    key: 'setEntityReference',
-    value: function setEntityReference(entityReference) {
-      this.entityReference = entityReference;
+    key: 'setResource',
+    value: function setResource(resource) {
+      this.resource = resource;
 
       return this;
     }
@@ -42,7 +35,7 @@ var Repository = (function () {
     value: function find(criteria, raw) {
       var _this = this;
 
-      var findQuery = this.api.find(this.entity.resource, criteria);
+      var findQuery = this.api.find(this.resource, criteria);
 
       if (raw) {
         return findQuery;
@@ -55,12 +48,7 @@ var Repository = (function () {
   }, {
     key: 'count',
     value: function count(criteria) {
-      return this.api.find(this.entity.resource + '/count', criteria);
-    }
-  }, {
-    key: 'create',
-    value: function create(data) {
-      return this.getPopulatedEntity(data);
+      return this.api.find(this.resource + '/count', criteria);
     }
   }, {
     key: 'populateEntities',
@@ -87,7 +75,7 @@ var Repository = (function () {
     key: 'getPopulatedEntity',
     value: function getPopulatedEntity(data) {
       var entity = this.getNewEntity();
-      var associationsMetadata = _aureliaMetadata.metadata.getOwn(_associationMetadata.AssociationMetaData.key, entity);
+      var entityMetadata = entity.getMeta();
       var populatedData = {};
       var key = undefined;
 
@@ -96,15 +84,16 @@ var Repository = (function () {
           continue;
         }
 
-        if (!associationsMetadata || !associationsMetadata.has(key) || typeof data[key] !== 'object') {
-          populatedData[key] = data[key];
+        var value = data[key];
+
+        if (!entityMetadata.has('associations', key) || typeof value !== 'object') {
+          populatedData[key] = value;
 
           continue;
         }
 
-        var reference = associationsMetadata.fetch(key);
-
-        populatedData[key] = this.entityManager.getRepository(reference).populateEntities(data[key]);
+        var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key));
+        populatedData[key] = repository.populateEntities(value);
       }
 
       return entity.setData(populatedData);
@@ -112,7 +101,7 @@ var Repository = (function () {
   }, {
     key: 'getNewEntity',
     value: function getNewEntity() {
-      return this.entityManager.getEntity(this.entityReference);
+      return this.entityManager.getEntity(this.resource);
     }
   }]);
 

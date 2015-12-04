@@ -16,51 +16,102 @@ var _aureliaFramework = require('aurelia-framework');
 
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
+var _ormMetadata = require('./orm-metadata');
+
 var EntityManager = (function () {
   function EntityManager(container) {
     _classCallCheck(this, _EntityManager);
 
     this.repositories = {};
+    this.entities = {};
 
     this.container = container;
   }
 
   _createClass(EntityManager, [{
-    key: 'getRepository',
-    value: function getRepository(repository) {
-      if (typeof repository === 'string') {
-        return this.createRepository(repository);
-      }
+    key: 'registerEntities',
+    value: function registerEntities(entities) {
+      var _this = this;
 
-      var repositoryInstance = this.container.get(typeof repository === 'function' || typeof repository === 'object' ? repository : _defaultRepository.DefaultRepository);
+      entities.forEach(function (entity) {
+        _this.registerEntity(entity);
+      });
 
-      if (repositoryInstance instanceof _entity.Entity) {
-        repositoryInstance = this.container.get(_defaultRepository.DefaultRepository).setEntity(repositoryInstance).setEntityReference(repository);
-      } else {}
-
-      repositoryInstance.entityManager = this;
-
-      return repositoryInstance;
+      return this;
     }
   }, {
-    key: 'createRepository',
-    value: function createRepository(repository) {
-      if (!this.repositories[repository]) {
-        this.repositories[repository] = this.container.get(_defaultRepository.DefaultRepository).setEntity(this.getEntity(repository)).setEntityReference(repository);
+    key: 'registerEntity',
+    value: function registerEntity(entity) {
+      this.entities[_ormMetadata.OrmMetadata.forTarget(entity).fetch('resource')] = entity;
 
-        this.repositories[repository].entityManager = this;
+      return this;
+    }
+  }, {
+    key: 'getRepository',
+    value: function getRepository(entity) {
+      var reference = this.resolveEntityReference(entity);
+      var resource = entity;
+
+      if (typeof reference.getResource === 'function') {
+        resource = reference.getResource() || resource;
       }
 
-      return this.repositories[repository];
+      if (typeof resource !== 'string') {
+        throw new Error('Unable to find resource for entity.');
+      }
+
+      if (this.repositories[resource]) {
+        return this.repositories[resource];
+      }
+
+      var repository = _ormMetadata.OrmMetadata.forTarget(reference).fetch('repository');
+      var instance = this.container.get(repository);
+
+      if (instance.resource && instance.entityManager) {
+        return instance;
+      }
+
+      instance.resource = resource;
+      instance.entityManager = this;
+
+      if (instance instanceof _defaultRepository.DefaultRepository) {
+        this.repositories[resource] = instance;
+      }
+
+      return instance;
+    }
+  }, {
+    key: 'resolveEntityReference',
+    value: function resolveEntityReference(resource) {
+      var entityReference = resource;
+
+      if (typeof resource === 'string') {
+        entityReference = this.entities[resource] || _entity.Entity;
+      }
+
+      if (typeof entityReference === 'function') {
+        return entityReference;
+      }
+
+      throw new Error('Unable to resolve to entity reference. Expected string or function.');
     }
   }, {
     key: 'getEntity',
     value: function getEntity(entity) {
-      if (typeof entity === 'function') {
-        return this.container.get(entity);
+      var reference = this.resolveEntityReference(entity);
+      var instance = this.container.get(reference);
+
+      if (reference.getResource()) {
+        return instance.setResource(reference.getResource());
       }
 
-      return this.container.get(_entity.Entity).setResource(entity);
+      if (typeof entity !== 'string') {
+        throw new Error('Unable to find resource for entity.');
+      }
+
+      instance.setResource(entity);
+
+      return instance;
     }
   }]);
 

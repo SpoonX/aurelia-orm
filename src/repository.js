@@ -1,7 +1,7 @@
 import {inject} from 'aurelia-framework';
 import {Rest} from 'spoonx/aurelia-api';
-import {metadata} from 'aurelia-metadata';
-import {AssociationMetaData} from './association-metadata';
+import {Entity} from './entity';
+import {OrmMetadata} from './orm-metadata';
 
 @inject(Rest)
 export class Repository {
@@ -20,24 +20,11 @@ export class Repository {
    * Set an entity instance.
    * Used to harvest information such as the resource name.
    *
-   * @param {Entity} entity
+   * @param {string} resource
    * @return {Repository}
    */
-  setEntity (entity) {
-    this.entity = entity;
-
-    return this;
-  }
-
-  /**
-   * Set the entity reference.
-   * Used to create new instances of the entity using aurelia DI.
-   *
-   * @param {Entity} entityReference
-   * @return {Repository}
-   */
-  setEntityReference (entityReference) {
-    this.entityReference = entityReference;
+  setResource (resource) {
+    this.resource = resource;
 
     return this;
   }
@@ -50,7 +37,7 @@ export class Repository {
    * @return {*}
    */
   find (criteria, raw) {
-    let findQuery = this.api.find(this.entity.resource, criteria);
+    let findQuery = this.api.find(this.resource, criteria);
 
     if (raw) {
       return findQuery;
@@ -66,17 +53,7 @@ export class Repository {
    * @return {*}
    */
   count (criteria) {
-    return this.api.find(this.entity.resource + '/count', criteria);
-  }
-
-  /**
-   * Create a new, populated entity based on supplied `data`.
-   *
-   * @param {{}} data
-   * @return {*}
-   */
-  create (data) {
-    return this.getPopulatedEntity(data);
+    return this.api.find(this.resource + '/count', criteria);
   }
 
   /**
@@ -105,12 +82,13 @@ export class Repository {
 
   /**
    * @param {{}} data
+   *
    * @return {Entity}
    */
   getPopulatedEntity (data) {
-    let entity               = this.getNewEntity();
-    let associationsMetadata = metadata.getOwn(AssociationMetaData.key, entity);
-    let populatedData        = {};
+    let entity         = this.getNewEntity();
+    let entityMetadata = entity.getMeta();
+    let populatedData  = {};
     let key;
 
     for (key in data) {
@@ -118,18 +96,17 @@ export class Repository {
         continue;
       }
 
-      if (!associationsMetadata || !associationsMetadata.has(key) || typeof data[key] !== 'object') {
+      let value = data[key];
+
+      if (!entityMetadata.has('associations', key) || typeof value !== 'object') {
         // Not an association, or not an object. clean copy.
-        populatedData[key] = data[key];
+        populatedData[key] = value;
 
         continue;
       }
 
-      // Fetch the reference
-      let reference = associationsMetadata.fetch(key);
-
-      // Get the populated entities.
-      populatedData[key] = this.entityManager.getRepository(reference).populateEntities(data[key]);
+      let repository     = this.entityManager.getRepository(entityMetadata.fetch('associations', key));
+      populatedData[key] = repository.populateEntities(value);
     }
 
     return entity.setData(populatedData);
@@ -141,6 +118,6 @@ export class Repository {
    * @return {Entity}
    */
   getNewEntity () {
-    return this.entityManager.getEntity(this.entityReference);
+    return this.entityManager.getEntity(this.resource);
   }
 }
