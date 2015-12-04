@@ -1,12 +1,13 @@
 language: node_js
 node_js:
 - '0.11'
-
 before_install:
 - npm install -g jspm
 - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
-
 before_script:
 - jspm i
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
+env:
+  global:
+    secure: x5vpVdAfuy9SSas4Id6owKvu50eoP9mURxJLJ7KZnXEHe/CdNXyY/3Ets4dTiKC67qY3dsE750ShpAhqQ1JCxwSwaEKdJYhnppqRpteuQTWxrmEx5zCfznOAht90MXFnnuKTBzOdD5vCBq7eZfoF4w0tsesbEfXYnHXDke5bgC9K6u43jDQKbWWNdM/dq+b2++2/v42jJMXTuAhzqlPJm8TWsjaMfhvpoTg12PY9+8WhkEtfhBGv7so4JO8m0QhJEdQqm1ZJAESpl1/bNUaChuRyB1cPM8BoGPpzYHjOoJqmCXHRouEIpWOsSum2q+RLsOsI2yvulg1d+WdKwVLYlT03F2bElJLnbs0qirCf9DzcDyP+dH6e6fvyrrmUV3Ro8/xIRFXqt+8XvY/h/AiHj5LO7yWGgFdj6SNXWRnh2ImZLnVrBMmm3H8V6yDfNjJJ1i2E/Jtcn+4aUeYCPgCLh/2z2GHAKHb6MCYh+fIvbaPmKB+VV44Ofk0jRkb5aCHzyb6EdWGProdYweoKGyw4tuaf1/tNUhsUuMRV6hU7uJfGlxkJkIIQehBvnT7uIKoJqT6b50/rGdiXtzF9BS4AfA0z9Nh+akwa9B0ITERwFeIGkgAWlB5IhV3+I5l3jNuL8OFUQ0fV5U/hx3+n8xzHJSSjrRU+MixZOAYnvDTlrLg=
