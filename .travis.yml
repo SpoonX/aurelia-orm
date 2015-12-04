@@ -1,9 +1,12 @@
 language: node_js
 node_js:
-  - "4.1"
-  - "0.11"
-  - "iojs"
+- '4.1'
+- '0.11'
+- iojs
 before_script:
-  - ./node_modules/.bin/jspm i
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- ./node_modules/.bin/jspm i
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+env:
+  global:
+    secure: n73prJTFVeV9eROIxGwXjLrCHvZScISisvFzB52XUhG+V0707hDy36cVrWOPy9jR8L0/snEgJbMkaIgluobZ18NmGGYA8UH9lBEN3ycdd3wNvdQQqtd8ZcPWxef+jRu6Gv91NYjT3PiyEdZKJbdQzqH2Y69kF3Rnt3TOJfPFMQHf5xDt2xpDL8aju+XKnKIFrscox+I2HhKYQTXis6T358KxTPUVYhuqRh4zaZJ3v8MDdgDlCidWfASv7lcEFYzQVa0AjRMriED/q+k3xDy2pATZ22l4pmsxyIuZ3j9l6ycRFMarii039PVvnq2eKPBMI/BKeuJbsvlYyLywIOqTzcCb93Z2v+Y63sHnHnEg1LMKIze45Y1lrFEeUVxr/UNRfSmiofTPOuQ2gkYEUiJ9eayGPsRNN0HCp9xHHy1GWQ7weKzdDh4dnOyXQE0Yp4GiYIi8VwYgiLTFCOJErihpdnA+rKQnPbO/sBoAoYjrpaIR7qyRMvCWMZoUCRvzhzxFIWEtXQibBL/9gMcqCEMr4NchmG5xNWj8qfws+oWSfJJnFd8E3NgQgeA0Vr/BhVFKJCTw3aYHY/Dot98qIegFRysOv2/xMDLJ9UfQkcuboj3gTtMcRk/E/ndxAQZxmkKJJvBTxW+5sjuSKiixWn7liTrkYK2ijmTmjuZCVVDa8YU=
