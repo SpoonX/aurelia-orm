@@ -1,21 +1,17 @@
+# Entities
+This document is a collection of snippets and examples considering entities and what they can do.
 
-## Example
-Following is a small, but more complete example of how you would implement a create.
+## Create
+Following is a small, but more complete example of how you would implement a create. This example uses [aurelia-validation](https://github.com/aurelia/validation).
 
 ### File: entity/user-entity.js
 
-  ```javascript
-import {Entity} from 'spoonx/aurelia-orm';
+```javascript
+import {Entity, validatedResource} from 'spoonx/aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
+@validatedResource('user')
 export class UserEntity extends Entity {
-  constructor () {
-    super(...arguments);
-
-    // Set the endpoint resource to link this entity to and enable validation.
-    this.setResource('user').enableValidation();
-  }
-
   @ensure(it => it.isNotEmpty().containsOnlyAlpha().hasLengthBetween(3, 20))
   username = null;
 
@@ -29,17 +25,17 @@ export class UserEntity extends Entity {
 
 ### File: page/user/create.js
 
-  ```javascript
-import {UserEntity} from 'entity/user-entity';
+```javascript
+import {EntityManager} from 'spoonx/aurelia-orm';
 import {inject} from 'aurelia-framework';
 
-@inject(UserEntity)
+@inject(EntityManager)
 export class Create {
 
   requestInFlight = false;
 
-  constructor (UserEntity) {
-    this.entity = UserEntity;
+  constructor (entityManager) {
+    this.entity = entityManager.getEntity('user');
   }
 
   create () {
@@ -60,7 +56,7 @@ export class Create {
 
 ### File: page/user/create.html
 
-  ```html
+```html
 <template>
   <require from="component/form/user-form"></require>
 

@@ -190,9 +190,9 @@ export class ViewModel {
 
 * [Decorators](decorators.md)
 * [EntityManager](api/entity-manager.md)
-* [Repositories](api/repositories.md)
+* [Repository](api/repository.md)
+* [Entity](api/entity.md)
 * [Entities](api/entities.md)
-* [Validation](validation.md)
 
 To learn more, head on over to the `doc/` directory or click the links to continue reading.
 
