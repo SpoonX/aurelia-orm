@@ -1,6 +1,6 @@
 # aurelia-orm
 
-[![ZenHub](https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png)](https://zenhub.io)
+[![Build Status](https://travis-ci.org/SpoonX/aurelia-orm.svg)](https://travis-ci.org/SpoonX/aurelia-orm)
 [![Join the chat at https://gitter.im/aurelia/discuss](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/aurelia/discuss?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Makes working with entities and calling your Rest API simple. 
@@ -27,5 +27,5 @@ Installing this module is fairly simple.
 
 Run `jspm install github:spoonx/aurelia-orm` from your project root.
 
-## Usage
-You can find documentation for usage in the `doc/` directory.
+## Documentation
+You can find usage examples and documentation in the [Getting started](doc/getting-started.md) or the `doc/` directory.
