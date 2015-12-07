@@ -1,3 +1,9 @@
+### 1.1.1 (2015-12-07)
+* Reformat according to CS
+* Removed unused dependency
+* Removed unused imports
+* Added lint to test command
+
 ## 1.1.0 (2015-12-07)
 * Lazy-load validation
 * Added tests for new use cases
