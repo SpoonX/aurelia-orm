@@ -1,5 +1,4 @@
 var gulp  = require('gulp');
-var watch = require('gulp-watch');
 var gutil = require('gulp-util');
 
 gulp.task('watch', ['clean', 'build-commonjs'], function() {
