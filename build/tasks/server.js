@@ -1,26 +1,26 @@
-var app        = require('express')(),
-    bodyParser = require('body-parser'),
-    cors       = require('cors'),
-    server;
+var app        = require('express')();
+var bodyParser = require('body-parser');
+var cors       = require('cors');
+var server;
 
 app.use(bodyParser.json());
 
 app.use(cors());
 
-app.all('*', function (req, res) {
+app.all('*', function(req, res) {
   res.send({
-    path  : req.path,
-    query : req.query,
-    body  : req.body,
+    path: req.path,
+    query: req.query,
+    body: req.body,
     method: req.method
   });
 });
 
 module.exports = {
-  start: function (done) {
+  start: function(done) {
     server = app.listen(1927, done);
   },
-  stop : function () {
+  stop: function() {
     server.close();
   }
 };

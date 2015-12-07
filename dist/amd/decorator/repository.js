@@ -6,9 +6,9 @@ define(['exports', '../orm-metadata'], function (exports, _ormMetadata) {
   });
   exports.repository = repository;
 
-  function repository(repository) {
+  function repository(repositoryReference) {
     return function (target) {
-      _ormMetadata.OrmMetadata.forTarget(target).put('repository', repository);
+      _ormMetadata.OrmMetadata.forTarget(target).put('repository', repositoryReference);
     };
   }
 });

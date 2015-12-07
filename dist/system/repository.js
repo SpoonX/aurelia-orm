@@ -1,7 +1,7 @@
-System.register(['aurelia-framework', 'spoonx/aurelia-api', './entity', './orm-metadata'], function (_export) {
+System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) {
   'use strict';
 
-  var inject, Rest, Entity, OrmMetadata, Repository;
+  var inject, Rest, Repository;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -12,10 +12,6 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api', './entity', './orm-m
       inject = _aureliaFramework.inject;
     }, function (_spoonxAureliaApi) {
       Rest = _spoonxAureliaApi.Rest;
-    }, function (_entity) {
-      Entity = _entity.Entity;
-    }, function (_ormMetadata) {
-      OrmMetadata = _ormMetadata.OrmMetadata;
     }],
     execute: function () {
       Repository = (function () {

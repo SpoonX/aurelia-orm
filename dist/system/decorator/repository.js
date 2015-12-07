@@ -5,9 +5,9 @@ System.register(['../orm-metadata'], function (_export) {
 
   _export('repository', repository);
 
-  function repository(repository) {
+  function repository(repositoryReference) {
     return function (target) {
-      OrmMetadata.forTarget(target).put('repository', repository);
+      OrmMetadata.forTarget(target).put('repository', repositoryReference);
     };
   }
 

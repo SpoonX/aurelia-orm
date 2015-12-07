@@ -151,15 +151,21 @@ var Entity = (function () {
         var value = _this[propertyName];
 
         if (!metadata.has('associations', propertyName)) {
-          return pojo[propertyName] = value;
+          pojo[propertyName] = value;
+
+          return;
         }
 
         if (!value) {
-          return pojo[propertyName] = value;
+          pojo[propertyName] = value;
+
+          return;
         }
 
         if (shallow && typeof value === 'object' && value.id) {
-          return pojo[propertyName] = value.id;
+          pojo[propertyName] = value.id;
+
+          return;
         }
 
         if (Array.isArray(value)) {
@@ -168,14 +174,18 @@ var Entity = (function () {
 
             value.forEach(function (childValue, index) {
               if (!(childValue instanceof Entity)) {
-                return asObjects[index] = childValue;
+                asObjects[index] = childValue;
+
+                return;
               }
 
               asObjects[index] = childValue.asObject();
             });
 
+            pojo[propertyName] = asObjects;
+
             return {
-              v: pojo[propertyName] = asObjects
+              v: undefined
             };
           })();
 
@@ -183,7 +193,9 @@ var Entity = (function () {
         }
 
         if (!(value instanceof Entity)) {
-          return pojo[propertyName] = value;
+          pojo[propertyName] = value;
+
+          return;
         }
 
         pojo[propertyName] = value.asObject();

@@ -5,12 +5,12 @@ var server      = require('./server');
 /**
  * Run test once and exit
  */
-gulp.task('test', function (done) {
-  server.start(function () {
+gulp.task('test', ['lint'], function(done) {
+  server.start(function() {
     var karmaServer = new KarmaServer({
       configFile: __dirname + '/../../karma.conf.js',
-      singleRun : true
-    }, function (e) {
+      singleRun: true
+    }, function() {
       server.stop();
       done();
     });
@@ -22,10 +22,10 @@ gulp.task('test', function (done) {
 /**
  * Watch for file changes and re-run tests on each change
  */
-gulp.task('tdd', function (done) {
+gulp.task('tdd', function(done) {
   var karmaServer = new KarmaServer({
     configFile: __dirname + '/../../karma.conf.js'
-  }, function (e) {
+  }, function() {
     done();
   });
 
@@ -35,20 +35,20 @@ gulp.task('tdd', function (done) {
 /**
  * Run test once with code coverage and exit
  */
-gulp.task('cover', function (done) {
+gulp.task('cover', function(done) {
   var karmaServer = new KarmaServer({
-    configFile      : __dirname + '/../../karma.conf.js',
-    singleRun       : true,
-    reporters       : ['coverage'],
-    preprocessors   : {
+    configFile: __dirname + '/../../karma.conf.js',
+    singleRun: true,
+    reporters: ['coverage'],
+    preprocessors: {
       'test/**/*.js': ['babel'],
-      'src/**/*.js' : ['babel', 'coverage']
+      'src/**/*.js': ['babel', 'coverage']
     },
     coverageReporter: {
       type: 'html',
-      dir : 'build/reports/coverage'
+      dir: 'build/reports/coverage'
     }
-  }, function (e) {
+  }, function() {
     done();
   });
 

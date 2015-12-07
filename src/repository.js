@@ -1,7 +1,5 @@
 import {inject} from 'aurelia-framework';
 import {Rest} from 'spoonx/aurelia-api';
-import {Entity} from './entity';
-import {OrmMetadata} from './orm-metadata';
 
 @inject(Rest)
 export class Repository {
@@ -12,7 +10,7 @@ export class Repository {
    *
    * @constructor
    */
-  constructor (restClient) {
+  constructor(restClient) {
     this.api = restClient;
   }
 
@@ -23,7 +21,7 @@ export class Repository {
    * @param {string} resource
    * @return {Repository}
    */
-  setResource (resource) {
+  setResource(resource) {
     this.resource = resource;
 
     return this;
@@ -36,7 +34,7 @@ export class Repository {
    * @param {boolean}        raw      Set to true to get a POJO in stead of populated entities.
    * @return {*}
    */
-  find (criteria, raw) {
+  find(criteria, raw) {
     let findQuery = this.api.find(this.resource, criteria);
 
     if (raw) {
@@ -52,7 +50,7 @@ export class Repository {
    * @param {null|{}} criteria
    * @return {*}
    */
-  count (criteria) {
+  count(criteria) {
     return this.api.find(this.resource + '/count', criteria);
   }
 
@@ -62,7 +60,7 @@ export class Repository {
    * @param {{}} data
    * @return {*}
    */
-  populateEntities (data) {
+  populateEntities(data) {
     if (!data) {
       return null;
     }
@@ -85,7 +83,7 @@ export class Repository {
    *
    * @return {Entity}
    */
-  getPopulatedEntity (data) {
+  getPopulatedEntity(data) {
     let entity         = this.getNewEntity();
     let entityMetadata = entity.getMeta();
     let populatedData  = {};
@@ -117,7 +115,7 @@ export class Repository {
    *
    * @return {Entity}
    */
-  getNewEntity () {
+  getNewEntity() {
     return this.entityManager.getEntity(this.resource);
   }
 }

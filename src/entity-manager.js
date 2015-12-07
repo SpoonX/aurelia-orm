@@ -14,7 +14,7 @@ export class EntityManager {
    *
    * @param {Container} container aurelia-dependency-injection container
    */
-  constructor (container) {
+  constructor(container) {
     this.container = container;
   }
 
@@ -25,7 +25,7 @@ export class EntityManager {
    *
    * @return {EntityManager}
    */
-  registerEntities (entities) {
+  registerEntities(entities) {
     entities.forEach(entity => {
       this.registerEntity(entity);
     });
@@ -40,7 +40,7 @@ export class EntityManager {
    *
    * @return {EntityManager}
    */
-  registerEntity (entity) {
+  registerEntity(entity) {
     this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
 
     return this;
@@ -55,7 +55,7 @@ export class EntityManager {
    *
    * @throws {Error}
    */
-  getRepository (entity) {
+  getRepository(entity) {
     let reference = this.resolveEntityReference(entity);
     let resource  = entity;
 
@@ -101,7 +101,7 @@ export class EntityManager {
    * @return {Entity}
    * @throws {Error}
    */
-  resolveEntityReference (resource) {
+  resolveEntityReference(resource) {
     let entityReference = resource;
 
     if (typeof resource === 'string') {
@@ -122,7 +122,7 @@ export class EntityManager {
    *
    * @return {Entity}
    */
-  getEntity (entity) {
+  getEntity(entity) {
     let reference = this.resolveEntityReference(entity);
     let instance  = this.container.get(reference);
 

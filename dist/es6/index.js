@@ -10,7 +10,7 @@ export {repository} from './decorator/repository';
 export {validation} from './decorator/validation';
 export {validatedResource} from './decorator/validated-resource';
 
-export function configure (aurelia, configCallback) {
+export function configure(aurelia, configCallback) {
   let entityManagerInstance = aurelia.container.get(EntityManager);
 
   configCallback(entityManagerInstance);

@@ -12,10 +12,6 @@ var _aureliaFramework = require('aurelia-framework');
 
 var _spoonxAureliaApi = require('spoonx/aurelia-api');
 
-var _entity = require('./entity');
-
-var _ormMetadata = require('./orm-metadata');
-
 var Repository = (function () {
   function Repository(restClient) {
     _classCallCheck(this, _Repository);

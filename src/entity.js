@@ -6,16 +6,16 @@ import {OrmMetadata} from './orm-metadata';
 @transient()
 @inject(Validation, Rest)
 export class Entity {
-  constructor (validator, restClient) {
+  constructor(validator, restClient) {
     Object.defineProperty(this, '__api', {
-      value     : restClient,
-      writable  : false,
+      value: restClient,
+      writable: false,
       enumerable: false
     });
 
     Object.defineProperty(this, '__meta', {
-      value     : OrmMetadata.forTarget(this.constructor),
-      writable  : false,
+      value: OrmMetadata.forTarget(this.constructor),
+      writable: false,
       enumerable: false
     });
 
@@ -24,8 +24,8 @@ export class Entity {
     }
 
     Object.defineProperty(this, '__validator', {
-      value     : validator,
-      writable  : false,
+      value: validator,
+      writable: false,
       enumerable: false
     });
   }
@@ -35,7 +35,7 @@ export class Entity {
    *
    * return {Metadata}
    */
-  getMeta () {
+  getMeta() {
     return this.__meta;
   }
 
@@ -45,7 +45,7 @@ export class Entity {
    *
    * @return {Promise}
    */
-  save () {
+  save() {
     if (this.id) {
       return this.update();
     }
@@ -60,7 +60,7 @@ export class Entity {
    * @return {Promise}
    * @throws {Error}
    */
-  update () {
+  update() {
     if (!this.id) {
       throw new Error('Required value "id" missing on entity.');
     }
@@ -77,7 +77,7 @@ export class Entity {
    *
    * @return {string|null}
    */
-  static getResource () {
+  static getResource() {
     return OrmMetadata.forTarget(this).fetch('resource');
   }
 
@@ -86,7 +86,7 @@ export class Entity {
    *
    * @return {string|null}
    */
-  getResource () {
+  getResource() {
     return this.__resource || this.getMeta().fetch('resource');
   }
 
@@ -97,10 +97,10 @@ export class Entity {
    *
    * @return {Entity} Fluent interface
    */
-  setResource (resource) {
+  setResource(resource) {
     Object.defineProperty(this, '__resource', {
-      value     : resource,
-      writable  : false,
+      value: resource,
+      writable: false,
       enumerable: false
     });
 
@@ -112,7 +112,7 @@ export class Entity {
    *
    * @return {Promise}
    */
-  destroy () {
+  destroy() {
     if (!this.id) {
       throw new Error('Required value "id" missing on entity.');
     }
@@ -126,7 +126,7 @@ export class Entity {
    * @param {{}} data
    * @return {Entity}
    */
-  setData (data) {
+  setData(data) {
     Object.assign(this, data);
 
     return this;
@@ -139,7 +139,7 @@ export class Entity {
    *
    * @throws {Error}
    */
-  enableValidation () {
+  enableValidation() {
     if (!this.hasValidation()) {
       throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
     }
@@ -149,8 +149,8 @@ export class Entity {
     }
 
     Object.defineProperty(this, '__validation', {
-      value     : this.__validator.on(this),
-      writable  : false,
+      value: this.__validator.on(this),
+      writable: false,
       enumerable: false
     });
 
@@ -162,7 +162,7 @@ export class Entity {
    *
    * @return {Validation}
    */
-  getValidation () {
+  getValidation() {
     if (!this.hasValidation()) {
       return null;
     }
@@ -179,7 +179,7 @@ export class Entity {
    *
    * @return {boolean}
    */
-  hasValidation () {
+  hasValidation() {
     return !!this.__meta.fetch('validation');
   }
 
@@ -190,7 +190,7 @@ export class Entity {
    *
    *  Now let's check if the object has an ID. If so, set that as the value.
    */
-  asObject (shallow) {
+  asObject(shallow) {
     let pojo     = {};
     let metadata = this.getMeta();
 
@@ -199,17 +199,23 @@ export class Entity {
 
       // No meta data or no association property: simple assignment.
       if (!metadata.has('associations', propertyName)) {
-        return pojo[propertyName] = value;
+        pojo[propertyName] = value;
+
+        return;
       }
 
       // If there's no true value set, perform a simple assignment.
       if (!value) {
-        return pojo[propertyName] = value;
+        pojo[propertyName] = value;
+
+        return;
       }
 
       // If shallow and is object, set id.
       if (shallow && typeof value === 'object' && value.id) {
-        return pojo[propertyName] = value.id;
+        pojo[propertyName] = value.id;
+
+        return;
       }
 
       // Array, treat children as potential entities.
@@ -218,18 +224,24 @@ export class Entity {
 
         value.forEach((childValue, index) => {
           if (!(childValue instanceof Entity)) {
-            return asObjects[index] = childValue;
+            asObjects[index] = childValue;
+
+            return;
           }
 
           asObjects[index] = childValue.asObject();
         });
 
-        return pojo[propertyName] = asObjects;
+        pojo[propertyName] = asObjects;
+
+        return;
       }
 
       // Single value not an instance of entity? Simple assignment.
       if (!(value instanceof Entity)) {
-        return pojo[propertyName] = value;
+        pojo[propertyName] = value;
+
+        return;
       }
 
       pojo[propertyName] = value.asObject();
@@ -243,7 +255,7 @@ export class Entity {
    *
    * @return {string}
    */
-  asJson (shallow) {
+  asJson(shallow) {
     let json;
 
     try {
