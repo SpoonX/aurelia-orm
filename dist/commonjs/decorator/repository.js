@@ -7,8 +7,8 @@ exports.repository = repository;
 
 var _ormMetadata = require('../orm-metadata');
 
-function repository(repository) {
+function repository(repositoryReference) {
   return function (target) {
-    _ormMetadata.OrmMetadata.forTarget(target).put('repository', repository);
+    _ormMetadata.OrmMetadata.forTarget(target).put('repository', repositoryReference);
   };
 }

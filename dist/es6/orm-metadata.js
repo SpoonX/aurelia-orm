@@ -2,7 +2,7 @@ import {metadata} from 'aurelia-metadata';
 import {DefaultRepository} from './default-repository';
 
 export class OrmMetadata {
-  static forTarget (target) {
+  static forTarget(target) {
     return metadata.getOrCreateOwn(Metadata.key, Metadata, target);
   }
 }
@@ -14,10 +14,10 @@ export class Metadata {
   /**
    * Construct metadata with sensible defaults (so we can make assumptions in the code).
    */
-  constructor () {
+  constructor() {
     this.metadata = {
-      repository  : DefaultRepository,
-      resource    : null,
+      repository: DefaultRepository,
+      resource: null,
       associations: {}
     };
   }
@@ -30,7 +30,7 @@ export class Metadata {
    *
    * @return {Metadata}
    */
-  addTo (key, value) {
+  addTo(key, value) {
     if (typeof this.metadata[key] === 'undefined') {
       this.metadata[key] = [];
     } else if (!Array.isArray(this.metadata[key])) {
@@ -51,7 +51,7 @@ export class Metadata {
    *
    * @return {Metadata}
    */
-  put (key, valueOrNestedKey, valueOrNull) {
+  put(key, valueOrNestedKey, valueOrNull) {
     if (!valueOrNull) {
       this.metadata[key] = valueOrNestedKey;
 
@@ -75,7 +75,7 @@ export class Metadata {
    *
    * @return {boolean}
    */
-  has (key, nested) {
+  has(key, nested) {
     if (typeof nested === 'undefined') {
       return typeof this.metadata[key] !== 'undefined';
     }
@@ -91,7 +91,7 @@ export class Metadata {
    *
    * @return {*}
    */
-  fetch (key, nested) {
+  fetch(key, nested) {
     if (!nested) {
       return this.has(key) ? this.metadata[key] : null;
     }

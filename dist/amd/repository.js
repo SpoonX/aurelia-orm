@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', 'spoonx/aurelia-api', './entity', './orm-metadata'], function (exports, _aureliaFramework, _spoonxAureliaApi, _entity, _ormMetadata) {
+define(['exports', 'aurelia-framework', 'spoonx/aurelia-api'], function (exports, _aureliaFramework, _spoonxAureliaApi) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
