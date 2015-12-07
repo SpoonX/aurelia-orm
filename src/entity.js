@@ -7,12 +7,6 @@ import {OrmMetadata} from './orm-metadata';
 @inject(Validation, Rest)
 export class Entity {
   constructor (validator, restClient) {
-    Object.defineProperty(this, '__validator', {
-      value     : validator,
-      writable  : false,
-      enumerable: false
-    });
-
     Object.defineProperty(this, '__api', {
       value     : restClient,
       writable  : false,
@@ -25,9 +19,15 @@ export class Entity {
       enumerable: false
     });
 
-    if (this.__meta.fetch('validation')) {
-      this.enableValidation();
+    if (!this.hasValidation()) {
+      return this;
     }
+
+    Object.defineProperty(this, '__validator', {
+      value     : validator,
+      writable  : false,
+      enumerable: false
+    });
   }
 
   /**
@@ -136,8 +136,18 @@ export class Entity {
    * Enable validation for this entity.
    *
    * @return {Entity}
+   *
+   * @throws {Error}
    */
   enableValidation () {
+    if (!this.hasValidation()) {
+      throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
+    }
+
+    if (this.__validation) {
+      return this;
+    }
+
     Object.defineProperty(this, '__validation', {
       value     : this.__validator.on(this),
       writable  : false,
@@ -153,6 +163,14 @@ export class Entity {
    * @return {Validation}
    */
   getValidation () {
+    if (!this.hasValidation()) {
+      return null;
+    }
+
+    if (!this.__validation) {
+      this.enableValidation();
+    }
+
     return this.__validation;
   }
 
@@ -162,7 +180,7 @@ export class Entity {
    * @return {boolean}
    */
   hasValidation () {
-    return !!this.__validation;
+    return !!this.__meta.fetch('validation');
   }
 
   /**

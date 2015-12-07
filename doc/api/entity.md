@@ -158,20 +158,6 @@ A JSON string containing the values from the entity.
 
 ---------
 
-.enableValidation()
-------
-
-Tell the entity to apply validation to it. This method is useful if you don't feel like using the decorators.
-
-### Parameters
-
-* None
-
-### Returns
-Itself to allow chaining.
-
----------
-
 .hasValidation()
 ------
 

@@ -22,6 +22,36 @@ function getRestClient () {
 }
 
 describe('Entity', function () {
+  describe('.constructor()', function () {
+    it('Should set the meta data.', function () {
+      var validation = new Validation(),
+          entity     = new WithValidation(validation, getRestClient());
+
+      expect(entity.__meta).not.toBe(undefined);
+    });
+
+    it('Should set the API (Rest client).', function () {
+      var validation = new Validation(),
+          entity     = new WithValidation(validation, getRestClient());
+
+      expect(entity.__api).not.toBe(undefined);
+    });
+
+    it('Should set the validator constructor.', function () {
+      var validation = new Validation(),
+          entity     = new WithValidation(validation, getRestClient());
+
+      expect(entity.__validator).toBe(validation);
+    });
+
+    it('Should not set the validator constructor.', function () {
+      var validation = new Validation();
+      var entity     = new WithResource(validation, getRestClient());
+
+      expect(entity.__validator).toBe(undefined);
+    });
+  });
+
   describe('.save()', function () {
     it('Should call .create on REST without an ID. (custom entity)', function (done) {
       var entity = new WithResource(new Validation(), getRestClient());
@@ -291,60 +321,85 @@ describe('Entity', function () {
     it('Should enable validation on the entity.', function () {
       var mockValidator = {
         on: function () {
+          return {};
         }
       };
 
       spyOn(mockValidator, 'on');
 
-      var entity = new WithResource(mockValidator, getRestClient());
+      var entity = new WithValidation(mockValidator, getRestClient());
 
       entity.enableValidation();
 
       expect(mockValidator.on).toHaveBeenCalled();
     });
+
+    it('Should throw an error when called with validation disabled', function () {
+      var entity = new WithResource({}, getRestClient());
+
+      expect(function () {
+        entity.enableValidation();
+      }).toThrowError(Error, 'Entity not marked as validated. Did you forget the @validation() decorator?');
+    });
+
+    it('Should not enable validation on the entity more than once.', function () {
+      var mockValidatorMultiple = {
+        on: function () {
+          return {};
+        }
+      };
+
+      spyOn(mockValidatorMultiple, 'on').and.callThrough();
+
+      var entity = new WithValidation(mockValidatorMultiple, getRestClient());
+
+      entity.enableValidation();
+
+      expect(mockValidatorMultiple.on).toHaveBeenCalled();
+
+      entity.enableValidation();
+      entity.enableValidation();
+      entity.enableValidation();
+
+      expect(mockValidatorMultiple.on.calls.count()).toBe(1);
+    });
   });
 
   describe('.getValidation()', function () {
-    it('Should return validation for the entity.', function () {
+    it('Should return null if validation meta is not true.', function () {
+      var entity = new WithResource('space camp', getRestClient());
+
+      expect(entity.getValidation()).toBe(null);
+    });
+
+    it('Should return validation for the entity (and create the instance).', function () {
       var mockValidator = {
         on: function () {
           return 'The validator. But, not really.'
         }
       };
 
-      var entity = new WithResource(mockValidator, getRestClient());
+      var entity = new WithValidation(mockValidator, getRestClient());
 
-      entity.enableValidation();
+      // Instance
+      expect(entity.getValidation()).toEqual('The validator. But, not really.');
 
+      // Cached
       expect(entity.getValidation()).toEqual('The validator. But, not really.');
     });
   });
 
   describe('.hasValidation()', function () {
-    it('Should return entity has validation enabled.', function () {
-      var mockValidator = {
-        on: function () {
-          return 'enabled.'
-        }
-      };
-
-      var entity = new WithResource(mockValidator, getRestClient());
-
-      entity.enableValidation();
-
-      expect(entity.hasValidation()).toEqual(true);
-    });
-
     it('Should return entity has validation disabled.', function () {
-      var mockValidator = {
-        on: function () {
-          return 'enabled.'
-        }
-      };
-
-      var entity = new WithResource(mockValidator, getRestClient());
+      var entity = new WithResource({}, getRestClient());
 
       expect(entity.hasValidation()).toEqual(false);
+    });
+
+    it('Should return entity has validation enabled.', function () {
+      var entity = new WithValidation({}, getRestClient());
+
+      expect(entity.hasValidation()).toEqual(true);
     });
   });
 

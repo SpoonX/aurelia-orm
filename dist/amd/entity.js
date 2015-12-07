@@ -13,12 +13,6 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     function Entity(validator, restClient) {
       _classCallCheck(this, _Entity);
 
-      Object.defineProperty(this, '__validator', {
-        value: validator,
-        writable: false,
-        enumerable: false
-      });
-
       Object.defineProperty(this, '__api', {
         value: restClient,
         writable: false,
@@ -31,9 +25,15 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
         enumerable: false
       });
 
-      if (this.__meta.fetch('validation')) {
-        this.enableValidation();
+      if (!this.hasValidation()) {
+        return this;
       }
+
+      Object.defineProperty(this, '__validator', {
+        value: validator,
+        writable: false,
+        enumerable: false
+      });
     }
 
     _createClass(Entity, [{
@@ -98,6 +98,14 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     }, {
       key: 'enableValidation',
       value: function enableValidation() {
+        if (!this.hasValidation()) {
+          throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
+        }
+
+        if (this.__validation) {
+          return this;
+        }
+
         Object.defineProperty(this, '__validation', {
           value: this.__validator.on(this),
           writable: false,
@@ -109,12 +117,20 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     }, {
       key: 'getValidation',
       value: function getValidation() {
+        if (!this.hasValidation()) {
+          return null;
+        }
+
+        if (!this.__validation) {
+          this.enableValidation();
+        }
+
         return this.__validation;
       }
     }, {
       key: 'hasValidation',
       value: function hasValidation() {
-        return !!this.__validation;
+        return !!this.__meta.fetch('validation');
       }
     }, {
       key: 'asObject',
