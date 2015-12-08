@@ -1,3 +1,6 @@
+### 1.1.2 (2015-12-08)
+* Added info to README
+
 ### 1.1.1 (2015-12-07)
 * Reformat according to CS
 * Removed unused dependency
