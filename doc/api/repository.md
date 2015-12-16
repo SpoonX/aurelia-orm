@@ -113,3 +113,33 @@ export class SomeViewModel {
   }
 }
 ```
+
+--------
+
+.getNewEntity()
+-------
+
+Get a new, empty entity instance.
+
+### Parameters
+
+* None
+
+### Returns
+
+A new `Entity` instance for the repository's resource.
+
+--------
+
+.getNewPopulatedEntity()
+-------
+
+Get a new, empty entity with associations set as an instance.
+
+### Parameters
+
+* None
+
+### Returns
+
+A new `Entity` instance for the repository's resource.
