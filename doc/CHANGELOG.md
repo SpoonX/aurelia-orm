@@ -1,3 +1,11 @@
+### 1.1.3 (2015-12-16)
+
+
+#### Features
+
+* **repository:** Added support for new populated entity ([54ba6468](https://github.com/SpoonX/aurelia-orm/commit/54ba646813dcea973acd8d0603872ae92e8b01f2))
+
+
 ### 1.1.2 (2015-12-08)
 * Added info to README
 
