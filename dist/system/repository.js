@@ -101,6 +101,18 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
           value: function getNewEntity() {
             return this.entityManager.getEntity(this.resource);
           }
+        }, {
+          key: 'getNewPopulatedEntity',
+          value: function getNewPopulatedEntity() {
+            var entity = this.getNewEntity();
+            var associations = entity.getMeta().fetch('associations');
+
+            for (var property in associations) {
+              entity[property] = this.entityManager.getRepository(associations[property]).getNewEntity();
+            }
+
+            return entity;
+          }
         }]);
 
         var _Repository = Repository;

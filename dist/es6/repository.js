@@ -118,4 +118,20 @@ export class Repository {
   getNewEntity() {
     return this.entityManager.getEntity(this.resource);
   }
+
+  /**
+   * Populate a new entity, with the (empty) associations already set.
+   *
+   * @return {Entity}
+   */
+  getNewPopulatedEntity() {
+    let entity       = this.getNewEntity();
+    let associations = entity.getMeta().fetch('associations');
+
+    for (let property in associations) {
+      entity[property] = this.entityManager.getRepository(associations[property]).getNewEntity();
+    }
+
+    return entity;
+  }
 }
