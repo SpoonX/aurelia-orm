@@ -12,9 +12,10 @@ import {Rest} from 'spoonx/aurelia-api';
 import {Validation} from 'aurelia-validation';
 
 function getRestClient () {
-  var restClient = new Rest();
+  let container  = new Container();
+  let restClient = container.get(Rest);
 
-  restClient.configure(builder => {
+  restClient.client.configure(builder => {
     builder.useStandardConfiguration().withBaseUrl('http://localhost:1927/');
   });
 
