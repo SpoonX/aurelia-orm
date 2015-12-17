@@ -9,9 +9,10 @@ import {Foo} from './resources/entity/foo';
 import {Custom} from './resources/entity/custom';
 
 function getRestClient() {
-  var restClient = new Rest();
+  let container  = new Container();
+  let restClient = container.get(Rest);
 
-  restClient.configure(builder => {
+  restClient.client.configure(builder => {
     builder.useStandardConfiguration().withBaseUrl('http://localhost:1927/');
   });
 
@@ -179,11 +180,11 @@ describe('Repository', function() {
           repository    = entityManager.getRepository(WithAssociations),
           populated     = repository.getPopulatedEntity({
             control: 'science!',
-            foo    : {
-              my : 'anaconda',
+            foo: {
+              my: 'anaconda',
               don: 't'
             },
-            bar    : [
+            bar: [
               {want: 'none'},
               {unless: 'you got buns hun'}
             ]
