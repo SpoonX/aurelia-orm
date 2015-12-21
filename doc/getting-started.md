@@ -130,8 +130,8 @@ To give you an idea, here's what the article entity might look like:
 import {Entity, validatedResource, association} from 'spoonx/aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
-@validatedResource()
-export class Article extends Entity {
+@validatedResource('article')
+export default class Article extends Entity {
   @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   name = null;
   
