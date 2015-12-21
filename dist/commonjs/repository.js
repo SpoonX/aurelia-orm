@@ -27,11 +27,21 @@ var Repository = (function () {
       return this;
     }
   }, {
+    key: 'getResource',
+    value: function getResource() {
+      return this.resource;
+    }
+  }, {
     key: 'find',
     value: function find(criteria, raw) {
+      return this.findPath(this.resource, criteria, raw);
+    }
+  }, {
+    key: 'findPath',
+    value: function findPath(path, criteria, raw) {
       var _this = this;
 
-      var findQuery = this.api.find(this.resource, criteria);
+      var findQuery = this.api.find(path, criteria);
 
       if (raw) {
         return findQuery;

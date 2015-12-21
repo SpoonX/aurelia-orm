@@ -64,3 +64,19 @@ Use this decorator to indicate that a property has a relationship with another e
 - It will tell aurelia-orm to populate children (nested) upon fetching data from the server.
 - It will make sure that calling .asObject() on the entity recursively converts all children to simple objects.
 - It will make sure that upon calling .update(), all children get converted to IDs.
+
+### Bonus: validation
+Aurelia-orm extends aurelia-validate, and adds validation for your associations.
+To add validation for associations, simply use the .hasAssociation() rule like so:
+
+```javascript
+import {ensure} from 'aurelia-validation';
+import {association, validatedResource, Entity} from 'spoonx/aurelia-orm';
+
+validatedResource()
+export class SomeEntity extends Entity {
+  @association('manufacturer')
+  @ensure(it => it.hasAssociation())
+  manufacturer = null;
+}
+```
