@@ -131,7 +131,7 @@ import {Entity, validatedResource, association} from 'spoonx/aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
 @validatedResource()
-export class Article extends Entity {
+export default class Article extends Entity {
   @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   name = null;
   

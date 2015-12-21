@@ -11,7 +11,7 @@ import {Entity, validatedResource} from 'spoonx/aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
 @validatedResource('user')
-export class UserEntity extends Entity {
+export default class UserEntity extends Entity {
   @ensure(it => it.isNotEmpty().containsOnlyAlpha().hasLengthBetween(3, 20))
   username = null;
 
