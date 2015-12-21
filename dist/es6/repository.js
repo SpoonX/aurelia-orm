@@ -28,14 +28,35 @@ export class Repository {
   }
 
   /**
+   * Get the resource name of this repository instance's reference.
+   *
+   * @return {string|null}
+   */
+  getResource() {
+    return this.resource;
+  }
+
+  /**
    * Perform a find query.
    *
    * @param {null|{}|Number} criteria Criteria to add to the query.
-   * @param {boolean}        raw      Set to true to get a POJO in stead of populated entities.
+   * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
    * @return {*}
    */
   find(criteria, raw) {
-    let findQuery = this.api.find(this.resource, criteria);
+    return this.findPath(this.resource, criteria, raw);
+  }
+
+  /**
+   * Perform a find query for `path`.
+   *
+   * @param {string}         path
+     @param {null|{}|Number} criteria Criteria to add to the query.
+   * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
+   * @return {*}
+   */
+  findPath(path, criteria, raw) {
+    let findQuery = this.api.find(path, criteria);
 
     if (raw) {
       return findQuery;

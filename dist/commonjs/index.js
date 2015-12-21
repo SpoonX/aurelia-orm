@@ -7,6 +7,10 @@ exports.configure = configure;
 
 var _entityManager = require('./entity-manager');
 
+var _aureliaValidation = require('aurelia-validation');
+
+var _validatorHasAssociation = require('./validator/has-association');
+
 var _defaultRepository = require('./default-repository');
 
 Object.defineProperty(exports, 'DefaultRepository', {
@@ -31,6 +35,15 @@ Object.defineProperty(exports, 'Entity', {
   enumerable: true,
   get: function get() {
     return _entity.Entity;
+  }
+});
+
+var _ormMetadata = require('./orm-metadata');
+
+Object.defineProperty(exports, 'OrmMetadata', {
+  enumerable: true,
+  get: function get() {
+    return _ormMetadata.OrmMetadata;
   }
 });
 Object.defineProperty(exports, 'EntityManager', {
@@ -89,4 +102,8 @@ function configure(aurelia, configCallback) {
   var entityManagerInstance = aurelia.container.get(_entityManager.EntityManager);
 
   configCallback(entityManagerInstance);
+
+  _aureliaValidation.ValidationGroup.prototype.hasAssociation = function () {
+    return this.isNotEmpty().passesRule(new _validatorHasAssociation.HasAssociationValidationRule());
+  };
 }
