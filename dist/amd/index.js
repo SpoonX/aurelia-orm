@@ -74,5 +74,7 @@ define(['exports', './entity-manager', 'aurelia-validation', './validator/has-as
     _aureliaValidation.ValidationGroup.prototype.hasAssociation = function () {
       return this.isNotEmpty().passesRule(new _validatorHasAssociation.HasAssociationValidationRule());
     };
+
+    aurelia.globalResources('./component/association-select');
   }
 });

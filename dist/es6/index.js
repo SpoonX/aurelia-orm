@@ -21,4 +21,6 @@ export function configure(aurelia, configCallback) {
   ValidationGroup.prototype.hasAssociation = function() {
     return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
   };
+
+  aurelia.globalResources('./component/association-select');
 }
