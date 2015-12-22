@@ -193,6 +193,7 @@ export class ViewModel {
 * [Repository](api/repository.md)
 * [Entity](api/entity.md)
 * [Entities](entities.md)
+* [Components](components.md)
 
 To learn more, head on over to the `doc/` directory or click the links to continue reading.
 
