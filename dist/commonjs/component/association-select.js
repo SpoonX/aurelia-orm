@@ -179,12 +179,15 @@ var AssociationSelect = (function () {
   }, {
     key: 'attached',
     value: function attached() {
+      var _this4 = this;
+
       if (!this.association && !this.manyAssociation) {
         this.load();
 
         return;
       }
 
+      var initialValue = this.value;
       this.ownMeta = _index.OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
       if (this.manyAssociation) {
@@ -193,6 +196,12 @@ var AssociationSelect = (function () {
 
       if (this.association) {
         this.observe(this.association);
+      }
+
+      if (initialValue) {
+        this.load().then(function () {
+          _this4.value = initialValue;
+        });
       }
     }
   }, {
