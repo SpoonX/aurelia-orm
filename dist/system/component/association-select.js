@@ -180,12 +180,15 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
         }, {
           key: 'attached',
           value: function attached() {
+            var _this4 = this;
+
             if (!this.association && !this.manyAssociation) {
               this.load();
 
               return;
             }
 
+            var initialValue = this.value;
             this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
             if (this.manyAssociation) {
@@ -194,6 +197,12 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
 
             if (this.association) {
               this.observe(this.association);
+            }
+
+            if (initialValue) {
+              this.load().then(function () {
+                _this4.value = initialValue;
+              });
             }
           }
         }, {

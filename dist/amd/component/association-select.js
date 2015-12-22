@@ -170,12 +170,15 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
     }, {
       key: 'attached',
       value: function attached() {
+        var _this4 = this;
+
         if (!this.association && !this.manyAssociation) {
           this.load();
 
           return;
         }
 
+        var initialValue = this.value;
         this.ownMeta = _index.OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
         if (this.manyAssociation) {
@@ -184,6 +187,12 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
 
         if (this.association) {
           this.observe(this.association);
+        }
+
+        if (initialValue) {
+          this.load().then(function () {
+            _this4.value = initialValue;
+          });
         }
       }
     }, {

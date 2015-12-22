@@ -146,7 +146,8 @@ export class AssociationSelect {
       return;
     }
 
-    this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
+    let initialValue = this.value;
+    this.ownMeta     = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
     if (this.manyAssociation) {
       this.observe(this.manyAssociation);
@@ -154,6 +155,13 @@ export class AssociationSelect {
 
     if (this.association) {
       this.observe(this.association);
+    }
+
+    if (initialValue) {
+      this.load()
+        .then(() => {
+          this.value = initialValue;
+        });
     }
   }
 
