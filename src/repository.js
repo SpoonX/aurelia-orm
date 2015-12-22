@@ -41,7 +41,7 @@ export class Repository {
    *
    * @param {null|{}|Number} criteria Criteria to add to the query.
    * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
-   * @return {*}
+   * @return {Promise}
    */
   find(criteria, raw) {
     return this.findPath(this.resource, criteria, raw);
@@ -53,7 +53,7 @@ export class Repository {
    * @param {string}         path
      @param {null|{}|Number} criteria Criteria to add to the query.
    * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
-   * @return {*}
+   * @return {Promise}
    */
   findPath(path, criteria, raw) {
     let findQuery = this.api.find(path, criteria);
@@ -69,7 +69,7 @@ export class Repository {
    * Perform a count.
    *
    * @param {null|{}} criteria
-   * @return {*}
+   * @return {Promise}
    */
   count(criteria) {
     return this.api.find(this.resource + '/count', criteria);
