@@ -1,3 +1,11 @@
+### 1.2.2 (2015-12-22)
+
+
+#### Bug Fixes
+
+* **association-select:** Properly load initial data ([2a952b23](https://github.com/SpoonX/aurelia-orm/commit/2a952b2344c11d3654f408ebb73f28652fcba61d))
+
+
 ### 1.2.1 (2015-12-22)
 
 
