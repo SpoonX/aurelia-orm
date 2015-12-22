@@ -13,6 +13,8 @@ System.register(['./entity-manager', 'aurelia-validation', './validator/has-asso
     ValidationGroup.prototype.hasAssociation = function () {
       return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
     };
+
+    aurelia.globalResources('./component/association-select');
   }
 
   return {

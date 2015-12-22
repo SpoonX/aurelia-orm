@@ -1,3 +1,16 @@
+### 1.2.1 (2015-12-22)
+
+
+#### Bug Fixes
+
+* **repository:** Faulthy return value in docblock ([58d5240f](https://github.com/SpoonX/aurelia-orm/commit/58d5240f415d66bcc6630e3e681338c946b59560))
+
+
+#### Features
+
+* **association-select:** Added a new custom element ([ab5d456f](https://github.com/SpoonX/aurelia-orm/commit/ab5d456f468b7cab92cbec6ed62dc5b03150a4e6))
+
+
 ## 1.2.0 (2015-12-21)
 
 

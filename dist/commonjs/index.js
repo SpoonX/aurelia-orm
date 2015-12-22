@@ -106,4 +106,6 @@ function configure(aurelia, configCallback) {
   _aureliaValidation.ValidationGroup.prototype.hasAssociation = function () {
     return this.isNotEmpty().passesRule(new _validatorHasAssociation.HasAssociationValidationRule());
   };
+
+  aurelia.globalResources('./component/association-select');
 }
