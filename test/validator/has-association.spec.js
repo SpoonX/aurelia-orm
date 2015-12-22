@@ -10,13 +10,16 @@ function getEntityManager() {
   return entityManager.registerEntities([WithAssociationValidation]);
 }
 
+function noop() {
+}
+
 describe('HasAssociationValidationRule', function() {
   describe('.validate()', function() {
     it('Validate entity association values properly and fail.', function(done) {
       var container     = new Container();
       var entityManager = new EntityManager(container);
 
-      configure({container: container}, function() {
+      configure({container: container, globalResources: noop}, function() {
       });
 
       entityManager.registerEntities([WithAssociationValidation]);
@@ -38,7 +41,7 @@ describe('HasAssociationValidationRule', function() {
       var container     = new Container();
       var entityManager = new EntityManager(container);
 
-      configure({container: container}, function() {
+      configure({container: container, globalResources: noop}, function() {
       });
 
       entityManager.registerEntities([WithAssociationValidation]);
@@ -62,7 +65,7 @@ describe('HasAssociationValidationRule', function() {
     var container     = new Container();
     var entityManager = new EntityManager(container);
 
-    configure({container: container}, function() {
+    configure({container: container, globalResources: noop}, function() {
     });
 
     entityManager.registerEntities([WithAssociationValidation]);
@@ -85,7 +88,7 @@ describe('HasAssociationValidationRule', function() {
     var container     = new Container();
     var entityManager = new EntityManager(container);
 
-    configure({container: container}, function() {
+    configure({container: container, globalResources: noop}, function() {
     });
 
     entityManager.registerEntities([WithAssociationValidation]);

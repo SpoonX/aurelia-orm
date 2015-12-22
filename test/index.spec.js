@@ -7,7 +7,7 @@ describe('index', function () {
   it('Should export a configure method which returns the entityManager', function () {
     expect(typeof configure).toEqual('function');
 
-    configure({container: new Container()}, function (entityManager) {
+    configure({container: new Container(), globalResources: function () {}}, function (entityManager) {
       expect(entityManager instanceof EntityManager).toBe(true);
     });
   });
