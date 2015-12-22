@@ -25,6 +25,7 @@ System.config({
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "core-js": "npm:core-js@1.2.6",
+    "extend": "npm:extend@3.0.0",
     "fetch": "github:github/fetch@0.10.1",
     "spoonx/aurelia-api": "github:spoonx/aurelia-api@1.1.0",
     "github:jspm/nodelibs-assert@0.1.0": {
