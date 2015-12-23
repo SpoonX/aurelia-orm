@@ -39,7 +39,7 @@ export class AssociationSelect {
    * (Re)Load the data for the select.
    */
   load() {
-    this.buildFind()
+    return this.buildFind()
       .then(options => {
         let result   = options;
         this.options = Array.isArray(result) ? result : [result];
