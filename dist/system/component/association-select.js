@@ -97,7 +97,7 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
           value: function load() {
             var _this = this;
 
-            this.buildFind().then(function (options) {
+            return this.buildFind().then(function (options) {
               var result = options;
               _this.options = Array.isArray(result) ? result : [result];
             });
