@@ -1,3 +1,11 @@
+### 1.2.3 (2015-12-23)
+
+
+#### Bug Fixes
+
+* **association-select:** Return promise on load ([2cc220a5](https://github.com/SpoonX/aurelia-orm/commit/2cc220a5b39d195d9de2e10e29bb8311809a1ee4))
+
+
 ### 1.2.2 (2015-12-22)
 
 
