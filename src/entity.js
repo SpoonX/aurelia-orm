@@ -93,6 +93,15 @@ export class Entity {
   }
 
   /**
+   * Return if the entity is dirty.
+   *
+   * @return {boolean}
+   */
+  isDirty() {
+    return !this.isClean();
+  }
+
+  /**
    * Persist the changes made to this entity to the server.
    *
    * @see .save()
