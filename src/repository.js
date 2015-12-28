@@ -128,7 +128,7 @@ export class Repository {
       populatedData[key] = repository.populateEntities(value);
     }
 
-    return entity.setData(populatedData);
+    return entity.setData(populatedData).markClean();
   }
 
   /**

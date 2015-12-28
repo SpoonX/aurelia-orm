@@ -170,6 +170,96 @@ describe('Entity', function () {
     });
   });
 
+  describe('.define()', function() {
+    it('Should define a non-enumerable property on the entity.', function() {
+      var entity = new WithResource(new Validation(), getRestClient());
+
+      entity.define('__test', 'value');
+      entity.define('__testWritable', 'value', true);
+
+      expect(entity.__test).toBe('value');
+      expect(entity.__testWritable).toBe('value');
+      expect(Object.keys(entity).indexOf('__test')).toBe(-1);
+      expect(Object.keys(entity).indexOf('__testWritable')).toBe(-1);
+
+      var testDescriptor         = Object.getOwnPropertyDescriptor(entity, '__test');
+      var testWritableDescriptor = Object.getOwnPropertyDescriptor(entity, '__testWritable');
+
+      expect(testDescriptor.enumerable).toBe(false);
+      expect(testDescriptor.writable).toBe(false);
+      expect(testWritableDescriptor.enumerable).toBe(false);
+      expect(testWritableDescriptor.writable).toBe(true);
+    });
+  });
+
+  describe('.isDirty()', function() {
+    it('Should properly return if the entity is dirty.', function() {
+      var entity = new WithResource(new Validation(), getRestClient());
+
+      entity.setData({
+        id: 667,
+        foo: 'bar',
+        city: {awesome: true}
+      }).markClean();
+
+      expect(entity.isDirty()).toBe(false);
+
+      entity.what = 'You dirty, dirty boy.';
+
+      expect(entity.isDirty()).toBe(true);
+    });
+  });
+
+  describe('.isClean()', function() {
+    it('Should properly return if the entity is clean.', function() {
+      var entity = new WithResource(new Validation(), getRestClient());
+
+      entity.setData({
+        id: 667,
+        foo: 'bar',
+        city: {awesome: true}
+      }).markClean();
+
+      expect(entity.isClean()).toBe(true);
+
+      entity.what = 'You dirty, dirty boy.';
+
+      expect(entity.isClean()).toBe(false);
+    });
+  });
+
+  describe('.isNew()', function() {
+    it('Should properly return if the entity is new.', function() {
+      var entity = new WithResource(new Validation(), getRestClient());
+
+      expect(entity.isNew()).toBe(true);
+      entity.setData({id: 667}).markClean();
+      expect(entity.isNew()).toBe(false);
+    });
+  });
+
+  describe('.markClean()', function() {
+    it('Should properly mark the entity as clean.', function() {
+      var entity = new WithResource(new Validation(), getRestClient());
+
+      entity.setData({
+        id: 667,
+        foo: 'bar',
+        city: {awesome: true}
+      }).markClean();
+
+      expect(entity.isClean()).toBe(true);
+
+      entity.what = 'You dirty, dirty boy.';
+
+      expect(entity.isClean()).toBe(false);
+
+      entity.markClean();
+
+      expect(entity.isClean()).toBe(true);
+    });
+  });
+
   describe('.update()', function () {
     it('Should call .update with complete body.', function (done) {
       var entity  = new WithResource(new Validation(), getRestClient());
@@ -181,6 +271,21 @@ describe('Entity', function () {
         expect(response.body).toEqual({foo: 'bar', city: {awesome: true}});
         expect(response.path).toEqual('/with-resource/666');
         expect(response.method).toEqual('PUT');
+
+        done();
+      });
+    });
+
+    it('Should not send a PUT request for .update when clean.', function (done) {
+      var entity  = new WithResource(new Validation(), getRestClient());
+      entity.setData({
+        id: 667,
+        foo  : 'bar',
+        city : {awesome: true}
+      }).markClean();
+
+      entity.update().then(response => {
+        expect(response).toEqual(null);
 
         done();
       });

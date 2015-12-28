@@ -20,30 +20,27 @@ var Entity = (function () {
   function Entity(validator, restClient) {
     _classCallCheck(this, _Entity);
 
-    Object.defineProperty(this, '__api', {
-      value: restClient,
-      writable: false,
-      enumerable: false
-    });
-
-    Object.defineProperty(this, '__meta', {
-      value: _ormMetadata.OrmMetadata.forTarget(this.constructor),
-      writable: false,
-      enumerable: false
-    });
+    this.define('__api', restClient).define('__meta', _ormMetadata.OrmMetadata.forTarget(this.constructor)).define('__cleanValues', null, true);
 
     if (!this.hasValidation()) {
       return this;
     }
 
-    Object.defineProperty(this, '__validator', {
-      value: validator,
-      writable: false,
-      enumerable: false
-    });
+    return this.define('__validator', validator);
   }
 
   _createClass(Entity, [{
+    key: 'define',
+    value: function define(property, value, writable) {
+      Object.defineProperty(this, property, {
+        value: value,
+        writable: !!writable,
+        enumerable: false
+      });
+
+      return this;
+    }
+  }, {
     key: 'getMeta',
     value: function getMeta() {
       return this.__meta;
@@ -51,17 +48,43 @@ var Entity = (function () {
   }, {
     key: 'save',
     value: function save() {
-      if (this.id) {
+      if (!this.isNew()) {
         return this.update();
       }
 
       return this.__api.create(this.getResource(), this.asObject(true));
     }
   }, {
+    key: 'markClean',
+    value: function markClean() {
+      this.__cleanValues = this.asJson(true);
+
+      return this;
+    }
+  }, {
+    key: 'isClean',
+    value: function isClean() {
+      return this.__cleanValues === this.asJson(true);
+    }
+  }, {
+    key: 'isDirty',
+    value: function isDirty() {
+      return !this.isClean();
+    }
+  }, {
+    key: 'isNew',
+    value: function isNew() {
+      return typeof this.id === 'undefined';
+    }
+  }, {
     key: 'update',
     value: function update() {
-      if (!this.id) {
+      if (this.isNew()) {
         throw new Error('Required value "id" missing on entity.');
+      }
+
+      if (this.isClean()) {
+        return Promise.resolve(null);
       }
 
       var requestBody = this.asObject(true);
@@ -78,13 +101,7 @@ var Entity = (function () {
   }, {
     key: 'setResource',
     value: function setResource(resource) {
-      Object.defineProperty(this, '__resource', {
-        value: resource,
-        writable: false,
-        enumerable: false
-      });
-
-      return this;
+      return this.define('__resource', resource);
     }
   }, {
     key: 'destroy',
@@ -113,13 +130,7 @@ var Entity = (function () {
         return this;
       }
 
-      Object.defineProperty(this, '__validation', {
-        value: this.__validator.on(this),
-        writable: false,
-        enumerable: false
-      });
-
-      return this;
+      return this.define('__validation', this.__validator.on(this));
     }
   }, {
     key: 'getValidation',

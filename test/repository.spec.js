@@ -175,6 +175,15 @@ describe('Repository', function() {
       expect(populated instanceof Entity).toBe(true);
     });
 
+    it('Should mark populated instance as clean.', function() {
+      var repository = constructRepository(DefaultRepository, 'populated-test'),
+          populated  = repository.getPopulatedEntity({});
+
+      expect(populated instanceof Entity).toBe(true);
+      expect(populated.isClean()).toBe(true);
+      expect(populated.isDirty()).toBe(false);
+    });
+
     it('Should return a populated instance with associations.', function() {
       var entityManager = getEntityManager(),
           repository    = entityManager.getRepository(WithAssociations),

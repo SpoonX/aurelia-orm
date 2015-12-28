@@ -6,28 +6,47 @@ import {OrmMetadata} from './orm-metadata';
 @transient()
 @inject(Validation, Rest)
 export class Entity {
+
+  /**
+   * Construct a new entity.
+   *
+   * @param {Validation} validator
+   * @param {Rest} restClient
+   *
+   * @return {Entity}
+   */
   constructor(validator, restClient) {
-    Object.defineProperty(this, '__api', {
-      value: restClient,
-      writable: false,
-      enumerable: false
-    });
+    this
+      .define('__api', restClient)
+      .define('__meta', OrmMetadata.forTarget(this.constructor))
+      .define('__cleanValues', null, true);
 
-    Object.defineProperty(this, '__meta', {
-      value: OrmMetadata.forTarget(this.constructor),
-      writable: false,
-      enumerable: false
-    });
-
+    // No validation? No need to set the validator.
     if (!this.hasValidation()) {
       return this;
     }
 
-    Object.defineProperty(this, '__validator', {
-      value: validator,
-      writable: false,
+    // Set the validator.
+    return this.define('__validator', validator);
+  }
+
+  /**
+   * Define a non-enumerable property on the entity.
+   *
+   * @param {string}  property
+   * @param {*}       value
+   * @param {boolean} [writable]
+   *
+   * @return {Entity}
+   */
+  define(property, value, writable) {
+    Object.defineProperty(this, property, {
+      value: value,
+      writable: !!writable,
       enumerable: false
     });
+
+    return this;
   }
 
   /**
@@ -46,7 +65,7 @@ export class Entity {
    * @return {Promise}
    */
   save() {
-    if (this.id) {
+    if (!this.isNew()) {
       return this.update();
     }
 
@@ -54,15 +73,60 @@ export class Entity {
   }
 
   /**
+   * Mark this entity as clean, in its current state.
+   *
+   * @return {Entity}
+   */
+  markClean() {
+    this.__cleanValues = this.asJson(true);
+
+    return this;
+  }
+
+  /**
+   * Return if the entity is clean.
+   *
+   * @return {boolean}
+   */
+  isClean() {
+    return this.__cleanValues === this.asJson(true);
+  }
+
+  /**
+   * Return if the entity is dirty.
+   *
+   * @return {boolean}
+   */
+  isDirty() {
+    return !this.isClean();
+  }
+
+  /**
+   * Return if the entity is new (ergo, hasn't been persisted to the server).
+   *
+   * @return {boolean}
+   */
+  isNew() {
+    return typeof this.id === 'undefined';
+  }
+
+  /**
    * Persist the changes made to this entity to the server.
    *
    * @see .save()
+   *
    * @return {Promise}
+   *
    * @throws {Error}
    */
   update() {
-    if (!this.id) {
+    if (this.isNew()) {
       throw new Error('Required value "id" missing on entity.');
+    }
+
+    // We're clean, no need to update.
+    if (this.isClean()) {
+      return Promise.resolve(null);
     }
 
     let requestBody = this.asObject(true);
@@ -98,13 +162,7 @@ export class Entity {
    * @return {Entity} Fluent interface
    */
   setResource(resource) {
-    Object.defineProperty(this, '__resource', {
-      value: resource,
-      writable: false,
-      enumerable: false
-    });
-
-    return this;
+    return this.define('__resource', resource);
   }
 
   /**
@@ -148,13 +206,7 @@ export class Entity {
       return this;
     }
 
-    Object.defineProperty(this, '__validation', {
-      value: this.__validator.on(this),
-      writable: false,
-      enumerable: false
-    });
-
-    return this;
+    return this.define('__validation', this.__validator.on(this));
   }
 
   /**

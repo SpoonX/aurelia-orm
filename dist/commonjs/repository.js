@@ -102,7 +102,7 @@ var Repository = (function () {
         populatedData[key] = repository.populateEntities(value);
       }
 
-      return entity.setData(populatedData);
+      return entity.setData(populatedData).markClean();
     }
   }, {
     key: 'getNewEntity',

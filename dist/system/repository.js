@@ -104,7 +104,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
               populatedData[key] = repository.populateEntities(value);
             }
 
-            return entity.setData(populatedData);
+            return entity.setData(populatedData).markClean();
           }
         }, {
           key: 'getNewEntity',

@@ -99,7 +99,7 @@ define(['exports', 'aurelia-framework', 'spoonx/aurelia-api'], function (exports
           populatedData[key] = repository.populateEntities(value);
         }
 
-        return entity.setData(populatedData);
+        return entity.setData(populatedData).markClean();
       }
     }, {
       key: 'getNewEntity',
