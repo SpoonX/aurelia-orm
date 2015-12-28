@@ -65,7 +65,7 @@ export class Entity {
    * @return {Promise}
    */
   save() {
-    if (this.id) {
+    if (!this.isNew()) {
       return this.update();
     }
 
@@ -120,8 +120,13 @@ export class Entity {
    * @throws {Error}
    */
   update() {
-    if (!this.id) {
+    if (this.isNew()) {
       throw new Error('Required value "id" missing on entity.');
+    }
+
+    // We're clean, no need to update.
+    if (this.isClean()) {
+      return Promise.resolve(null);
     }
 
     let requestBody = this.asObject(true);
