@@ -1,3 +1,20 @@
+## 1.3.0 (2015-12-28)
+
+
+#### Bug Fixes
+
+* **watch:** Run sync, to prevent errors from race conditions ([19cc4b0c](https://github.com/SpoonX/aurelia-orm/commit/19cc4b0c0896e4384cc09a4b3fd3474a54a6ae6e))
+
+
+#### Features
+
+* **entity:**
+  * Added .isNew() method ([884ec051](https://github.com/SpoonX/aurelia-orm/commit/884ec0518ab4659102e0b7636fdcadec2f961032))
+  * Added .isDirty() method ([e2bb595f](https://github.com/SpoonX/aurelia-orm/commit/e2bb595f0a021f8bd3a28625cfab32175db9309f))
+  * Added .isClean() method ([46b499c9](https://github.com/SpoonX/aurelia-orm/commit/46b499c9ab56303ffe0572369fa024a60cc4537d))
+  * Added .markClean() method ([b333f25a](https://github.com/SpoonX/aurelia-orm/commit/b333f25a502a56e2c40e8c548de0554a2bfb6b90))
+
+
 ### 1.2.4 (2015-12-28)
 
 
