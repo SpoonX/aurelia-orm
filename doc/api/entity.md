@@ -49,6 +49,49 @@ class MyViewModel {
 
 ---------
 
+.isDirty()
+------
+
+Returns if the properties of the entity have changed since fetching it.
+
+### Parameters
+
+* None
+
+### Returns
+Boolean indicating if the entity is dirty.
+
+---------
+
+.isClean()
+------
+
+Returns if the properties of the entity haven't changed since fetching it.
+
+### Parameters
+
+* None
+
+### Returns
+Boolean indicating if the entity is clean.
+
+---------
+
+.isNew()
+------
+
+Returns if the entity is new (e.g. hasn't been persisted to the server).
+This essentially checks if the entity has an `id` set.
+
+### Parameters
+
+* None
+
+### Returns
+Boolean indicating if the entity is new.pa
+
+---------
+
 .update()
 ------
 
