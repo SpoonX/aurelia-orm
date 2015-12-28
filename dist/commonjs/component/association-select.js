@@ -118,9 +118,12 @@ var AssociationSelect = (function () {
       var repository = this.repository;
       var criteria = this.getCriteria();
       var findPath = repository.getResource();
+      criteria.populate = false;
 
       if (this.manyAssociation) {
         var assoc = this.manyAssociation;
+
+        delete criteria.populate;
 
         var property = this.propertyForResource(assoc.getMeta(), repository.getResource());
         findPath = assoc.getResource() + '/' + assoc.id + '/' + property;
@@ -130,8 +133,6 @@ var AssociationSelect = (function () {
         associations.forEach(function (association) {
           criteria[_this2.propertyForResource(_this2.ownMeta, association.getResource())] = association.id;
         });
-      } else {
-        criteria.populate = false;
       }
 
       return repository.findPath(findPath, criteria);
