@@ -73,6 +73,17 @@ export class Entity {
   }
 
   /**
+   * Mark this entity as clean, in its current state.
+   *
+   * @return {Entity}
+   */
+  markClean() {
+    this.__cleanValues = this.asJson(true);
+
+    return this;
+  }
+
+  /**
    * Persist the changes made to this entity to the server.
    *
    * @see .save()
