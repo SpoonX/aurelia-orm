@@ -102,6 +102,15 @@ export class Entity {
   }
 
   /**
+   * Return if the entity is new (ergo, hasn't been persisted to the server).
+   *
+   * @return {boolean}
+   */
+  isNew() {
+    return typeof this.id === 'undefined';
+  }
+
+  /**
    * Persist the changes made to this entity to the server.
    *
    * @see .save()
