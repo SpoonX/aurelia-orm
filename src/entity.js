@@ -84,6 +84,15 @@ export class Entity {
   }
 
   /**
+   * Return if the entity is clean.
+   *
+   * @return {boolean}
+   */
+  isClean() {
+    return this.__cleanValues === this.asJson(true);
+  }
+
+  /**
    * Persist the changes made to this entity to the server.
    *
    * @see .save()
