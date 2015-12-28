@@ -1,3 +1,11 @@
+### 1.2.4 (2015-12-28)
+
+
+#### Bug Fixes
+
+* **association-select:** Remove populate criteria for many-assoc ([bc41d4ea](https://github.com/SpoonX/aurelia-orm/commit/bc41d4ea3f0bba4664ce4293d7d315caa845fe2e))
+
+
 ### 1.2.3 (2015-12-23)
 
 

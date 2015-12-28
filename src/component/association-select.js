@@ -66,14 +66,18 @@ export class AssociationSelect {
    * @return {Promise}
    */
   buildFind() {
-    let repository = this.repository;
-    let criteria   = this.getCriteria();
-    let findPath   = repository.getResource();
+    let repository    = this.repository;
+    let criteria      = this.getCriteria();
+    let findPath      = repository.getResource();
+    criteria.populate = false;
 
     // Check if there are `many` associations. If so, the repository find path changes.
     // the path will become `/:association/:id/:entity`.
     if (this.manyAssociation) {
       let assoc = this.manyAssociation;
+
+      // When disabling populate here, the API won't return any data.
+      delete criteria.populate;
 
       let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
       findPath     = `${assoc.getResource()}/${assoc.id}/${property}`;
@@ -83,8 +87,6 @@ export class AssociationSelect {
       associations.forEach(association => {
         criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.id;
       });
-    } else {
-      criteria.populate = false;
     }
 
     return repository.findPath(findPath, criteria);
