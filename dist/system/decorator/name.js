@@ -5,9 +5,9 @@ System.register(['../orm-metadata'], function (_export) {
 
   _export('name', name);
 
-  function name(resourceName) {
+  function name(entityName) {
     return function (target) {
-      OrmMetadata.forTarget(target).put('name', resourceName || target.name.toLowerCase());
+      OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
     };
   }
 

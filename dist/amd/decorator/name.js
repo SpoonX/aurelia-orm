@@ -6,9 +6,9 @@ define(['exports', '../orm-metadata'], function (exports, _ormMetadata) {
   });
   exports.name = name;
 
-  function name(resourceName) {
+  function name(entityName) {
     return function (target) {
-      _ormMetadata.OrmMetadata.forTarget(target).put('name', resourceName || target.name.toLowerCase());
+      _ormMetadata.OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
     };
   }
 });
