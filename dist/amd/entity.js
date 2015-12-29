@@ -106,6 +106,17 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
         return this.__api.destroy(this.getResource(), this.id);
       }
     }, {
+      key: 'getName',
+      value: function getName() {
+        var metaName = this.getMeta().fetch('name');
+
+        if (metaName) {
+          return metaName;
+        }
+
+        return this.getResource();
+      }
+    }, {
       key: 'setData',
       value: function setData(data) {
         Object.assign(this, data);
@@ -224,6 +235,17 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
       key: 'getResource',
       value: function getResource() {
         return _ormMetadata.OrmMetadata.forTarget(this).fetch('resource');
+      }
+    }, {
+      key: 'getName',
+      value: function getName() {
+        var metaName = _ormMetadata.OrmMetadata.forTarget(this).fetch('name');
+
+        if (metaName) {
+          return metaName;
+        }
+
+        return this.getResource();
       }
     }]);
 

@@ -179,6 +179,36 @@ export class Entity {
   }
 
   /**
+   * Get the name of the entity. This is useful for labels in texts.
+   *
+   * @return {string}
+   */
+  getName() {
+    let metaName = this.getMeta().fetch('name');
+
+    if (metaName) {
+      return metaName;
+    }
+
+    return this.getResource();
+  }
+
+  /**
+   * Get the name of the entity (static). This is useful for labels in texts.
+   *
+   * @return {string}
+   */
+  static getName() {
+    let metaName = OrmMetadata.forTarget(this).fetch('name');
+
+    if (metaName) {
+      return metaName;
+    }
+
+    return this.getResource();
+  }
+
+  /**
    * Set data on this entity.
    *
    * @param {{}} data
