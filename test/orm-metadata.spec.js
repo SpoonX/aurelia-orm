@@ -10,6 +10,7 @@ describe('OrmMetadata', function () {
       expect(meta.metadata).toEqual({
         repository  : DefaultRepository,
         resource    : null,
+        name        : null,
         associations: {}
       });
     });
@@ -22,6 +23,7 @@ describe('OrmMetadata', function () {
       expect(meta.metadata).toEqual({
         repository  : DefaultRepository,
         resource    : null,
+        name        : null,
         associations: {}
       });
 
