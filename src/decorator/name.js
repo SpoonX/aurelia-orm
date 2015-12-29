@@ -1,7 +1,7 @@
 import {OrmMetadata} from '../orm-metadata';
 
-export function name(resourceName) {
+export function name(entityName) {
   return function(target) {
-    OrmMetadata.forTarget(target).put('name', resourceName || target.name.toLowerCase());
+    OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
   };
 }
