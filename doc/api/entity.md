@@ -245,10 +245,12 @@ Itself to allow chaining.
 
 ---------
 
-.getResource(resource)
+.getResource()
 ------
 
 Get the resource this entity belongs to.
+
+**Note:** Also works when called statically on custom entities.
 
 ### Parameters
 
@@ -256,6 +258,23 @@ Get the resource this entity belongs to.
 
 ### Returns
 The resource it belongs to (string).
+
+---------
+
+.getName()
+------
+
+Get the name of this entity.
+
+**Note:** Also works when called statically on custom entities.
+
+### Parameters
+
+* None
+
+### Returns
+The name of the entity when configured using the `@name` decorator.
+Defaults to the resource name (or null when also not set).
 
 ---------
 
