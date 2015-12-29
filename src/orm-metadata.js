@@ -18,6 +18,7 @@ export class Metadata {
     this.metadata = {
       repository: DefaultRepository,
       resource: null,
+      name: null,
       associations: {}
     };
   }
