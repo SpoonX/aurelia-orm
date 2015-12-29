@@ -42,6 +42,7 @@ var Metadata = (function () {
     this.metadata = {
       repository: _defaultRepository.DefaultRepository,
       resource: null,
+      name: null,
       associations: {}
     };
   }

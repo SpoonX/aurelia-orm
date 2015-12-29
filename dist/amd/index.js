@@ -1,4 +1,4 @@
-define(['exports', './entity-manager', 'aurelia-validation', './validator/has-association', './default-repository', './repository', './entity', './orm-metadata', './decorator/association', './decorator/resource', './decorator/repository', './decorator/validation', './decorator/validated-resource'], function (exports, _entityManager, _aureliaValidation, _validatorHasAssociation, _defaultRepository, _repository, _entity, _ormMetadata, _decoratorAssociation, _decoratorResource, _decoratorRepository, _decoratorValidation, _decoratorValidatedResource) {
+define(['exports', './entity-manager', 'aurelia-validation', './validator/has-association', './default-repository', './repository', './entity', './orm-metadata', './decorator/association', './decorator/resource', './decorator/name', './decorator/repository', './decorator/validation', './decorator/validated-resource'], function (exports, _entityManager, _aureliaValidation, _validatorHasAssociation, _defaultRepository, _repository, _entity, _ormMetadata, _decoratorAssociation, _decoratorResource, _decoratorName, _decoratorRepository, _decoratorValidation, _decoratorValidatedResource) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -45,6 +45,12 @@ define(['exports', './entity-manager', 'aurelia-validation', './validator/has-as
     enumerable: true,
     get: function get() {
       return _decoratorResource.resource;
+    }
+  });
+  Object.defineProperty(exports, 'name', {
+    enumerable: true,
+    get: function get() {
+      return _decoratorName.name;
     }
   });
   Object.defineProperty(exports, 'repository', {

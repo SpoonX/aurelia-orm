@@ -1,3 +1,12 @@
+### 1.3.1 (2015-12-29)
+
+
+#### Features
+
+* **decorator:** Added @name decorator ([819f6596](https://github.com/SpoonX/aurelia-orm/commit/819f65966d1bda811ac3009827a544e7f7c40643))
+* **entity:** Added .getName() methods for instance and static ([f65d78fb](https://github.com/SpoonX/aurelia-orm/commit/f65d78fb97fd6d733c7083e2be77346639553b5b))
+
+
 ## 1.3.0 (2015-12-28)
 
 

@@ -39,6 +39,7 @@ define(['exports', 'aurelia-metadata', './default-repository'], function (export
       this.metadata = {
         repository: _defaultRepository.DefaultRepository,
         resource: null,
+        name: null,
         associations: {}
       };
     }
