@@ -26,6 +26,19 @@ export class MyEntity extends Entity {
 }
 ```
 
+## @name()
+Use this decorator to give your entity a name (fetched using `.getName()` on the entity). This is useful when creating dynamic components that use your entities.
+
+```javascript
+// Sets the name to `John Cena`
+@name('John Cena')
+class HelloWorld {}
+
+// Sets the name to `i-want-bacon` if no `@name()` decorator was provided.  
+@resource('i-want-bacon')
+class HelloWorld {}
+```
+
 ## @resource()
 This decorator is probably the most important one. Without it, aurelia-orm won't know what your **custom entity** is all about. The resource maps to the API endpoint it represents. Simply put, resouce `foo` maps to `/foo`.
 
