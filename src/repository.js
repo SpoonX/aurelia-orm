@@ -51,7 +51,7 @@ export class Repository {
    * Perform a find query for `path`.
    *
    * @param {string}         path
-     @param {null|{}|Number} criteria Criteria to add to the query.
+   * @param {null|{}|Number} criteria Criteria to add to the query.
    * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
    * @return {Promise}
    */
@@ -124,7 +124,7 @@ export class Repository {
         continue;
       }
 
-      let repository     = this.entityManager.getRepository(entityMetadata.fetch('associations', key));
+      let repository     = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
       populatedData[key] = repository.populateEntities(value);
     }
 
@@ -150,7 +150,7 @@ export class Repository {
     let associations = entity.getMeta().fetch('associations');
 
     for (let property in associations) {
-      entity[property] = this.entityManager.getRepository(associations[property]).getNewEntity();
+      entity[property] = this.entityManager.getRepository(associations[property].entity).getNewEntity();
     }
 
     return entity;
