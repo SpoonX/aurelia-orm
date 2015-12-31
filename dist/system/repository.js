@@ -100,7 +100,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
                 continue;
               }
 
-              var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key));
+              var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
               populatedData[key] = repository.populateEntities(value);
             }
 
@@ -118,7 +118,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
             var associations = entity.getMeta().fetch('associations');
 
             for (var property in associations) {
-              entity[property] = this.entityManager.getRepository(associations[property]).getNewEntity();
+              entity[property] = this.entityManager.getRepository(associations[property].entity).getNewEntity();
             }
 
             return entity;

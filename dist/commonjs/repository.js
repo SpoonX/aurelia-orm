@@ -98,7 +98,7 @@ var Repository = (function () {
           continue;
         }
 
-        var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key));
+        var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
         populatedData[key] = repository.populateEntities(value);
       }
 
@@ -116,7 +116,7 @@ var Repository = (function () {
       var associations = entity.getMeta().fetch('associations');
 
       for (var property in associations) {
-        entity[property] = this.entityManager.getRepository(associations[property]).getNewEntity();
+        entity[property] = this.entityManager.getRepository(associations[property].entity).getNewEntity();
       }
 
       return entity;

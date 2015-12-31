@@ -73,6 +73,32 @@ export class Entity {
   }
 
   /**
+   * Persist the changes made to this entity to the server.
+   *
+   * @see .save()
+   *
+   * @return {Promise}
+   *
+   * @throws {Error}
+   */
+  update() {
+    if (this.isNew()) {
+      throw new Error('Required value "id" missing on entity.');
+    }
+
+    // We're clean, no need to update.
+    if (this.isClean()) {
+      return Promise.resolve(null);
+    }
+
+    let requestBody = this.asObject(true);
+
+    delete requestBody.id;
+
+    return this.__api.update(this.getResource(), this.id, requestBody);
+  }
+
+  /**
    * Mark this entity as clean, in its current state.
    *
    * @return {Entity}
@@ -108,32 +134,6 @@ export class Entity {
    */
   isNew() {
     return typeof this.id === 'undefined';
-  }
-
-  /**
-   * Persist the changes made to this entity to the server.
-   *
-   * @see .save()
-   *
-   * @return {Promise}
-   *
-   * @throws {Error}
-   */
-  update() {
-    if (this.isNew()) {
-      throw new Error('Required value "id" missing on entity.');
-    }
-
-    // We're clean, no need to update.
-    if (this.isClean()) {
-      return Promise.resolve(null);
-    }
-
-    let requestBody = this.asObject(true);
-
-    delete requestBody.id;
-
-    return this.__api.update(this.getResource(), this.id, requestBody);
   }
 
   /**
@@ -279,15 +279,8 @@ export class Entity {
     Object.keys(this).forEach(propertyName => {
       let value = this[propertyName];
 
-      // No meta data or no association property: simple assignment.
-      if (!metadata.has('associations', propertyName)) {
-        pojo[propertyName] = value;
-
-        return;
-      }
-
-      // If there's no true value set, perform a simple assignment.
-      if (!value) {
+      // No meta data, no value or no association property: simple assignment.
+      if (!metadata.has('associations', propertyName) || !value) {
         pojo[propertyName] = value;
 
         return;
@@ -301,32 +294,32 @@ export class Entity {
       }
 
       // Array, treat children as potential entities.
-      if (Array.isArray(value)) {
-        let asObjects = [];
+      if (!Array.isArray(value)) {
+        // Single value not an instance of entity? Simple assignment.
+        pojo[propertyName] = !(value instanceof Entity) ? value : value.asObject(shallow);
 
-        value.forEach((childValue, index) => {
-          if (!(childValue instanceof Entity)) {
-            asObjects[index] = childValue;
+        return;
+      }
 
-            return;
-          }
+      let asObjects = [];
 
-          asObjects[index] = childValue.asObject();
-        });
+      value.forEach(childValue => {
+        if (!(childValue instanceof Entity)) {
+          asObjects.push(childValue);
 
+          return;
+        }
+
+        // If shallow, we don't handle toMany.
+        if (!shallow || !childValue.id) {
+          asObjects.push(childValue.asObject(shallow));
+        }
+      });
+
+      // We don't send along empty arrays.
+      if (asObjects.length > 0) {
         pojo[propertyName] = asObjects;
-
-        return;
       }
-
-      // Single value not an instance of entity? Simple assignment.
-      if (!(value instanceof Entity)) {
-        pojo[propertyName] = value;
-
-        return;
-      }
-
-      pojo[propertyName] = value.asObject();
     });
 
     return pojo;
