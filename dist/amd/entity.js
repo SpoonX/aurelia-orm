@@ -48,6 +48,23 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
         return this.__api.create(this.getResource(), this.asObject(true));
       }
     }, {
+      key: 'update',
+      value: function update() {
+        if (this.isNew()) {
+          throw new Error('Required value "id" missing on entity.');
+        }
+
+        if (this.isClean()) {
+          return Promise.resolve(null);
+        }
+
+        var requestBody = this.asObject(true);
+
+        delete requestBody.id;
+
+        return this.__api.update(this.getResource(), this.id, requestBody);
+      }
+    }, {
       key: 'markClean',
       value: function markClean() {
         this.__cleanValues = this.asJson(true);
@@ -68,23 +85,6 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
       key: 'isNew',
       value: function isNew() {
         return typeof this.id === 'undefined';
-      }
-    }, {
-      key: 'update',
-      value: function update() {
-        if (this.isNew()) {
-          throw new Error('Required value "id" missing on entity.');
-        }
-
-        if (this.isClean()) {
-          return Promise.resolve(null);
-        }
-
-        var requestBody = this.asObject(true);
-
-        delete requestBody.id;
-
-        return this.__api.update(this.getResource(), this.id, requestBody);
       }
     }, {
       key: 'getResource',
@@ -165,13 +165,7 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
         Object.keys(this).forEach(function (propertyName) {
           var value = _this[propertyName];
 
-          if (!metadata.has('associations', propertyName)) {
-            pojo[propertyName] = value;
-
-            return;
-          }
-
-          if (!value) {
+          if (!metadata.has('associations', propertyName) || !value) {
             pojo[propertyName] = value;
 
             return;
@@ -183,37 +177,29 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
             return;
           }
 
-          if (Array.isArray(value)) {
-            var _ret = (function () {
-              var asObjects = [];
-
-              value.forEach(function (childValue, index) {
-                if (!(childValue instanceof Entity)) {
-                  asObjects[index] = childValue;
-
-                  return;
-                }
-
-                asObjects[index] = childValue.asObject();
-              });
-
-              pojo[propertyName] = asObjects;
-
-              return {
-                v: undefined
-              };
-            })();
-
-            if (typeof _ret === 'object') return _ret.v;
-          }
-
-          if (!(value instanceof Entity)) {
-            pojo[propertyName] = value;
+          if (!Array.isArray(value)) {
+            pojo[propertyName] = !(value instanceof Entity) ? value : value.asObject(shallow);
 
             return;
           }
 
-          pojo[propertyName] = value.asObject();
+          var asObjects = [];
+
+          value.forEach(function (childValue) {
+            if (!(childValue instanceof Entity)) {
+              asObjects.push(childValue);
+
+              return;
+            }
+
+            if (!shallow || !childValue.id) {
+              asObjects.push(childValue.asObject(shallow));
+            }
+          });
+
+          if (asObjects.length > 0) {
+            pojo[propertyName] = asObjects;
+          }
         });
 
         return pojo;

@@ -592,6 +592,35 @@ describe('Entity', function() {
       });
     });
 
+    it('Should return a POJO (associations with shallow set to true).', function() {
+      var parentEntity = new WithAssociations(),
+          fooEntityOne = new Foo(),
+          fooEntityTwo = new Foo(),
+          customEntity = new Custom();
+
+      fooEntityOne.id    = 6;
+      fooEntityOne.some  = 'value';
+      fooEntityOne.other = 'other value';
+      fooEntityTwo.what  = 'Jup';
+      customEntity.baby  = 'steps';
+
+      parentEntity.setData({
+        test: 'case',
+        foo: [fooEntityOne, fooEntityTwo],
+        bar: customEntity
+      });
+
+      expect(parentEntity.asObject(true)).toEqual({
+        foo: [
+          {what: 'Jup'}
+        ],
+        bar: {
+          baby: 'steps'
+        },
+        test: 'case'
+      });
+    });
+
     it('Should return a POJO and not break on empty association.', function() {
       var parentEntity = new WithAssociations(),
           fooEntityOne = new Foo(),

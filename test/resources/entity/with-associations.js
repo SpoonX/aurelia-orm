@@ -4,7 +4,7 @@ import {Entity} from '../../../src/entity';
 
 @resource()
 export class WithAssociations extends Entity {
-  @association()
+  @association({collection: 'foo'})
   foo = null;
 
   @association('custom')
