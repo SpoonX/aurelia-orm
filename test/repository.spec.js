@@ -177,7 +177,7 @@ describe('Repository', function() {
 
     it('Should mark populated instance as clean.', function() {
       var repository = constructRepository(DefaultRepository, 'populated-test'),
-          populated  = repository.getPopulatedEntity({});
+          populated  = repository.getPopulatedEntity({}).markClean();
 
       expect(populated instanceof Entity).toBe(true);
       expect(populated.isClean()).toBe(true);
@@ -236,14 +236,30 @@ describe('Repository', function() {
 
       expect(populatedEntity instanceof WithAssociations).toBe(true);
       expect(populatedEntity.bar instanceof Custom).toBe(true);
-      expect(populatedEntity.foo instanceof Foo).toBe(true);
+      expect(populatedEntity.foo).toEqual([]);
     });
 
-    it('Should compose empty values with .asObject()', function() {
-      var repository      = constructRepository(DefaultRepository, 'withassociations'),
-          populatedEntity = repository.getNewPopulatedEntity();
+    it('Should compose empty values with .asObject().', function() {
+      var repository      = constructRepository(DefaultRepository, 'withassociations');
+      var populatedEntity = repository.getNewPopulatedEntity();
+      var fooOne          = new Foo();
+      var fooTwo          = new Foo();
 
-      expect(populatedEntity.asObject()).toEqual({bar: {}, foo: {}});
+      fooOne.cake   = 'yum';
+      fooOne.candy  = 'yummer';
+      fooTwo.shaken = 'not stirred';
+      fooOne.id     = 1;
+      fooTwo.id     = 3; // Haaa, got your nose!
+
+      populatedEntity.foo.push(fooOne);
+      populatedEntity.foo.push(fooTwo);
+
+      expect(populatedEntity.asObject()).toEqual({
+        bar: {},
+        foo: [{id: 1, cake: 'yum', candy: 'yummer'}, {id: 3, shaken: 'not stirred'}]
+      });
+
+      expect(populatedEntity.asObject(true)).toEqual({bar: {}});
     });
   });
 });

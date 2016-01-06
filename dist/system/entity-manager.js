@@ -33,11 +33,13 @@ System.register(['./entity', './default-repository', 'aurelia-framework', 'aurel
         _createClass(EntityManager, [{
           key: 'registerEntities',
           value: function registerEntities(entities) {
-            var _this = this;
+            for (var reference in entities) {
+              if (!entities.hasOwnProperty(reference)) {
+                continue;
+              }
 
-            entities.forEach(function (entity) {
-              _this.registerEntity(entity);
-            });
+              this.registerEntity(entities[reference]);
+            }
 
             return this;
           }
@@ -102,18 +104,17 @@ System.register(['./entity', './default-repository', 'aurelia-framework', 'aurel
           value: function getEntity(entity) {
             var reference = this.resolveEntityReference(entity);
             var instance = this.container.get(reference);
+            var resource = reference.getResource();
 
-            if (reference.getResource()) {
-              return instance.setResource(reference.getResource());
+            if (!resource) {
+              if (typeof entity !== 'string') {
+                throw new Error('Unable to find resource for entity.');
+              }
+
+              resource = entity;
             }
 
-            if (typeof entity !== 'string') {
-              throw new Error('Unable to find resource for entity.');
-            }
-
-            instance.setResource(entity);
-
-            return instance;
+            return instance.setResource(resource).setRepository(this.getRepository(resource));
           }
         }]);
 

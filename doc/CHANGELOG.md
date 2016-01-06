@@ -1,3 +1,19 @@
+## 1.4.0 (2016-01-06)
+
+
+#### Bug Fixes
+
+* **repository:** Mark entities as clean upon calling .find() ([b689329e](https://github.com/SpoonX/aurelia-orm/commit/b689329e4b2c08ab63752959c0be83f9cb26fecd))
+* **test:** Stop server after build tests ([c1c7a1ed](https://github.com/SpoonX/aurelia-orm/commit/c1c7a1edd118877d8813064fa199886c02fb306f))
+
+
+#### Features
+
+* **association-select:** Added support for `multiple` ([f5809016](https://github.com/SpoonX/aurelia-orm/commit/f5809016b730a4bcac5e6749b1168ccdad2b89db))
+* **entity:** Added support for collection associations (add / remove) ([e3c24718](https://github.com/SpoonX/aurelia-orm/commit/e3c24718f53bee7b999a9a9ec46ca082a7d10dba))
+* **entity-manager:** Set repository on new entities and allow easier entity registering ([2ae8ad1a](https://github.com/SpoonX/aurelia-orm/commit/2ae8ad1ad4309363dc58cd8c05715bfdb872b0eb))
+
+
 ### 1.3.1 (2015-12-29)
 
 

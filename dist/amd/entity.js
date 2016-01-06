@@ -13,7 +13,7 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     function Entity(validator, restClient) {
       _classCallCheck(this, _Entity);
 
-      this.define('__api', restClient).define('__meta', _ormMetadata.OrmMetadata.forTarget(this.constructor)).define('__cleanValues', null, true);
+      this.define('__api', restClient).define('__meta', _ormMetadata.OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
 
       if (!this.hasValidation()) {
         return this;
@@ -23,6 +23,16 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     }
 
     _createClass(Entity, [{
+      key: 'getRepository',
+      value: function getRepository() {
+        return this.__repository;
+      }
+    }, {
+      key: 'setRepository',
+      value: function setRepository(repository) {
+        return this.define('__repository', repository);
+      }
+    }, {
       key: 'define',
       value: function define(property, value, writable) {
         Object.defineProperty(this, property, {
@@ -41,15 +51,30 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     }, {
       key: 'save',
       value: function save() {
+        var _this = this;
+
         if (!this.isNew()) {
           return this.update();
         }
 
-        return this.__api.create(this.getResource(), this.asObject(true));
+        var response = undefined;
+
+        return this.__api.create(this.getResource(), this.asObject(true)).then(function (created) {
+          _this.id = created.id;
+          response = created;
+        }).then(function () {
+          return _this.saveCollections();
+        }).then(function () {
+          return _this.markClean();
+        }).then(function () {
+          return response;
+        });
       }
     }, {
       key: 'update',
       value: function update() {
+        var _this2 = this;
+
         if (this.isNew()) {
           throw new Error('Required value "id" missing on entity.');
         }
@@ -59,22 +84,112 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
         }
 
         var requestBody = this.asObject(true);
+        var response = undefined;
 
         delete requestBody.id;
 
-        return this.__api.update(this.getResource(), this.id, requestBody);
+        return this.__api.update(this.getResource(), this.id, requestBody).then(function (updated) {
+          return response = updated;
+        }).then(function () {
+          return _this2.saveCollections();
+        }).then(function () {
+          return _this2.markClean();
+        }).then(function () {
+          return response;
+        });
+      }
+    }, {
+      key: 'addCollectionAssociation',
+      value: function addCollectionAssociation(entity, property) {
+        property = property || getPropertyForAssociation(this, entity);
+        var idToAdd = entity;
+
+        if (entity instanceof Entity) {
+          if (!entity.id) {
+            return Promise.resolve(null);
+          }
+
+          idToAdd = entity.id;
+        }
+
+        return this.__api.create([this.getResource(), this.id, property, idToAdd].join('/'));
+      }
+    }, {
+      key: 'removeCollectionAssociation',
+      value: function removeCollectionAssociation(entity, property) {
+        property = property || getPropertyForAssociation(this, entity);
+        var idToRemove = entity;
+
+        if (entity instanceof Entity) {
+          if (!entity.id) {
+            return Promise.resolve(null);
+          }
+
+          idToRemove = entity.id;
+        }
+
+        return this.__api.destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+      }
+    }, {
+      key: 'saveCollections',
+      value: function saveCollections() {
+        var _this3 = this;
+
+        var tasks = [];
+        var currentCollections = getCollectionsCompact(this);
+        var cleanCollections = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
+
+        var addTasksForDifferences = function addTasksForDifferences(base, candidate, method) {
+          if (base === null) {
+            return;
+          }
+
+          Object.getOwnPropertyNames(base).forEach(function (property) {
+            base[property].forEach(function (id) {
+              if (candidate === null || !Array.isArray(candidate[property]) || candidate[property].indexOf(id) === -1) {
+                tasks.push(method.call(_this3, id, property));
+              }
+            });
+          });
+        };
+
+        addTasksForDifferences(currentCollections, cleanCollections, this.addCollectionAssociation);
+
+        addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
+
+        return Promise.all(tasks).then(function (results) {
+          if (!Array.isArray(results)) {
+            return _this3;
+          }
+
+          var newState = null;
+
+          while (newState === null) {
+            newState = results.pop();
+          }
+
+          if (newState) {
+            _this3.getRepository().getPopulatedEntity(newState, _this3);
+          }
+
+          return _this3;
+        });
       }
     }, {
       key: 'markClean',
       value: function markClean() {
-        this.__cleanValues = this.asJson(true);
+        var cleanValues = getFlat(this);
+        this.__cleanValues = {
+          checksum: JSON.stringify(cleanValues),
+          data: cleanValues
+        };
 
         return this;
       }
     }, {
       key: 'isClean',
       value: function isClean() {
-        return this.__cleanValues === this.asJson(true);
+        return getFlat(this, true) === this.__cleanValues.checksum;
       }
     }, {
       key: 'isDirty',
@@ -157,65 +272,12 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
     }, {
       key: 'asObject',
       value: function asObject(shallow) {
-        var _this = this;
-
-        var pojo = {};
-        var metadata = this.getMeta();
-
-        Object.keys(this).forEach(function (propertyName) {
-          var value = _this[propertyName];
-
-          if (!metadata.has('associations', propertyName) || !value) {
-            pojo[propertyName] = value;
-
-            return;
-          }
-
-          if (shallow && typeof value === 'object' && value.id) {
-            pojo[propertyName] = value.id;
-
-            return;
-          }
-
-          if (!Array.isArray(value)) {
-            pojo[propertyName] = !(value instanceof Entity) ? value : value.asObject(shallow);
-
-            return;
-          }
-
-          var asObjects = [];
-
-          value.forEach(function (childValue) {
-            if (!(childValue instanceof Entity)) {
-              asObjects.push(childValue);
-
-              return;
-            }
-
-            if (!shallow || !childValue.id) {
-              asObjects.push(childValue.asObject(shallow));
-            }
-          });
-
-          if (asObjects.length > 0) {
-            pojo[propertyName] = asObjects;
-          }
-        });
-
-        return pojo;
+        return _asObject(this, shallow);
       }
     }, {
       key: 'asJson',
       value: function asJson(shallow) {
-        var json = undefined;
-
-        try {
-          json = JSON.stringify(this.asObject(shallow));
-        } catch (error) {
-          json = '';
-        }
-
-        return json;
+        return _asJson(this, shallow);
       }
     }], [{
       key: 'getResource',
@@ -242,4 +304,121 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-ap
   })();
 
   exports.Entity = Entity;
+
+  function _asObject(entity, shallow) {
+    var pojo = {};
+    var metadata = entity.getMeta();
+
+    Object.keys(entity).forEach(function (propertyName) {
+      var value = entity[propertyName];
+
+      if (!metadata.has('associations', propertyName) || !value) {
+        pojo[propertyName] = value;
+
+        return;
+      }
+
+      if (shallow && typeof value === 'object' && value.id) {
+        pojo[propertyName] = value.id;
+
+        return;
+      }
+
+      if (!Array.isArray(value)) {
+        pojo[propertyName] = !(value instanceof Entity) ? value : value.asObject(shallow);
+
+        return;
+      }
+
+      var asObjects = [];
+
+      value.forEach(function (childValue) {
+        if (typeof childValue !== 'object') {
+          return;
+        }
+
+        if (!(childValue instanceof Entity)) {
+          asObjects.push(childValue);
+
+          return;
+        }
+
+        if (!shallow || typeof childValue === 'object' && !childValue.id) {
+          asObjects.push(childValue.asObject(shallow));
+        }
+      });
+
+      if (asObjects.length > 0) {
+        pojo[propertyName] = asObjects;
+      }
+    });
+
+    return pojo;
+  }
+
+  function _asJson(entity, shallow) {
+    var json = undefined;
+
+    try {
+      json = JSON.stringify(_asObject(entity, shallow));
+    } catch (error) {
+      json = '';
+    }
+
+    return json;
+  }
+
+  function getCollectionsCompact(forEntity) {
+    var associations = forEntity.getMeta().fetch('associations');
+    var collections = {};
+
+    Object.getOwnPropertyNames(associations).forEach(function (index) {
+      var association = associations[index];
+
+      if (association.type !== 'collection') {
+        return;
+      }
+
+      collections[index] = [];
+
+      if (!Array.isArray(forEntity[index])) {
+        return;
+      }
+
+      forEntity[index].forEach(function (entity) {
+        if (typeof entity === 'number') {
+          collections[index].push(entity);
+
+          return;
+        }
+
+        if (entity.id) {
+          collections[index].push(entity.id);
+        }
+      });
+    });
+
+    return collections;
+  }
+
+  function getFlat(entity, json) {
+    var flat = {
+      entity: _asObject(entity, true),
+      collections: getCollectionsCompact(entity)
+    };
+
+    if (json) {
+      flat = JSON.stringify(flat);
+    }
+
+    return flat;
+  }
+
+  function getPropertyForAssociation(forEntity, entity) {
+    var associations = forEntity.getMeta().fetch('associations');
+
+    return Object.keys(associations).filter(function (key) {
+      return associations[key].entity === entity.getResource();
+    })[0];
+  }
 });

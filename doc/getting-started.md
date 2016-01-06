@@ -88,7 +88,7 @@ So far, we've only used a default entity, default repository, and only the .find
 
 ```javascript
 import 'bootstrap';
-import entityConfig from 'config/entities';
+import * as entities from 'config/entities';
 
 export function configure(aurelia) {
   aurelia.use
@@ -102,7 +102,7 @@ export function configure(aurelia) {
     
     // Register the plugin, and register our entities.
     .plugin('spoonx/aurelia-orm', builder => {
-      builder.registerEntities(entityConfig);
+      builder.registerEntities(entities);
     });
 
   aurelia.start().then(a => a.setRoot());
@@ -111,15 +111,9 @@ export function configure(aurelia) {
 Here's what your `config/entities.js` file might look like:
 
 ```javascript
-import User from 'entity/user';
-import Article from 'entity/article';
-import Category from 'entity/category';
-
-export default [
-  User,
-  Article,
-  Category
-];
+export {User} from 'entity/user';
+export {Article} from 'entity/article';
+export {Category} from 'entity/category';
 ```
 
 What this does, is tell the `EntityManager` that you have built entities for your own resources.
@@ -131,7 +125,7 @@ import {Entity, validatedResource, association} from 'spoonx/aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
 @validatedResource()
-export default class Article extends Entity {
+export class Article extends Entity {
   @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   name = null;
   

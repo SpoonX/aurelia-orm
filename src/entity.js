@@ -19,7 +19,7 @@ export class Entity {
     this
       .define('__api', restClient)
       .define('__meta', OrmMetadata.forTarget(this.constructor))
-      .define('__cleanValues', null, true);
+      .define('__cleanValues', {}, true);
 
     // No validation? No need to set the validator.
     if (!this.hasValidation()) {
@@ -28,6 +28,24 @@ export class Entity {
 
     // Set the validator.
     return this.define('__validator', validator);
+  }
+
+  /**
+   * Get reference to the repository.
+   *
+   * @return {Repository}
+   */
+  getRepository() {
+    return this.__repository;
+  }
+
+  /**
+   * @param {Repository} repository
+   *
+   * @return {Entity}
+   */
+  setRepository(repository) {
+    return this.define('__repository', repository);
   }
 
   /**
@@ -69,7 +87,17 @@ export class Entity {
       return this.update();
     }
 
-    return this.__api.create(this.getResource(), this.asObject(true));
+    let response;
+
+    return this.__api
+      .create(this.getResource(), this.asObject(true))
+      .then((created) => {
+        this.id  = created.id;
+        response = created;
+      })
+      .then(() => this.saveCollections())
+      .then(() => this.markClean())
+      .then(() => response);
   }
 
   /**
@@ -92,10 +120,111 @@ export class Entity {
     }
 
     let requestBody = this.asObject(true);
+    let response;
 
     delete requestBody.id;
 
-    return this.__api.update(this.getResource(), this.id, requestBody);
+    return this.__api
+      .update(this.getResource(), this.id, requestBody)
+      .then((updated) => response = updated)
+      .then(() => this.saveCollections())
+      .then(() => this.markClean())
+      .then(() => response);
+  }
+
+  /**
+   * Add an entity to a collection (persist).
+   *
+   * @param {Entity|number} entity     Entity or id
+   * @param {string}        [property] The name of the property
+   *
+   * @return {Promise}
+   */
+  addCollectionAssociation(entity, property) {
+    property    = property || getPropertyForAssociation(this, entity);
+    let idToAdd = entity;
+
+    if (entity instanceof Entity) {
+      if (!entity.id) {
+        return Promise.resolve(null);
+      }
+
+      idToAdd = entity.id;
+    }
+
+    return this.__api.create([this.getResource(), this.id, property, idToAdd].join('/'));
+  }
+
+  /**
+   * Remove an entity from a collection.
+   *
+   * @param {Entity|number} entity     Entity or id
+   * @param {string}        [property] The name of the property
+   *
+   * @return {Promise}
+   */
+  removeCollectionAssociation(entity, property) {
+    property       = property || getPropertyForAssociation(this, entity);
+    let idToRemove = entity;
+
+    if (entity instanceof Entity) {
+      if (!entity.id) {
+        return Promise.resolve(null);
+      }
+
+      idToRemove = entity.id;
+    }
+
+    return this.__api.destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+  }
+
+  /**
+   * Persist the collections on the entity.
+   *
+   * @return {Promise}
+   */
+  saveCollections() {
+    let tasks              = [];
+    let currentCollections = getCollectionsCompact(this);
+    let cleanCollections   = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
+
+    let addTasksForDifferences = (base, candidate, method) => {
+      if (base === null) {
+        return;
+      }
+
+      Object.getOwnPropertyNames(base).forEach(property => {
+        base[property].forEach(id => {
+          if (candidate === null || !Array.isArray(candidate[property]) || candidate[property].indexOf(id) === -1) {
+            tasks.push(method.call(this, id, property));
+          }
+        });
+      });
+    };
+
+    // Something to add?
+    addTasksForDifferences(currentCollections, cleanCollections, this.addCollectionAssociation);
+
+    // Something to remove?
+    addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
+
+    return Promise.all(tasks).then(results => {
+      if (!Array.isArray(results)) {
+        return this;
+      }
+
+      let newState = null;
+
+      while (newState === null) {
+        newState = results.pop();
+      }
+
+      if (newState) {
+        this.getRepository().getPopulatedEntity(newState, this);
+      }
+
+      return this;
+    });
   }
 
   /**
@@ -104,7 +233,11 @@ export class Entity {
    * @return {Entity}
    */
   markClean() {
-    this.__cleanValues = this.asJson(true);
+    let cleanValues    = getFlat(this);
+    this.__cleanValues = {
+      checksum: JSON.stringify(cleanValues),
+      data: cleanValues
+    };
 
     return this;
   }
@@ -115,7 +248,7 @@ export class Entity {
    * @return {boolean}
    */
   isClean() {
-    return this.__cleanValues === this.asJson(true);
+    return getFlat(this, true) === this.__cleanValues.checksum;
   }
 
   /**
@@ -268,77 +401,184 @@ export class Entity {
   /**
    * Get the data in this entity as a POJO.
    *
-   * @return {{}}
+   * @param {boolean} [shallow]
    *
-   *  Now let's check if the object has an ID. If so, set that as the value.
+   * @return {{}}
    */
   asObject(shallow) {
-    let pojo     = {};
-    let metadata = this.getMeta();
-
-    Object.keys(this).forEach(propertyName => {
-      let value = this[propertyName];
-
-      // No meta data, no value or no association property: simple assignment.
-      if (!metadata.has('associations', propertyName) || !value) {
-        pojo[propertyName] = value;
-
-        return;
-      }
-
-      // If shallow and is object, set id.
-      if (shallow && typeof value === 'object' && value.id) {
-        pojo[propertyName] = value.id;
-
-        return;
-      }
-
-      // Array, treat children as potential entities.
-      if (!Array.isArray(value)) {
-        // Single value not an instance of entity? Simple assignment.
-        pojo[propertyName] = !(value instanceof Entity) ? value : value.asObject(shallow);
-
-        return;
-      }
-
-      let asObjects = [];
-
-      value.forEach(childValue => {
-        if (!(childValue instanceof Entity)) {
-          asObjects.push(childValue);
-
-          return;
-        }
-
-        // If shallow, we don't handle toMany.
-        if (!shallow || !childValue.id) {
-          asObjects.push(childValue.asObject(shallow));
-        }
-      });
-
-      // We don't send along empty arrays.
-      if (asObjects.length > 0) {
-        pojo[propertyName] = asObjects;
-      }
-    });
-
-    return pojo;
+    return asObject(this, shallow);
   }
 
   /**
    * Get the data in this entity as a json string.
    *
+   * @param {boolean} [shallow]
+   *
    * @return {string}
    */
   asJson(shallow) {
-    let json;
+    return asJson(this, shallow);
+  }
+}
 
-    try {
-      json = JSON.stringify(this.asObject(shallow));
-    } catch (error) {
-      json = '';
+/**
+ * Entity representation as pojo.
+ *
+ * @param {Entity} entity
+ * @param {boolean} [shallow]
+ *
+ * @return {{}}
+ */
+function asObject(entity, shallow) {
+  let pojo     = {};
+  let metadata = entity.getMeta();
+
+  Object.keys(entity).forEach(propertyName => {
+    let value = entity[propertyName];
+
+    // No meta data, no value or no association property: simple assignment.
+    if (!metadata.has('associations', propertyName) || !value) {
+      pojo[propertyName] = value;
+
+      return;
     }
 
-    return json;
+    // If shallow and is object, set id.
+    if (shallow && typeof value === 'object' && value.id) {
+      pojo[propertyName] = value.id;
+
+      return;
+    }
+
+    // Array, treat children as potential entities.
+    if (!Array.isArray(value)) {
+      // Single value not an instance of entity? Simple assignment.
+      pojo[propertyName] = !(value instanceof Entity) ? value : value.asObject(shallow);
+
+      return;
+    }
+
+    let asObjects = [];
+
+    value.forEach(childValue => {
+      if (typeof childValue !== 'object') {
+        return;
+      }
+
+      if (!(childValue instanceof Entity)) {
+        asObjects.push(childValue);
+
+        return;
+      }
+
+      // If shallow, we don't handle toMany.
+      if (!shallow || (typeof childValue === 'object' && !childValue.id)) {
+        asObjects.push(childValue.asObject(shallow));
+      }
+    });
+
+    // We don't send along empty arrays.
+    if (asObjects.length > 0) {
+      pojo[propertyName] = asObjects;
+    }
+  });
+
+  return pojo;
+}
+
+/**
+ * Entity representation as json
+ *
+ * @param {Entity} entity
+ * @param {boolean} [shallow]
+ *
+ * @return {string}
+ */
+function asJson(entity, shallow) {
+  let json;
+
+  try {
+    json = JSON.stringify(asObject(entity, shallow));
+  } catch (error) {
+    json = '';
   }
+
+  return json;
+}
+
+/**
+ * Get a compact object of collections (arrays of ids)
+ *
+ * @param {Entity} forEntity
+ *
+ * @return {{}}
+ */
+function getCollectionsCompact(forEntity) {
+  let associations = forEntity.getMeta().fetch('associations');
+  let collections  = {};
+
+  Object.getOwnPropertyNames(associations).forEach(index => {
+    let association = associations[index];
+
+    if (association.type !== 'collection') {
+      return;
+    }
+
+    collections[index] = [];
+
+    if (!Array.isArray(forEntity[index])) {
+      return;
+    }
+
+    forEntity[index].forEach(entity => {
+      if (typeof entity === 'number') {
+        collections[index].push(entity);
+
+        return;
+      }
+
+      if (entity.id) {
+        collections[index].push(entity.id);
+      }
+    });
+  });
+
+  return collections;
+}
+
+/**
+ * Get a flat, plain representation of the entity and its associations.
+ *
+ * @param {Entity}  entity
+ * @param {boolean} [json]
+ *
+ * @return {{entity, collections}}
+ */
+function getFlat(entity, json) {
+  let flat = {
+    entity: asObject(entity, true),
+    collections: getCollectionsCompact(entity)
+  };
+
+  if (json) {
+    flat = JSON.stringify(flat);
+  }
+
+  return flat;
+}
+
+/**
+ * Get the property of the association on this entity.
+ *
+ * @param {Entity} forEntity
+ * @param {Entity} entity
+ *
+ * @return {string}
+ */
+function getPropertyForAssociation(forEntity, entity) {
+  let associations = forEntity.getMeta().fetch('associations');
+
+  return Object.keys(associations).filter(key => {
+    return associations[key].entity === entity.getResource();
+  })[0];
 }

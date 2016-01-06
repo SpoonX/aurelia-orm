@@ -1,11 +1,11 @@
 import {bindable, inject} from 'aurelia-framework';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {customElement} from 'aurelia-templating';
-import {EntityManager, OrmMetadata} from '../index';
+import {EntityManager, OrmMetadata, Entity} from '../index';
 import extend from 'extend';
 
 @customElement('association-select')
-@inject(BindingEngine, EntityManager)
+@inject(BindingEngine, EntityManager, Element)
 export class AssociationSelect {
   @bindable criteria = null;
 
@@ -21,6 +21,8 @@ export class AssociationSelect {
 
   @bindable({defaultBindingMode: bindingMode.twoWay}) value;
 
+  multiple = false;
+
   ownMeta;
 
   /**
@@ -28,22 +30,55 @@ export class AssociationSelect {
    *
    * @param {BindingEngine} bindingEngine
    * @param {EntityManager} entityManager
+   * @param {Element}       element
    */
-  constructor(bindingEngine, entityManager) {
+  constructor(bindingEngine, entityManager, element) {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
     this.entityManager  = entityManager;
+    this.multiple       = typeof element.getAttribute('multiple') === 'string';
   }
 
   /**
    * (Re)Load the data for the select.
+   *
+   * @param {string|Array} [reservedValue]
+   *
+   * @return {Promise}
    */
-  load() {
+  load(reservedValue) {
     return this.buildFind()
       .then(options => {
         let result   = options;
         this.options = Array.isArray(result) ? result : [result];
+
+        this.setValue(reservedValue);
       });
+  }
+
+  /**
+   * Set the value for the select.
+   *
+   * @param {string|Array} value
+   */
+  setValue(value) {
+    if (!value) {
+      return;
+    }
+
+    if (!Array.isArray(value)) {
+      this.value = value;
+
+      return;
+    }
+
+    let selectedValues = [];
+
+    value.forEach(selected => {
+      selectedValues.push(selected instanceof Entity ? selected.id : selected);
+    });
+
+    this.value = selectedValues;
   }
 
   /**
@@ -143,13 +178,12 @@ export class AssociationSelect {
    */
   attached() {
     if (!this.association && !this.manyAssociation) {
-      this.load();
+      this.load(this.value);
 
       return;
     }
 
-    let initialValue = this.value;
-    this.ownMeta     = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
+    this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
     if (this.manyAssociation) {
       this.observe(this.manyAssociation);
@@ -159,11 +193,8 @@ export class AssociationSelect {
       this.observe(this.association);
     }
 
-    if (initialValue) {
-      this.load()
-        .then(() => {
-          this.value = initialValue;
-        });
+    if (this.value) {
+      this.load(this.value);
     }
   }
 
@@ -179,7 +210,7 @@ export class AssociationSelect {
     let associations = meta.fetch('associations');
 
     return Object.keys(associations).filter(key => {
-      return associations[key] === resource;
+      return associations[key].entity === resource;
     })[0];
   }
 

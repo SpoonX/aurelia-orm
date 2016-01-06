@@ -1,7 +1,7 @@
 System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '../index', 'extend'], function (_export) {
   'use strict';
 
-  var bindable, inject, bindingMode, BindingEngine, customElement, EntityManager, OrmMetadata, extend, AssociationSelect;
+  var bindable, inject, bindingMode, BindingEngine, customElement, EntityManager, OrmMetadata, Entity, extend, AssociationSelect;
 
   var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -21,6 +21,7 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
     }, function (_index) {
       EntityManager = _index.EntityManager;
       OrmMetadata = _index.OrmMetadata;
+      Entity = _index.Entity;
     }, function (_extend) {
       extend = _extend['default'];
     }],
@@ -70,7 +71,7 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
           enumerable: true
         }], null, _instanceInitializers);
 
-        function AssociationSelect(bindingEngine, entityManager) {
+        function AssociationSelect(bindingEngine, entityManager, element) {
           _classCallCheck(this, _AssociationSelect);
 
           _defineDecoratedPropertyDescriptor(this, 'criteria', _instanceInitializers);
@@ -87,20 +88,46 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
 
           _defineDecoratedPropertyDescriptor(this, 'value', _instanceInitializers);
 
+          this.multiple = false;
+
           this._subscriptions = [];
           this.bindingEngine = bindingEngine;
           this.entityManager = entityManager;
+          this.multiple = typeof element.getAttribute('multiple') === 'string';
         }
 
         _createDecoratedClass(AssociationSelect, [{
           key: 'load',
-          value: function load() {
+          value: function load(reservedValue) {
             var _this = this;
 
             return this.buildFind().then(function (options) {
               var result = options;
               _this.options = Array.isArray(result) ? result : [result];
+
+              _this.setValue(reservedValue);
             });
+          }
+        }, {
+          key: 'setValue',
+          value: function setValue(value) {
+            if (!value) {
+              return;
+            }
+
+            if (!Array.isArray(value)) {
+              this.value = value;
+
+              return;
+            }
+
+            var selectedValues = [];
+
+            value.forEach(function (selected) {
+              selectedValues.push(selected instanceof Entity ? selected.id : selected);
+            });
+
+            this.value = selectedValues;
           }
         }, {
           key: 'getCriteria',
@@ -181,15 +208,12 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
         }, {
           key: 'attached',
           value: function attached() {
-            var _this4 = this;
-
             if (!this.association && !this.manyAssociation) {
-              this.load();
+              this.load(this.value);
 
               return;
             }
 
-            var initialValue = this.value;
             this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
             if (this.manyAssociation) {
@@ -200,10 +224,8 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
               this.observe(this.association);
             }
 
-            if (initialValue) {
-              this.load().then(function () {
-                _this4.value = initialValue;
-              });
+            if (this.value) {
+              this.load(this.value);
             }
           }
         }, {
@@ -212,7 +234,7 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
             var associations = meta.fetch('associations');
 
             return Object.keys(associations).filter(function (key) {
-              return associations[key] === resource;
+              return associations[key].entity === resource;
             })[0];
           }
         }, {
@@ -225,7 +247,7 @@ System.register(['aurelia-framework', 'aurelia-binding', 'aurelia-templating', '
         }], null, _instanceInitializers);
 
         var _AssociationSelect = AssociationSelect;
-        AssociationSelect = inject(BindingEngine, EntityManager)(AssociationSelect) || AssociationSelect;
+        AssociationSelect = inject(BindingEngine, EntityManager, Element)(AssociationSelect) || AssociationSelect;
         AssociationSelect = customElement('association-select')(AssociationSelect) || AssociationSelect;
         return AssociationSelect;
       })();

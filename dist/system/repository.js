@@ -51,6 +51,16 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
 
             return findQuery.then(function (x) {
               return _this.populateEntities(x);
+            }).then(function (populated) {
+              if (!Array.isArray(populated)) {
+                return populated;
+              }
+
+              populated.forEach(function (entity) {
+                return entity.markClean();
+              });
+
+              return populated;
             });
           }
         }, {
@@ -81,8 +91,8 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
           }
         }, {
           key: 'getPopulatedEntity',
-          value: function getPopulatedEntity(data) {
-            var entity = this.getNewEntity();
+          value: function getPopulatedEntity(data, entity) {
+            entity = entity || this.getNewEntity();
             var entityMetadata = entity.getMeta();
             var populatedData = {};
             var key = undefined;
@@ -104,7 +114,7 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
               populatedData[key] = repository.populateEntities(value);
             }
 
-            return entity.setData(populatedData).markClean();
+            return entity.setData(populatedData);
           }
         }, {
           key: 'getNewEntity',
@@ -118,7 +128,13 @@ System.register(['aurelia-framework', 'spoonx/aurelia-api'], function (_export) 
             var associations = entity.getMeta().fetch('associations');
 
             for (var property in associations) {
-              entity[property] = this.entityManager.getRepository(associations[property].entity).getNewEntity();
+              var assocMeta = associations[property];
+
+              if (assocMeta.type !== 'entity') {
+                continue;
+              }
+
+              entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
             }
 
             return entity;
