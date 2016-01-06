@@ -15,7 +15,7 @@
     "url": "https://github.com/SpoonX/aurelia-orm/issues"
   },
   "scripts": {
-    "test": "./node_modules/.bin/gulp test"
+    "test": "snyk test && ./node_modules/.bin/gulp test"
   },
   "license": "MIT",
   "author": "RWOverdijk <wesley@spoonx.nl> (http://spoonx.nl/)",
@@ -25,6 +25,7 @@
     "url": "https://github.com/SpoonX/aurelia-orm"
   },
   "devDependencies": {
+    "snyk": "^1.8.3",
     "aurelia-tools": "^0.1.3",
     "babel": "^6.1.18",
     "babel-eslint": "^4.1.3",
