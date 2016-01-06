@@ -68,6 +68,22 @@ describe('Entity', function() {
       });
     });
 
+    it('Should add and remove collection associations.', function() {
+      var mockValidator = {
+        on: function() {
+          return {};
+        }
+      };
+
+      spyOn(mockValidator, 'on');
+
+      var entity = new WithValidation(mockValidator, getRestClient());
+
+      entity.enableValidation();
+
+      expect(mockValidator.on).toHaveBeenCalled();
+    });
+
     it('Should call .create with the full body.', function(done) {
       var entity  = new WithResource(new Validation(), getRestClient());
       entity.foo  = 'bar';
