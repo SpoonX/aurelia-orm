@@ -242,14 +242,14 @@ describe('Repository', function() {
     it('Should compose empty values with .asObject().', function() {
       var repository      = constructRepository(DefaultRepository, 'withassociations');
       var populatedEntity = repository.getNewPopulatedEntity();
-      var fooOne = new Foo();
-      var fooTwo = new Foo();
+      var fooOne          = new Foo();
+      var fooTwo          = new Foo();
 
-      fooOne.cake = 'yum';
-      fooOne.candy = 'yummer';
+      fooOne.cake   = 'yum';
+      fooOne.candy  = 'yummer';
       fooTwo.shaken = 'not stirred';
-      fooOne.id = 1;
-      fooTwo.id = 3; // Haaa, got your nose!
+      fooOne.id     = 1;
+      fooTwo.id     = 3; // Haaa, got your nose!
 
       populatedEntity.foo.push(fooOne);
       populatedEntity.foo.push(fooTwo);
