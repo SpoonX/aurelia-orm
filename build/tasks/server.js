@@ -20,7 +20,7 @@ module.exports = {
   start: function(done) {
     server = app.listen(1927, done);
   },
-  stop: function() {
-    server.close();
+  stop: function(cb) {
+    server.close(cb);
   }
 };
