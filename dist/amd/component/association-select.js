@@ -60,7 +60,7 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
       enumerable: true
     }], null, _instanceInitializers);
 
-    function AssociationSelect(bindingEngine, entityManager) {
+    function AssociationSelect(bindingEngine, entityManager, element) {
       _classCallCheck(this, _AssociationSelect);
 
       _defineDecoratedPropertyDescriptor(this, 'criteria', _instanceInitializers);
@@ -77,20 +77,46 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
 
       _defineDecoratedPropertyDescriptor(this, 'value', _instanceInitializers);
 
+      this.multiple = false;
+
       this._subscriptions = [];
       this.bindingEngine = bindingEngine;
       this.entityManager = entityManager;
+      this.multiple = typeof element.getAttribute('multiple') === 'string';
     }
 
     _createDecoratedClass(AssociationSelect, [{
       key: 'load',
-      value: function load() {
+      value: function load(reservedValue) {
         var _this = this;
 
         return this.buildFind().then(function (options) {
           var result = options;
           _this.options = Array.isArray(result) ? result : [result];
+
+          _this.setValue(reservedValue);
         });
+      }
+    }, {
+      key: 'setValue',
+      value: function setValue(value) {
+        if (!value) {
+          return;
+        }
+
+        if (!Array.isArray(value)) {
+          this.value = value;
+
+          return;
+        }
+
+        var selectedValues = [];
+
+        value.forEach(function (selected) {
+          selectedValues.push(selected instanceof _index.Entity ? selected.id : selected);
+        });
+
+        this.value = selectedValues;
       }
     }, {
       key: 'getCriteria',
@@ -171,15 +197,12 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
     }, {
       key: 'attached',
       value: function attached() {
-        var _this4 = this;
-
         if (!this.association && !this.manyAssociation) {
-          this.load();
+          this.load(this.value);
 
           return;
         }
 
-        var initialValue = this.value;
         this.ownMeta = _index.OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
         if (this.manyAssociation) {
@@ -190,10 +213,8 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
           this.observe(this.association);
         }
 
-        if (initialValue) {
-          this.load().then(function () {
-            _this4.value = initialValue;
-          });
+        if (this.value) {
+          this.load(this.value);
         }
       }
     }, {
@@ -202,7 +223,7 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
         var associations = meta.fetch('associations');
 
         return Object.keys(associations).filter(function (key) {
-          return associations[key] === resource;
+          return associations[key].entity === resource;
         })[0];
       }
     }, {
@@ -215,7 +236,7 @@ define(['exports', 'aurelia-framework', 'aurelia-binding', 'aurelia-templating',
     }], null, _instanceInitializers);
 
     var _AssociationSelect = AssociationSelect;
-    AssociationSelect = (0, _aureliaFramework.inject)(_aureliaBinding.BindingEngine, _index.EntityManager)(AssociationSelect) || AssociationSelect;
+    AssociationSelect = (0, _aureliaFramework.inject)(_aureliaBinding.BindingEngine, _index.EntityManager, Element)(AssociationSelect) || AssociationSelect;
     AssociationSelect = (0, _aureliaTemplating.customElement)('association-select')(AssociationSelect) || AssociationSelect;
     return AssociationSelect;
   })();

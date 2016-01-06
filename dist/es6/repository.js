@@ -62,7 +62,17 @@ export class Repository {
       return findQuery;
     }
 
-    return findQuery.then(x => this.populateEntities(x));
+    return findQuery
+      .then(x => this.populateEntities(x))
+      .then(populated => {
+        if (!Array.isArray(populated)) {
+          return populated;
+        }
+
+        populated.forEach(entity => entity.markClean());
+
+        return populated;
+      });
   }
 
   /**
@@ -100,12 +110,13 @@ export class Repository {
   }
 
   /**
-   * @param {{}} data
+   * @param {{}}     data
+   * @param {Entity} entity
    *
    * @return {Entity}
    */
-  getPopulatedEntity(data) {
-    let entity         = this.getNewEntity();
+  getPopulatedEntity(data, entity) {
+    entity             = entity || this.getNewEntity();
     let entityMetadata = entity.getMeta();
     let populatedData  = {};
     let key;
@@ -128,7 +139,7 @@ export class Repository {
       populatedData[key] = repository.populateEntities(value);
     }
 
-    return entity.setData(populatedData).markClean();
+    return entity.setData(populatedData);
   }
 
   /**
@@ -150,7 +161,13 @@ export class Repository {
     let associations = entity.getMeta().fetch('associations');
 
     for (let property in associations) {
-      entity[property] = this.entityManager.getRepository(associations[property].entity).getNewEntity();
+      let assocMeta = associations[property];
+
+      if (assocMeta.type !== 'entity') {
+        continue;
+      }
+
+      entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
     }
 
     return entity;
