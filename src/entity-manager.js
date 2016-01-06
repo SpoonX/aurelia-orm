@@ -21,14 +21,18 @@ export class EntityManager {
   /**
    * Register an array of entity references.
    *
-   * @param {Entity[]} entities
+   * @param {Entity[]|Entity} entities Array or object of entities.
    *
    * @return {EntityManager}
    */
   registerEntities(entities) {
-    entities.forEach(entity => {
-      this.registerEntity(entity);
-    });
+    for (let reference in entities) {
+      if (!entities.hasOwnProperty(reference)) {
+        continue;
+      }
+
+      this.registerEntity(entities[reference]);
+    }
 
     return this;
   }
@@ -49,7 +53,7 @@ export class EntityManager {
   /**
    * Get a repository instance.
    *
-   * @param {Entity} entity
+   * @param {Entity|string} entity
    *
    * @return {Repository}
    *
@@ -125,17 +129,16 @@ export class EntityManager {
   getEntity(entity) {
     let reference = this.resolveEntityReference(entity);
     let instance  = this.container.get(reference);
+    let resource  = reference.getResource();
 
-    if (reference.getResource()) {
-      return instance.setResource(reference.getResource());
+    if (!resource) {
+      if (typeof entity !== 'string') {
+        throw new Error('Unable to find resource for entity.');
+      }
+
+      resource = entity;
     }
 
-    if (typeof entity !== 'string') {
-      throw new Error('Unable to find resource for entity.');
-    }
-
-    instance.setResource(entity);
-
-    return instance;
+    return instance.setResource(resource).setRepository(this.getRepository(resource));
   }
 }
