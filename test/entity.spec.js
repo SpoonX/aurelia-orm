@@ -68,20 +68,54 @@ describe('Entity', function() {
       });
     });
 
-    it('Should add and remove collection associations.', function() {
-      var mockValidator = {
-        on: function() {
-          return {};
-        }
-      };
+    it('Should add and remove collection associations.', function(done) {
+      var parentEntity   = new WithAssociations(new Validation(), getRestClient()),
+          fooEntityOne   = new Foo(),
+          fooEntityTwo   = new Foo(),
+          fooEntityThree = new Foo(),
+          fooEntityFour  = new Foo(),
+          customEntity   = new Custom();
 
-      spyOn(mockValidator, 'on');
+      fooEntityOne.id    = 6;
+      fooEntityOne.some  = 'value';
+      fooEntityOne.other = 'other value';
 
-      var entity = new WithValidation(mockValidator, getRestClient());
+      fooEntityTwo.id   = 7;
+      fooEntityTwo.what = 'Jup';
 
-      entity.enableValidation();
+      fooEntityThree.id   = 8;
+      fooEntityThree.what = 'Jup';
 
-      expect(mockValidator.on).toHaveBeenCalled();
+      fooEntityFour.id   = 8;
+      fooEntityFour.what = 'Jup';
+
+      customEntity.id   = 9;
+      customEntity.baby = 'steps';
+
+      parentEntity.id   = 5;
+      parentEntity.foo  = [fooEntityOne, fooEntityTwo];
+      parentEntity.bar  = customEntity;
+      parentEntity.test = 'case';
+
+      parentEntity.markClean();
+
+      spyOn(parentEntity, 'addCollectionAssociation').and.callThrough();
+      spyOn(parentEntity, 'removeCollectionAssociation').and.callThrough();
+      spyOn(parentEntity, 'saveCollections').and.callThrough();
+
+      parentEntity.foo = [fooEntityOne, fooEntityThree, fooEntityFour];
+
+      // Will cause an error because the response doesn't fit the entity schema.
+      parentEntity.save().catch(error => {
+        expect(parentEntity.addCollectionAssociation).toHaveBeenCalled();
+        expect(parentEntity.removeCollectionAssociation).toHaveBeenCalled();
+        expect(parentEntity.saveCollections).toHaveBeenCalled();
+        expect(parentEntity.addCollectionAssociation.calls.count()).toBe(2);
+        expect(parentEntity.removeCollectionAssociation.calls.count()).toBe(1);
+        expect(parentEntity.saveCollections.calls.count()).toBe(1);
+
+        done();
+      });
     });
 
     it('Should call .create with the full body.', function(done) {
