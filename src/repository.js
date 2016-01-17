@@ -1,17 +1,49 @@
-import {inject} from 'aurelia-framework';
-import {Rest} from 'spoonx/aurelia-api';
+import {inject} from 'aurelia-dependency-injection';
+import {Config} from 'spoonx/aurelia-api';
 
-@inject(Rest)
+@inject(Config)
 export class Repository {
+  transport = null;
+
   /**
    * Construct.
    *
-   * @param {Rest} restClient
+   * @param {Config} clientConfig
    *
    * @constructor
    */
-  constructor(restClient) {
-    this.api = restClient;
+  constructor(clientConfig) {
+    this.clientConfig = clientConfig;
+  }
+
+  /**
+   * Get the transport for the resource this repository represents.
+   *
+   * @return {Rest}
+   */
+  getTransport() {
+    if (this.transport === null) {
+      this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
+    }
+
+    return this.transport;
+  }
+
+  /**
+   * Set the associated entity's meta data
+   *
+   * @param {Object} meta
+   */
+  setMeta(meta) {
+    this.meta = meta;
+  }
+
+  /**
+   * Get the associated entity's meta data.
+   * @return {Object}
+   */
+  getMeta() {
+    return this.meta;
   }
 
   /**
@@ -41,6 +73,7 @@ export class Repository {
    *
    * @param {null|{}|Number} criteria Criteria to add to the query.
    * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
+   *
    * @return {Promise}
    */
   find(criteria, raw) {
@@ -53,10 +86,11 @@ export class Repository {
    * @param {string}         path
    * @param {null|{}|Number} criteria Criteria to add to the query.
    * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
+   *
    * @return {Promise}
    */
   findPath(path, criteria, raw) {
-    let findQuery = this.api.find(path, criteria);
+    let findQuery = this.getTransport().find(path, criteria);
 
     if (raw) {
       return findQuery;
@@ -79,16 +113,18 @@ export class Repository {
    * Perform a count.
    *
    * @param {null|{}} criteria
+   *
    * @return {Promise}
    */
   count(criteria) {
-    return this.api.find(this.resource + '/count', criteria);
+    return this.getTransport().find(this.resource + '/count', criteria);
   }
 
   /**
    * Populate entities based on supplied data.
    *
    * @param {{}} data
+   *
    * @return {*}
    */
   populateEntities(data) {
@@ -111,7 +147,7 @@ export class Repository {
 
   /**
    * @param {{}}     data
-   * @param {Entity} entity
+   * @param {Entity} [entity]
    *
    * @return {Entity}
    */
