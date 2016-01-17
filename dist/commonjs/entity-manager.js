@@ -12,8 +12,6 @@ var _entity = require('./entity');
 
 var _defaultRepository = require('./default-repository');
 
-var _aureliaFramework = require('aurelia-framework');
-
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _ormMetadata = require('./orm-metadata');
@@ -66,13 +64,15 @@ var EntityManager = (function () {
         return this.repositories[resource];
       }
 
-      var repository = _ormMetadata.OrmMetadata.forTarget(reference).fetch('repository');
+      var metaData = _ormMetadata.OrmMetadata.forTarget(reference);
+      var repository = metaData.fetch('repository');
       var instance = this.container.get(repository);
 
-      if (instance.resource && instance.entityManager) {
+      if (instance.meta && instance.resource && instance.entityManager) {
         return instance;
       }
 
+      instance.setMeta(metaData);
       instance.resource = resource;
       instance.entityManager = this;
 
@@ -117,7 +117,7 @@ var EntityManager = (function () {
   }]);
 
   var _EntityManager = EntityManager;
-  EntityManager = (0, _aureliaFramework.inject)(_aureliaDependencyInjection.Container)(EntityManager) || EntityManager;
+  EntityManager = (0, _aureliaDependencyInjection.inject)(_aureliaDependencyInjection.Container)(EntityManager) || EntityManager;
   return EntityManager;
 })();
 

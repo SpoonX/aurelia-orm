@@ -12,15 +12,13 @@ var _aureliaValidation = require('aurelia-validation');
 
 var _aureliaFramework = require('aurelia-framework');
 
-var _spoonxAureliaApi = require('spoonx/aurelia-api');
-
 var _ormMetadata = require('./orm-metadata');
 
 var Entity = (function () {
-  function Entity(validator, restClient) {
+  function Entity(validator) {
     _classCallCheck(this, _Entity);
 
-    this.define('__api', restClient).define('__meta', _ormMetadata.OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
+    this.define('__meta', _ormMetadata.OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
 
     if (!this.hasValidation()) {
       return this;
@@ -30,6 +28,11 @@ var Entity = (function () {
   }
 
   _createClass(Entity, [{
+    key: 'getTransport',
+    value: function getTransport() {
+      return this.getRepository().getTransport();
+    }
+  }, {
     key: 'getRepository',
     value: function getRepository() {
       return this.__repository;
@@ -65,8 +68,7 @@ var Entity = (function () {
       }
 
       var response = undefined;
-
-      return this.__api.create(this.getResource(), this.asObject(true)).then(function (created) {
+      return this.getTransport().create(this.getResource(), this.asObject(true)).then(function (created) {
         _this.id = created.id;
         response = created;
       }).then(function () {
@@ -95,7 +97,7 @@ var Entity = (function () {
 
       delete requestBody.id;
 
-      return this.__api.update(this.getResource(), this.id, requestBody).then(function (updated) {
+      return this.getTransport().update(this.getResource(), this.id, requestBody).then(function (updated) {
         return response = updated;
       }).then(function () {
         return _this2.saveCollections();
@@ -119,7 +121,7 @@ var Entity = (function () {
         idToAdd = entity.id;
       }
 
-      return this.__api.create([this.getResource(), this.id, property, idToAdd].join('/'));
+      return this.getTransport().create([this.getResource(), this.id, property, idToAdd].join('/'));
     }
   }, {
     key: 'removeCollectionAssociation',
@@ -135,7 +137,7 @@ var Entity = (function () {
         idToRemove = entity.id;
       }
 
-      return this.__api.destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+      return this.getTransport().destroy([this.getResource(), this.id, property, idToRemove].join('/'));
     }
   }, {
     key: 'saveCollections',
@@ -225,7 +227,7 @@ var Entity = (function () {
         throw new Error('Required value "id" missing on entity.');
       }
 
-      return this.__api.destroy(this.getResource(), this.id);
+      return this.getTransport().destroy(this.getResource(), this.id);
     }
   }, {
     key: 'getName',
@@ -274,7 +276,7 @@ var Entity = (function () {
   }, {
     key: 'hasValidation',
     value: function hasValidation() {
-      return !!this.__meta.fetch('validation');
+      return !!this.getMeta().fetch('validation');
     }
   }, {
     key: 'asObject',
@@ -305,7 +307,7 @@ var Entity = (function () {
   }]);
 
   var _Entity = Entity;
-  Entity = (0, _aureliaFramework.inject)(_aureliaValidation.Validation, _spoonxAureliaApi.Rest)(Entity) || Entity;
+  Entity = (0, _aureliaFramework.inject)(_aureliaValidation.Validation)(Entity) || Entity;
   Entity = (0, _aureliaFramework.transient)()(Entity) || Entity;
   return Entity;
 })();

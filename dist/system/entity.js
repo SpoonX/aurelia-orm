@@ -1,7 +1,7 @@
-System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api', './orm-metadata'], function (_export) {
+System.register(['aurelia-validation', 'aurelia-framework', './orm-metadata'], function (_export) {
   'use strict';
 
-  var Validation, transient, inject, Rest, OrmMetadata, Entity;
+  var Validation, transient, inject, OrmMetadata, Entity;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -129,17 +129,15 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
     }, function (_aureliaFramework) {
       transient = _aureliaFramework.transient;
       inject = _aureliaFramework.inject;
-    }, function (_spoonxAureliaApi) {
-      Rest = _spoonxAureliaApi.Rest;
     }, function (_ormMetadata) {
       OrmMetadata = _ormMetadata.OrmMetadata;
     }],
     execute: function () {
       Entity = (function () {
-        function Entity(validator, restClient) {
+        function Entity(validator) {
           _classCallCheck(this, _Entity);
 
-          this.define('__api', restClient).define('__meta', OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
+          this.define('__meta', OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
 
           if (!this.hasValidation()) {
             return this;
@@ -149,6 +147,11 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
         }
 
         _createClass(Entity, [{
+          key: 'getTransport',
+          value: function getTransport() {
+            return this.getRepository().getTransport();
+          }
+        }, {
           key: 'getRepository',
           value: function getRepository() {
             return this.__repository;
@@ -184,8 +187,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
             }
 
             var response = undefined;
-
-            return this.__api.create(this.getResource(), this.asObject(true)).then(function (created) {
+            return this.getTransport().create(this.getResource(), this.asObject(true)).then(function (created) {
               _this.id = created.id;
               response = created;
             }).then(function () {
@@ -214,7 +216,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
 
             delete requestBody.id;
 
-            return this.__api.update(this.getResource(), this.id, requestBody).then(function (updated) {
+            return this.getTransport().update(this.getResource(), this.id, requestBody).then(function (updated) {
               return response = updated;
             }).then(function () {
               return _this2.saveCollections();
@@ -238,7 +240,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
               idToAdd = entity.id;
             }
 
-            return this.__api.create([this.getResource(), this.id, property, idToAdd].join('/'));
+            return this.getTransport().create([this.getResource(), this.id, property, idToAdd].join('/'));
           }
         }, {
           key: 'removeCollectionAssociation',
@@ -254,7 +256,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
               idToRemove = entity.id;
             }
 
-            return this.__api.destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+            return this.getTransport().destroy([this.getResource(), this.id, property, idToRemove].join('/'));
           }
         }, {
           key: 'saveCollections',
@@ -344,7 +346,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
               throw new Error('Required value "id" missing on entity.');
             }
 
-            return this.__api.destroy(this.getResource(), this.id);
+            return this.getTransport().destroy(this.getResource(), this.id);
           }
         }, {
           key: 'getName',
@@ -393,7 +395,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
         }, {
           key: 'hasValidation',
           value: function hasValidation() {
-            return !!this.__meta.fetch('validation');
+            return !!this.getMeta().fetch('validation');
           }
         }, {
           key: 'asObject',
@@ -424,7 +426,7 @@ System.register(['aurelia-validation', 'aurelia-framework', 'spoonx/aurelia-api'
         }]);
 
         var _Entity = Entity;
-        Entity = inject(Validation, Rest)(Entity) || Entity;
+        Entity = inject(Validation)(Entity) || Entity;
         Entity = transient()(Entity) || Entity;
         return Entity;
       })();
