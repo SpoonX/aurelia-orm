@@ -78,6 +78,31 @@ Use this decorator to indicate that a property has a relationship with another e
 - It will make sure that calling .asObject() on the entity recursively converts all children to simple objects.
 - It will make sure that upon calling .update(), all children get converted to IDs.
 
+## @endpoint()
+This decorator allows you to specify which endpoint (see the [aurelia-api documentation](https://github.com/SpoonX/aurelia-api/blob/master/doc/getting-started.md#multiple-endpoints)) to use.
+
+When not set, the orm will use the defaultEndpoint.
+
+### Example
+An example for a User entity
+
+```javascript
+import {Entity, endpoint} from 'spoonx/aurelia-orm';
+
+@endpoint('auth')
+export class User extends Entity {}
+```
+
+### Example
+An example for a weather entity
+
+```javascript
+import {Entity, endpoint} from 'spoonx/aurelia-orm';
+
+@endpoint('weather')
+export class Weather extends Entity {}
+```
+
 ### Bonus: validation
 Aurelia-orm extends aurelia-validate, and adds validation for your associations.
 To add validation for associations, simply use the .hasAssociation() rule like so:
