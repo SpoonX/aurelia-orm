@@ -1,4 +1,4 @@
-define(['exports', './entity', './default-repository', 'aurelia-framework', 'aurelia-dependency-injection', './orm-metadata'], function (exports, _entity, _defaultRepository, _aureliaFramework, _aureliaDependencyInjection, _ormMetadata) {
+define(['exports', './entity', './default-repository', 'aurelia-dependency-injection', './orm-metadata'], function (exports, _entity, _defaultRepository, _aureliaDependencyInjection, _ormMetadata) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -57,13 +57,15 @@ define(['exports', './entity', './default-repository', 'aurelia-framework', 'aur
           return this.repositories[resource];
         }
 
-        var repository = _ormMetadata.OrmMetadata.forTarget(reference).fetch('repository');
+        var metaData = _ormMetadata.OrmMetadata.forTarget(reference);
+        var repository = metaData.fetch('repository');
         var instance = this.container.get(repository);
 
-        if (instance.resource && instance.entityManager) {
+        if (instance.meta && instance.resource && instance.entityManager) {
           return instance;
         }
 
+        instance.setMeta(metaData);
         instance.resource = resource;
         instance.entityManager = this;
 
@@ -108,7 +110,7 @@ define(['exports', './entity', './default-repository', 'aurelia-framework', 'aur
     }]);
 
     var _EntityManager = EntityManager;
-    EntityManager = (0, _aureliaFramework.inject)(_aureliaDependencyInjection.Container)(EntityManager) || EntityManager;
+    EntityManager = (0, _aureliaDependencyInjection.inject)(_aureliaDependencyInjection.Container)(EntityManager) || EntityManager;
     return EntityManager;
   })();
 

@@ -45,7 +45,6 @@ describe('EntityManager', function() {
       var entityManager = new EntityManager(new Container());
 
       entityManager.registerEntity(WithResource);
-
       expect(entityManager.getRepository('with-resource') instanceof DefaultRepository).toBe(true);
     });
 

@@ -1,3 +1,12 @@
+## 2.0.0 (2016-01-17)
+
+
+#### Features
+
+* **decorator:** Added @endpoint() decorator ([36d58cd1](https://github.com/SpoonX/aurelia-orm/commit/36d58cd133b58491774b9f90c65c2208405c0b86))
+* **project:** Expose @endpoint() decorator ([8a0c107a](https://github.com/SpoonX/aurelia-orm/commit/8a0c107acef3cf351faec14b2b7c607c64b7ec78))
+
+
 ## 1.4.0 (2016-01-06)
 
 

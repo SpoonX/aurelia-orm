@@ -44,6 +44,7 @@ System.register(['aurelia-metadata', './default-repository'], function (_export)
           this.metadata = {
             repository: DefaultRepository,
             resource: null,
+            endpoint: null,
             name: null,
             associations: {}
           };

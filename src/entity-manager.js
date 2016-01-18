@@ -1,7 +1,6 @@
 import {Entity} from './entity';
 import {DefaultRepository} from './default-repository';
-import {inject} from 'aurelia-framework';
-import {Container} from 'aurelia-dependency-injection';
+import {Container, inject} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
 
 @inject(Container)
@@ -38,7 +37,7 @@ export class EntityManager {
   }
 
   /**
-   * Register a Entity reference.
+   * Register an Entity reference.
    *
    * @param {Entity} entity
    *
@@ -77,15 +76,17 @@ export class EntityManager {
     }
 
     // Get instance of repository
-    let repository = OrmMetadata.forTarget(reference).fetch('repository');
+    let metaData   = OrmMetadata.forTarget(reference);
+    let repository = metaData.fetch('repository');
     let instance   = this.container.get(repository);
 
     // Already setup instance? Return.
-    if (instance.resource && instance.entityManager) {
+    if (instance.meta && instance.resource && instance.entityManager) {
       return instance;
     }
 
     // Tell the repository instance what resource it should use.
+    instance.setMeta(metaData);
     instance.resource      = resource;
     instance.entityManager = this;
 

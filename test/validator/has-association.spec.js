@@ -88,8 +88,7 @@ describe('HasAssociationValidationRule', function() {
     var container     = new Container();
     var entityManager = new EntityManager(container);
 
-    configure({container: container, globalResources: noop}, function() {
-    });
+    configure({container: container, globalResources: noop}, function() {});
 
     entityManager.registerEntities([WithAssociationValidation]);
 

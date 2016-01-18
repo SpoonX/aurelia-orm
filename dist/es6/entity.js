@@ -1,23 +1,20 @@
 import {Validation} from 'aurelia-validation';
 import {transient, inject} from 'aurelia-framework';
-import {Rest} from 'spoonx/aurelia-api';
 import {OrmMetadata} from './orm-metadata';
 
 @transient()
-@inject(Validation, Rest)
+@inject(Validation)
 export class Entity {
 
   /**
    * Construct a new entity.
    *
    * @param {Validation} validator
-   * @param {Rest} restClient
    *
    * @return {Entity}
    */
-  constructor(validator, restClient) {
+  constructor(validator) {
     this
-      .define('__api', restClient)
       .define('__meta', OrmMetadata.forTarget(this.constructor))
       .define('__cleanValues', {}, true);
 
@@ -28,6 +25,15 @@ export class Entity {
 
     // Set the validator.
     return this.define('__validator', validator);
+  }
+
+  /**
+   * Get the transport for the resource this repository represents.
+   *
+   * @return {Rest}
+   */
+  getTransport() {
+    return this.getRepository().getTransport();
   }
 
   /**
@@ -88,8 +94,7 @@ export class Entity {
     }
 
     let response;
-
-    return this.__api
+    return this.getTransport()
       .create(this.getResource(), this.asObject(true))
       .then((created) => {
         this.id  = created.id;
@@ -124,7 +129,7 @@ export class Entity {
 
     delete requestBody.id;
 
-    return this.__api
+    return this.getTransport()
       .update(this.getResource(), this.id, requestBody)
       .then((updated) => response = updated)
       .then(() => this.saveCollections())
@@ -152,7 +157,7 @@ export class Entity {
       idToAdd = entity.id;
     }
 
-    return this.__api.create([this.getResource(), this.id, property, idToAdd].join('/'));
+    return this.getTransport().create([this.getResource(), this.id, property, idToAdd].join('/'));
   }
 
   /**
@@ -175,7 +180,7 @@ export class Entity {
       idToRemove = entity.id;
     }
 
-    return this.__api.destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+    return this.getTransport().destroy([this.getResource(), this.id, property, idToRemove].join('/'));
   }
 
   /**
@@ -308,7 +313,7 @@ export class Entity {
       throw new Error('Required value "id" missing on entity.');
     }
 
-    return this.__api.destroy(this.getResource(), this.id);
+    return this.getTransport().destroy(this.getResource(), this.id);
   }
 
   /**
@@ -395,7 +400,7 @@ export class Entity {
    * @return {boolean}
    */
   hasValidation() {
-    return !!this.__meta.fetch('validation');
+    return !!this.getMeta().fetch('validation');
   }
 
   /**

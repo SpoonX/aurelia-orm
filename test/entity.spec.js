@@ -11,44 +11,45 @@ import {Entity} from  '../src/entity';
 import {Container} from 'aurelia-dependency-injection';
 import {Rest} from 'spoonx/aurelia-api';
 import {Validation} from 'aurelia-validation';
+import {Config} from 'spoonx/aurelia-api';
 
-function getRestClient() {
-  let container  = new Container();
-  let restClient = container.get(Rest);
+function getContainer() {
+  let container = new Container();
+  let config    = container.get(Config);
 
-  restClient.client.configure(builder => {
-    builder.useStandardConfiguration().withBaseUrl('http://localhost:1927/');
-  });
+  config
+    .registerEndpoint('sx/default', 'http://localhost:1927/')
+    .setDefaultEndpoint('sx/default');
 
-  return restClient;
+  return container;
+}
+
+function constructEntity(entity) {
+  let container     = getContainer();
+  let entityManager = new EntityManager(container);
+
+  return entityManager.registerEntity(entity).getEntity(entity.getResource());
 }
 
 describe('Entity', function() {
   describe('.constructor()', function() {
     it('Should set the meta data.', function() {
       var validation = new Validation(),
-          entity     = new WithValidation(validation, getRestClient());
+          entity     = new WithValidation(validation);
 
       expect(entity.__meta).not.toBe(undefined);
     });
 
-    it('Should set the API (Rest client).', function() {
-      var validation = new Validation(),
-          entity     = new WithValidation(validation, getRestClient());
-
-      expect(entity.__api).not.toBe(undefined);
-    });
-
     it('Should set the validator constructor.', function() {
       var validation = new Validation(),
-          entity     = new WithValidation(validation, getRestClient());
+          entity     = new WithValidation(validation);
 
       expect(entity.__validator).toBe(validation);
     });
 
     it('Should not set the validator constructor.', function() {
       var validation = new Validation();
-      var entity     = new WithResource(validation, getRestClient());
+      var entity     = new WithResource(validation);
 
       expect(entity.__validator).toBe(undefined);
     });
@@ -56,7 +57,7 @@ describe('Entity', function() {
 
   describe('.save()', function() {
     it('Should call .create on REST without an ID. (custom entity)', function(done) {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = constructEntity(WithResource);
       entity.foo = 'bar';
 
       entity.save().then(response => {
@@ -69,12 +70,17 @@ describe('Entity', function() {
     });
 
     it('Should add and remove collection associations.', function(done) {
-      var parentEntity   = new WithAssociations(new Validation(), getRestClient()),
-          fooEntityOne   = new Foo(),
-          fooEntityTwo   = new Foo(),
-          fooEntityThree = new Foo(),
-          fooEntityFour  = new Foo(),
-          customEntity   = new Custom();
+      let container     = getContainer();
+      let entityManager = new EntityManager(container);
+
+      entityManager.registerEntities([WithAssociations, Foo, Custom]);
+
+      let parentEntity   = entityManager.getEntity('withassociations');
+      let fooEntityOne   = entityManager.getEntity('foo');
+      let fooEntityTwo   = entityManager.getEntity('foo');
+      let fooEntityThree = entityManager.getEntity('foo');
+      let fooEntityFour  = entityManager.getEntity('foo');
+      let customEntity   = entityManager.getEntity('custom');
 
       fooEntityOne.id    = 6;
       fooEntityOne.some  = 'value';
@@ -106,7 +112,7 @@ describe('Entity', function() {
       parentEntity.foo = [fooEntityOne, fooEntityThree, fooEntityFour];
 
       // Will cause an error because the response doesn't fit the entity schema.
-      parentEntity.save().catch(error => {
+      parentEntity.save().then(x => {
         expect(parentEntity.addCollectionAssociation).toHaveBeenCalled();
         expect(parentEntity.removeCollectionAssociation).toHaveBeenCalled();
         expect(parentEntity.saveCollections).toHaveBeenCalled();
@@ -119,7 +125,7 @@ describe('Entity', function() {
     });
 
     it('Should call .create with the full body.', function(done) {
-      var entity  = new WithResource(new Validation(), getRestClient());
+      var entity  = constructEntity(WithResource);
       entity.foo  = 'bar';
       entity.city = {awesome: true};
 
@@ -133,7 +139,7 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with an ID. (custom entity)', function(done) {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = constructEntity(WithResource);
       entity.foo = 'bar';
       entity.id  = 1337;
 
@@ -147,9 +153,9 @@ describe('Entity', function() {
     });
 
     it('Should call .create on REST without an ID. (default entity)', function(done) {
-      let container = new Container();
+      let container = getContainer();
 
-      container.registerInstance(Rest, getRestClient());
+      container.registerInstance(Rest);
 
       var entityManager = new EntityManager(container),
           entity        = entityManager.getEntity('default-entity');
@@ -166,10 +172,15 @@ describe('Entity', function() {
     });
 
     it('Should call .create on REST with nested body (associations).', function(done) {
-      var parentEntity = new WithAssociations(new Validation(), getRestClient()),
-          fooEntityOne = new Foo(),
-          fooEntityTwo = new Foo(),
-          customEntity = new Custom();
+      let container     = getContainer();
+      let entityManager = new EntityManager(container);
+
+      entityManager.registerEntities([WithAssociations, Foo, Custom]);
+
+      var parentEntity = entityManager.getEntity('withassociations'),
+          fooEntityOne = entityManager.getEntity('foo'),
+          fooEntityTwo = entityManager.getEntity('foo'),
+          customEntity = entityManager.getEntity('custom');
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -201,9 +212,9 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with an ID. (default entity)', function(done) {
-      let container = new Container();
+      let container = getContainer();
 
-      container.registerInstance(Rest, getRestClient());
+      container.registerInstance(Rest);
 
       var entityManager = new EntityManager(container),
           entity        = entityManager.getEntity('default-entity');
@@ -223,7 +234,7 @@ describe('Entity', function() {
 
   describe('.define()', function() {
     it('Should define a non-enumerable property on the entity.', function() {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = new WithResource(new Validation());
 
       entity.define('__test', 'value');
       entity.define('__testWritable', 'value', true);
@@ -245,7 +256,7 @@ describe('Entity', function() {
 
   describe('.isDirty()', function() {
     it('Should properly return if the entity is dirty.', function() {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = new WithResource(new Validation());
 
       entity.setData({
         id: 667,
@@ -263,7 +274,7 @@ describe('Entity', function() {
 
   describe('.isClean()', function() {
     it('Should properly return if the entity is clean.', function() {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = new WithResource(new Validation());
 
       entity.setData({
         id: 667,
@@ -281,7 +292,7 @@ describe('Entity', function() {
 
   describe('.isNew()', function() {
     it('Should properly return if the entity is new.', function() {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = new WithResource(new Validation());
 
       expect(entity.isNew()).toBe(true);
       entity.setData({id: 667}).markClean();
@@ -291,7 +302,7 @@ describe('Entity', function() {
 
   describe('.markClean()', function() {
     it('Should properly mark the entity as clean.', function() {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = new WithResource(new Validation());
 
       entity.setData({
         id: 667,
@@ -313,7 +324,7 @@ describe('Entity', function() {
 
   describe('.update()', function() {
     it('Should call .update with complete body.', function(done) {
-      var entity  = new WithResource(new Validation(), getRestClient());
+      var entity  = constructEntity(WithResource);
       entity.id   = 666;
       entity.foo  = 'bar';
       entity.city = {awesome: true};
@@ -328,7 +339,7 @@ describe('Entity', function() {
     });
 
     it('Should not send a PUT request for .update when clean.', function(done) {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = constructEntity(WithResource);
       entity.setData({
         id: 667,
         foo: 'bar',
@@ -343,7 +354,7 @@ describe('Entity', function() {
     });
 
     it('Should throw an error with missing id.', function() {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = constructEntity(WithResource);
       entity.foo = 'bar';
 
       expect(function() {
@@ -352,7 +363,7 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with nested body (associations).', function(done) {
-      var parentEntity = new WithAssociations(new Validation(), getRestClient()),
+      var parentEntity = constructEntity(WithAssociations),
           fooEntityOne = new Foo(),
           fooEntityTwo = new Foo(),
           customEntity = new Custom();
@@ -460,7 +471,7 @@ describe('Entity', function() {
 
   describe('.destroy()', function() {
     it('Should call .destroy.', function(done) {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = constructEntity(WithResource);
       entity.id  = 666;
 
       entity.destroy().then(response => {
@@ -472,7 +483,7 @@ describe('Entity', function() {
     });
 
     it('Should throw an error with missing id.', function() {
-      var entity = new WithResource(new Validation(), getRestClient());
+      var entity = constructEntity(WithResource);
 
       expect(function() {
         entity.destroy();
@@ -504,7 +515,7 @@ describe('Entity', function() {
 
       spyOn(mockValidator, 'on');
 
-      var entity = new WithValidation(mockValidator, getRestClient());
+      var entity = new WithValidation(mockValidator);
 
       entity.enableValidation();
 
@@ -512,7 +523,7 @@ describe('Entity', function() {
     });
 
     it('Should throw an error when called with validation disabled', function() {
-      var entity = new WithResource({}, getRestClient());
+      var entity = new WithResource({});
 
       expect(function() {
         entity.enableValidation();
@@ -528,7 +539,7 @@ describe('Entity', function() {
 
       spyOn(mockValidatorMultiple, 'on').and.callThrough();
 
-      var entity = new WithValidation(mockValidatorMultiple, getRestClient());
+      var entity = new WithValidation(mockValidatorMultiple);
 
       entity.enableValidation();
 
@@ -544,7 +555,7 @@ describe('Entity', function() {
 
   describe('.getValidation()', function() {
     it('Should return null if validation meta is not true.', function() {
-      var entity = new WithResource('space camp', getRestClient());
+      var entity = new WithResource('space camp');
 
       expect(entity.getValidation()).toBe(null);
     });
@@ -556,7 +567,7 @@ describe('Entity', function() {
         }
       };
 
-      var entity = new WithValidation(mockValidator, getRestClient());
+      var entity = new WithValidation(mockValidator);
 
       // Instance
       expect(entity.getValidation()).toEqual('The validator. But, not really.');
@@ -568,13 +579,13 @@ describe('Entity', function() {
 
   describe('.hasValidation()', function() {
     it('Should return entity has validation disabled.', function() {
-      var entity = new WithResource({}, getRestClient());
+      var entity = new WithResource({});
 
       expect(entity.hasValidation()).toEqual(false);
     });
 
     it('Should return entity has validation enabled.', function() {
-      var entity = new WithValidation({}, getRestClient());
+      var entity = new WithValidation({});
 
       expect(entity.hasValidation()).toEqual(true);
     });

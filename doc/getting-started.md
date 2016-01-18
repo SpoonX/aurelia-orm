@@ -24,7 +24,8 @@ Cool, the orm has been installed... But now we want it to _do_ something, right?
 As you can see, it's using `aurelia-fetch-client` to do the API calls to `https://api.github.com/`. We're going to change that, and make use of aurelia-orm.
 
 ### Configuration
-This is the boring part. Head back to your editor and open up `src/main.js`. Configure aurelia-api to use `https://api.github.com/` as the base url for our calls.
+This is the boring part. Head back to your editor and open up `src/main.js`. Configure aurelia-api and register `https://api.github.com/` as a new endpoint.
+You can find more information on this in the [aurelia-api getting started](https://github.com/SpoonX/aurelia-api/blob/master/doc/getting-started.md#multiple-endpoints).
 
 ```javascript
 import 'bootstrap';
@@ -35,15 +36,17 @@ export function configure(aurelia) {
     .developmentLogging()
 
     // Load the plugin, and set the base url.
-    .plugin('spoonx/aurelia-api', builder => {
-      builder.useStandardConfiguration().withBaseUrl('https://api.github.com/');
+    .plugin('spoonx/aurelia-api', config => {
+      config
+        .registerEndpoint('github', 'https://api.github.com/')
+        .setDefaultEndpoint('github');
     });
 
   aurelia.start().then(a => a.setRoot());
 }
 ```
 
-All we're doing here, is telling aurelia to register aurelia-api as a plugin, and configuring aurelia-api with a baseUrl.
+All we're doing here, is telling aurelia to register aurelia-api as a plugin, and configuring aurelia-api with a new endpoint.
 
 ### Use it
 Now head back to `src/users.js`. Change the file to look like this:
@@ -97,7 +100,9 @@ export function configure(aurelia) {
 
     // Register the plugin, and set the base url.
     .plugin('spoonx/aurelia-api', builder => {
-      builder.useStandardConfiguration().withBaseUrl('https://api.github.com/');
+      config
+        .registerEndpoint('github', 'https://api.github.com/')
+        .setDefaultEndpoint('github');
     })
     
     // Register the plugin, and register our entities.
@@ -179,6 +184,12 @@ export class ViewModel {
   }
 }
 ```
+
+### Endpoints
+Every entity can be configured to use an endpoint (see [decorators](decorators.md#endpoint)).
+This allows you to use the same entities, the same orm, without worrying about changing the endpoint (api url) to talk to.
+
+
 
 ### Further reading
 

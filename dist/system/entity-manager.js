@@ -1,7 +1,7 @@
-System.register(['./entity', './default-repository', 'aurelia-framework', 'aurelia-dependency-injection', './orm-metadata'], function (_export) {
+System.register(['./entity', './default-repository', 'aurelia-dependency-injection', './orm-metadata'], function (_export) {
   'use strict';
 
-  var Entity, DefaultRepository, inject, Container, OrmMetadata, EntityManager;
+  var Entity, DefaultRepository, Container, inject, OrmMetadata, EntityManager;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -12,10 +12,9 @@ System.register(['./entity', './default-repository', 'aurelia-framework', 'aurel
       Entity = _entity.Entity;
     }, function (_defaultRepository) {
       DefaultRepository = _defaultRepository.DefaultRepository;
-    }, function (_aureliaFramework) {
-      inject = _aureliaFramework.inject;
     }, function (_aureliaDependencyInjection) {
       Container = _aureliaDependencyInjection.Container;
+      inject = _aureliaDependencyInjection.inject;
     }, function (_ormMetadata) {
       OrmMetadata = _ormMetadata.OrmMetadata;
     }],
@@ -68,13 +67,15 @@ System.register(['./entity', './default-repository', 'aurelia-framework', 'aurel
               return this.repositories[resource];
             }
 
-            var repository = OrmMetadata.forTarget(reference).fetch('repository');
+            var metaData = OrmMetadata.forTarget(reference);
+            var repository = metaData.fetch('repository');
             var instance = this.container.get(repository);
 
-            if (instance.resource && instance.entityManager) {
+            if (instance.meta && instance.resource && instance.entityManager) {
               return instance;
             }
 
+            instance.setMeta(metaData);
             instance.resource = resource;
             instance.entityManager = this;
 

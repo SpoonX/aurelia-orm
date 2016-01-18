@@ -71,6 +71,15 @@ Object.defineProperty(exports, 'resource', {
   }
 });
 
+var _decoratorEndpoint = require('./decorator/endpoint');
+
+Object.defineProperty(exports, 'endpoint', {
+  enumerable: true,
+  get: function get() {
+    return _decoratorEndpoint.endpoint;
+  }
+});
+
 var _decoratorName = require('./decorator/name');
 
 Object.defineProperty(exports, 'name', {
