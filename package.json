@@ -70,12 +70,11 @@
     "dependencies": {
       "aurelia-binding": "npm:aurelia-binding@^1.0.0-beta.1.0.5",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.0.1",
-      "aurelia-fetch-client": "npm:aurelia-fetch-client@^1.0.0-beta.1.0.2",
       "aurelia-metadata": "npm:aurelia-metadata@^1.0.0-beta.1",
       "aurelia-templating": "npm:aurelia-templating@^1.0.0-beta.1.0.3",
       "aurelia-validation": "npm:aurelia-validation@^0.6.0",
       "extend": "npm:extend@^3.0.0",
-      "spoonx/aurelia-api": "github:spoonx/aurelia-api@^2.0.2"
+      "spoonx/aurelia-api": "github:spoonx/aurelia-api@^2.0.3"
     },
     "devDependencies": {
       "aurelia-pal-browser": "npm:aurelia-pal-browser@^1.0.0-beta.1",
