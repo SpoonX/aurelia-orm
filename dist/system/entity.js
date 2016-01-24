@@ -1,4 +1,4 @@
-System.register(['aurelia-validation', 'aurelia-framework', './orm-metadata'], function (_export) {
+System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-metadata'], function (_export) {
   'use strict';
 
   var Validation, transient, inject, OrmMetadata, Entity;
@@ -126,9 +126,9 @@ System.register(['aurelia-validation', 'aurelia-framework', './orm-metadata'], f
   return {
     setters: [function (_aureliaValidation) {
       Validation = _aureliaValidation.Validation;
-    }, function (_aureliaFramework) {
-      transient = _aureliaFramework.transient;
-      inject = _aureliaFramework.inject;
+    }, function (_aureliaDependencyInjection) {
+      transient = _aureliaDependencyInjection.transient;
+      inject = _aureliaDependencyInjection.inject;
     }, function (_ormMetadata) {
       OrmMetadata = _ormMetadata.OrmMetadata;
     }],

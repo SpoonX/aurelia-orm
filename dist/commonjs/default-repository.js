@@ -10,7 +10,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _repository = require('./repository');
 
@@ -24,7 +24,7 @@ var DefaultRepository = (function (_Repository) {
   }
 
   var _DefaultRepository = DefaultRepository;
-  DefaultRepository = (0, _aureliaFramework.transient)()(DefaultRepository) || DefaultRepository;
+  DefaultRepository = (0, _aureliaDependencyInjection.transient)()(DefaultRepository) || DefaultRepository;
   return DefaultRepository;
 })(_repository.Repository);
 

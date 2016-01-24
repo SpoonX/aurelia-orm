@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-framework', './repository'], function (exports, _aureliaFramework, _repository) {
+define(['exports', 'aurelia-dependency-injection', './repository'], function (exports, _aureliaDependencyInjection, _repository) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -21,7 +21,7 @@ define(['exports', 'aurelia-framework', './repository'], function (exports, _aur
     }
 
     var _DefaultRepository = DefaultRepository;
-    DefaultRepository = (0, _aureliaFramework.transient)()(DefaultRepository) || DefaultRepository;
+    DefaultRepository = (0, _aureliaDependencyInjection.transient)()(DefaultRepository) || DefaultRepository;
     return DefaultRepository;
   })(_repository.Repository);
 

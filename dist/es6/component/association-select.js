@@ -1,6 +1,6 @@
-import {bindable, inject} from 'aurelia-framework';
+import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
-import {customElement} from 'aurelia-templating';
+import {bindable, customElement} from 'aurelia-templating';
 import {EntityManager, OrmMetadata, Entity} from '../index';
 import extend from 'extend';
 

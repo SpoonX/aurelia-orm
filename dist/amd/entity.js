@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-validation', 'aurelia-framework', './orm-metadata'], function (exports, _aureliaValidation, _aureliaFramework, _ormMetadata) {
+define(['exports', 'aurelia-validation', 'aurelia-dependency-injection', './orm-metadata'], function (exports, _aureliaValidation, _aureliaDependencyInjection, _ormMetadata) {
   'use strict';
 
   Object.defineProperty(exports, '__esModule', {
@@ -302,8 +302,8 @@ define(['exports', 'aurelia-validation', 'aurelia-framework', './orm-metadata'],
     }]);
 
     var _Entity = Entity;
-    Entity = (0, _aureliaFramework.inject)(_aureliaValidation.Validation)(Entity) || Entity;
-    Entity = (0, _aureliaFramework.transient)()(Entity) || Entity;
+    Entity = (0, _aureliaDependencyInjection.inject)(_aureliaValidation.Validation)(Entity) || Entity;
+    Entity = (0, _aureliaDependencyInjection.transient)()(Entity) || Entity;
     return Entity;
   })();
 

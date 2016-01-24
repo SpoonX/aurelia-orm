@@ -1,4 +1,4 @@
-System.register(['aurelia-framework', './repository'], function (_export) {
+System.register(['aurelia-dependency-injection', './repository'], function (_export) {
   'use strict';
 
   var transient, Repository, DefaultRepository;
@@ -10,8 +10,8 @@ System.register(['aurelia-framework', './repository'], function (_export) {
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
   return {
-    setters: [function (_aureliaFramework) {
-      transient = _aureliaFramework.transient;
+    setters: [function (_aureliaDependencyInjection) {
+      transient = _aureliaDependencyInjection.transient;
     }, function (_repository) {
       Repository = _repository.Repository;
     }],
