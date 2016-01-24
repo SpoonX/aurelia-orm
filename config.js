@@ -4,7 +4,6 @@ System.config({
   babelOptions: {
     "optional": [
       "runtime",
-      "optimisation.modules.system",
       "es7.decorators",
       "es7.classProperties"
     ]
@@ -19,7 +18,6 @@ System.config({
     "aurelia-binding": "npm:aurelia-binding@1.0.0-beta.1.0.5",
     "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.0.1",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-beta.1.0.2",
-    "aurelia-framework": "npm:aurelia-framework@1.0.0-beta.1.0.8",
     "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1",
     "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0-beta.1",
     "aurelia-templating": "npm:aurelia-templating@1.0.0-beta.1.0.3",
@@ -104,7 +102,7 @@ System.config({
     },
     "npm:aurelia-templating@1.0.0-beta.1.0.3": {
       "aurelia-binding": "npm:aurelia-binding@1.0.0-beta.1.0.5",
-      "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1",
+      "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.0.1",
       "aurelia-loader": "npm:aurelia-loader@1.0.0-beta.1.0.1",
       "aurelia-logging": "npm:aurelia-logging@1.0.0-beta.1",
       "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1",

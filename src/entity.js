@@ -1,5 +1,5 @@
 import {Validation} from 'aurelia-validation';
-import {transient, inject} from 'aurelia-framework';
+import {transient, inject} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
 
 @transient()
