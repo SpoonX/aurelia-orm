@@ -19,7 +19,7 @@
   },
   "license": "MIT",
   "author": "RWOverdijk <wesley@spoonx.nl> (http://spoonx.nl/)",
-  "main": "dist/commonjs/index.js",
+  "main": "dist/system/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/SpoonX/aurelia-orm"
@@ -63,9 +63,9 @@
   },
   "jspm": {
     "main": "index",
-    "format": "amd",
+    "format": "register",
     "directories": {
-      "lib": "dist/amd"
+      "lib": "dist/system"
     },
     "dependencies": {
       "aurelia-binding": "npm:aurelia-binding@^1.0.0-beta.1.0.3",
