@@ -72,7 +72,7 @@ var Repository = (function () {
         return _this.populateEntities(x);
       }).then(function (populated) {
         if (!Array.isArray(populated)) {
-          return populated;
+          return populated.markClean();
         }
 
         populated.forEach(function (entity) {
