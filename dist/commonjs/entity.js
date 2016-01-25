@@ -10,7 +10,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaValidation = require('aurelia-validation');
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _ormMetadata = require('./orm-metadata');
 
@@ -307,8 +307,8 @@ var Entity = (function () {
   }]);
 
   var _Entity = Entity;
-  Entity = (0, _aureliaFramework.inject)(_aureliaValidation.Validation)(Entity) || Entity;
-  Entity = (0, _aureliaFramework.transient)()(Entity) || Entity;
+  Entity = (0, _aureliaDependencyInjection.inject)(_aureliaValidation.Validation)(Entity) || Entity;
+  Entity = (0, _aureliaDependencyInjection.transient)()(Entity) || Entity;
   return Entity;
 })();
 

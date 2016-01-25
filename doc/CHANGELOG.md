@@ -1,3 +1,22 @@
+<a name"2.0.2"></a>
+### 2.0.2 (2016-01-24)
+
+
+#### Bug Fixes
+
+* **project:**
+  * removed aurelia-framework dependency and imported directly ([a23194b5](https://github.com/SpoonX/aurelia-orm/commit/a23194b5))
+  
+
+<a name"2.0.1"></a>
+### 2.0.1 (2016-01-24)
+
+
+#### Bug Fixes
+
+* **project:** systemjs module loader ([126dbaf8](https://github.com/SpoonX/aurelia-orm/commit/126dbaf8))
+
+
 ## 2.0.0 (2016-01-17)
 
 

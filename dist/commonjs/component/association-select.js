@@ -12,7 +12,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer ? descriptor.initializer.call(target) : undefined; Object.defineProperty(target, key, descriptor); }
 
-var _aureliaFramework = require('aurelia-framework');
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _aureliaBinding = require('aurelia-binding');
 
@@ -30,41 +30,41 @@ var AssociationSelect = (function () {
 
   _createDecoratedClass(AssociationSelect, [{
     key: 'criteria',
-    decorators: [_aureliaFramework.bindable],
+    decorators: [_aureliaTemplating.bindable],
     initializer: function initializer() {
       return null;
     },
     enumerable: true
   }, {
     key: 'repository',
-    decorators: [_aureliaFramework.bindable],
+    decorators: [_aureliaTemplating.bindable],
     initializer: null,
     enumerable: true
   }, {
     key: 'property',
-    decorators: [_aureliaFramework.bindable],
+    decorators: [_aureliaTemplating.bindable],
     initializer: function initializer() {
       return 'name';
     },
     enumerable: true
   }, {
     key: 'options',
-    decorators: [_aureliaFramework.bindable],
+    decorators: [_aureliaTemplating.bindable],
     initializer: null,
     enumerable: true
   }, {
     key: 'association',
-    decorators: [_aureliaFramework.bindable],
+    decorators: [_aureliaTemplating.bindable],
     initializer: null,
     enumerable: true
   }, {
     key: 'manyAssociation',
-    decorators: [_aureliaFramework.bindable],
+    decorators: [_aureliaTemplating.bindable],
     initializer: null,
     enumerable: true
   }, {
     key: 'value',
-    decorators: [(0, _aureliaFramework.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay })],
+    decorators: [(0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay })],
     initializer: null,
     enumerable: true
   }], null, _instanceInitializers);
@@ -245,7 +245,7 @@ var AssociationSelect = (function () {
   }], null, _instanceInitializers);
 
   var _AssociationSelect = AssociationSelect;
-  AssociationSelect = (0, _aureliaFramework.inject)(_aureliaBinding.BindingEngine, _index.EntityManager, Element)(AssociationSelect) || AssociationSelect;
+  AssociationSelect = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.BindingEngine, _index.EntityManager, Element)(AssociationSelect) || AssociationSelect;
   AssociationSelect = (0, _aureliaTemplating.customElement)('association-select')(AssociationSelect) || AssociationSelect;
   return AssociationSelect;
 })();

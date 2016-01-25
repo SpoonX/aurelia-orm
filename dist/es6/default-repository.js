@@ -1,4 +1,4 @@
-import {transient} from 'aurelia-framework';
+import {transient} from 'aurelia-dependency-injection';
 import {Repository} from './repository';
 
 @transient()
