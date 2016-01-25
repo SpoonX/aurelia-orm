@@ -64,6 +64,8 @@ describe('Repository', function() {
         expect(response.path).toEqual('/find-test');
         expect(response.method).toEqual('GET');
         expect(response instanceof Entity).toBe(true);
+        expect(response.isClean()).toBe(true);
+        expect(response.isDirty()).toBe(false);
 
         done();
       });
@@ -77,6 +79,8 @@ describe('Repository', function() {
         expect(response.method).toEqual('GET');
         expect(response.query).toEqual({foo: 'bar', bar: 'baz', skip: '10'});
         expect(response instanceof Entity).toBe(true);
+        expect(response.isClean()).toBe(true);
+        expect(response.isDirty()).toBe(false);
 
         done();
       });
@@ -89,6 +93,8 @@ describe('Repository', function() {
         expect(response.path).toEqual('/withcustomrepository');
         expect(response.method).toEqual('GET');
         expect(response instanceof Entity).toBe(true);
+        expect(response.isClean()).toBe(true);
+        expect(response.isDirty()).toBe(false);
 
         done();
       }).catch(y => console.log(y.stack));
@@ -102,6 +108,8 @@ describe('Repository', function() {
         expect(response.method).toEqual('GET');
         expect(response.query).toEqual({foo: 'bar', bar: 'baz', skip: '10'});
         expect(response instanceof Entity).toBe(true);
+        expect(response.isClean()).toBe(true);
+        expect(response.isDirty()).toBe(false);
 
         done();
       }).catch(y => console.log(y.stack));
