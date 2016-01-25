@@ -1,3 +1,12 @@
+<a name"2.1.0"></a>
+## 2.1.0 (2016-01-25)
+
+
+#### Bug Fixes
+
+* **repository:** retrieved single entitiy marked clean ([be0b5d13](https://github.com/SpoonX/aurelia-orm/commit/be0b5d13))
+
+
 <a name"2.0.2"></a>
 ### 2.0.2 (2016-01-24)
 
