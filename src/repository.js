@@ -100,7 +100,7 @@ export class Repository {
       .then(x => this.populateEntities(x))
       .then(populated => {
         if (!Array.isArray(populated)) {
-          return populated;
+          return populated.markClean();
         }
 
         populated.forEach(entity => entity.markClean());
