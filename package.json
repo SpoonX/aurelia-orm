@@ -74,7 +74,8 @@
       "aurelia-templating": "npm:aurelia-templating@^1.0.0-beta.1.0.3",
       "aurelia-validation": "npm:aurelia-validation@^0.6.0",
       "extend": "npm:extend@^3.0.0",
-      "spoonx/aurelia-api": "github:spoonx/aurelia-api@^2.0.3"
+      "spoonx/aurelia-api": "github:spoonx/aurelia-api@^2.0.3",
+      "typer": "npm:typer@^1.1.0"
     },
     "devDependencies": {
       "aurelia-pal-browser": "npm:aurelia-pal-browser@^1.0.0-beta.1",
