@@ -15,7 +15,7 @@
     "url": "https://github.com/SpoonX/aurelia-orm/issues"
   },
   "scripts": {
-    "test": "snyk test && ./node_modules/.bin/gulp test"
+    "test": "./node_modules/.bin/gulp test"
   },
   "license": "MIT",
   "author": "RWOverdijk <wesley@spoonx.nl> (http://spoonx.nl/)",
