@@ -1,7 +1,7 @@
-System.register(['aurelia-dependency-injection', 'spoonx/aurelia-api'], function (_export) {
+System.register(['aurelia-dependency-injection', 'spoonx/aurelia-api', 'typer'], function (_export) {
   'use strict';
 
-  var inject, Config, Repository;
+  var inject, Config, typer, Repository;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -12,6 +12,8 @@ System.register(['aurelia-dependency-injection', 'spoonx/aurelia-api'], function
       inject = _aureliaDependencyInjection.inject;
     }, function (_spoonxAureliaApi) {
       Config = _spoonxAureliaApi.Config;
+    }, function (_typer) {
+      typer = _typer['default'];
     }],
     execute: function () {
       Repository = (function () {
@@ -124,6 +126,12 @@ System.register(['aurelia-dependency-injection', 'spoonx/aurelia-api'], function
               }
 
               var value = data[key];
+
+              if (entityMetadata.has('types', key)) {
+                populatedData[key] = typer.cast(value, entityMetadata.fetch('types', key));
+
+                continue;
+              }
 
               if (!entityMetadata.has('associations', key) || typeof value !== 'object') {
                 populatedData[key] = value;
