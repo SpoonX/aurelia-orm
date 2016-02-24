@@ -107,6 +107,15 @@ Object.defineProperty(exports, 'validation', {
   }
 });
 
+var _decoratorType = require('./decorator/type');
+
+Object.defineProperty(exports, 'type', {
+  enumerable: true,
+  get: function get() {
+    return _decoratorType.type;
+  }
+});
+
 var _decoratorValidatedResource = require('./decorator/validated-resource');
 
 Object.defineProperty(exports, 'validatedResource', {

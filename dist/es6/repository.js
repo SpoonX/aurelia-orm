@@ -1,5 +1,6 @@
 import {inject} from 'aurelia-dependency-injection';
 import {Config} from 'spoonx/aurelia-api';
+import typer from 'typer';
 
 @inject(Config)
 export class Repository {
@@ -163,6 +164,12 @@ export class Repository {
       }
 
       let value = data[key];
+
+      if (entityMetadata.has('types', key)) {
+        populatedData[key] = typer.cast(value, entityMetadata.fetch('types', key));
+
+        continue;
+      }
 
       if (!entityMetadata.has('associations', key) || typeof value !== 'object') {
         // Not an association, or not an object. clean copy.

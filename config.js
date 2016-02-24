@@ -28,6 +28,7 @@ System.config({
     "extend": "npm:extend@3.0.0",
     "fetch": "github:github/fetch@0.10.1",
     "spoonx/aurelia-api": "github:spoonx/aurelia-api@2.0.3",
+    "typer": "npm:typer@1.1.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },

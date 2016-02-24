@@ -78,6 +78,40 @@ Use this decorator to indicate that a property has a relationship with another e
 - It will make sure that calling .asObject() on the entity recursively converts all children to simple objects.
 - It will make sure that upon calling .update(), all children get converted to IDs.
 
+## @type()
+This decorator allows you to add types to your properties. These types will be used **when populating an entity**, to cast the values to given type. This can be useful when, for instance, working with `Date` instances.
+
+### Example
+```javascript
+import {Entity, type} from 'spoonx/aurelia-orm';
+
+export class MyEntity extends Entity {
+  @type('string')
+  name = null;
+  
+  @type('date')
+  created = null;
+  
+  @type('boolean')
+  disabled = false;
+}
+```
+
+### Accepted types
+The accepted types are:
+
+- text
+- string
+- date
+- datetime
+- integer
+- int
+- number
+- float
+- boolean
+- bool
+- smart (autodetect based on value)
+
 ## @endpoint()
 This decorator allows you to specify which endpoint (see the [aurelia-api documentation](https://github.com/SpoonX/aurelia-api/blob/master/doc/getting-started.md#multiple-endpoints)) to use.
 
