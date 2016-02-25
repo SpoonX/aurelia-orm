@@ -1,3 +1,11 @@
+### 2.1.1 (2016-02-26)
+
+
+#### Bug Fixes
+
+* **rest:** Allow nested criteria ([e608d11e](https://github.com/SpoonX/aurelia-orm/commit/e608d11e990718a022b984f43825ead2e2325513))
+
+
 ## 2.1.0 (2016-02-23)
 
 
