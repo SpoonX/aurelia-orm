@@ -1,3 +1,11 @@
+### 2.1.1 (2016-02-26)
+
+
+#### Bug Fixes
+
+* **repository:** Allow nested criteria ([7758beb3](https://github.com/SpoonX/aurelia-orm/commit/7758beb383ec2a95ddeace999e4adb2da579fe38))
+
+
 ## 2.1.0 (2016-02-23)
 
 
@@ -25,7 +33,7 @@
 
 * **project:**
   * removed aurelia-framework dependency and imported directly ([a23194b5](https://github.com/SpoonX/aurelia-orm/commit/a23194b5))
-  
+
 
 <a name"2.0.1"></a>
 ### 2.0.1 (2016-01-24)

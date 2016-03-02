@@ -1,6 +1,6 @@
 {
   "name": "aurelia-orm",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Makes working with entities and calling your Rest API simple.",
   "keywords": [
     "aurelia",
@@ -71,21 +71,21 @@
       "aurelia-binding": "npm:aurelia-binding@^1.0.0-beta.1.0.5",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.0.1",
       "aurelia-metadata": "npm:aurelia-metadata@^1.0.0-beta.1",
-      "aurelia-templating": "npm:aurelia-templating@^1.0.0-beta.1.0.3",
-      "aurelia-validation": "npm:aurelia-validation@^0.6.0",
+      "aurelia-templating": "npm:aurelia-templating@^1.0.0-beta.1.1.1",
+      "aurelia-validation": "npm:aurelia-validation@^0.6.2",
       "extend": "npm:extend@^3.0.0",
-      "spoonx/aurelia-api": "github:spoonx/aurelia-api@^2.0.3",
+      "spoonx/aurelia-api": "github:spoonx/aurelia-api@^2.0.7",
       "typer": "npm:typer@^1.1.0"
     },
     "devDependencies": {
       "aurelia-pal-browser": "npm:aurelia-pal-browser@^1.0.0-beta.1",
       "babel": "npm:babel-core@^5.6.4",
       "babel-runtime": "npm:babel-runtime@^5.6.4",
-      "core-js": "npm:core-js@^1.2.6",
+      "core-js": "npm:core-js@^2.1.1",
       "fetch": "github:github/fetch@^0.10.1"
     },
     "overrides": {
-      "npm:core-js@1.2.6": {
+      "npm:core-js@2.1.1": {
         "main": "client/shim.min"
       }
     }
