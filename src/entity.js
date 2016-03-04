@@ -140,6 +140,8 @@ export class Entity {
   /**
    * Add an entity to a collection (persist).
    *
+   * When given entity has data, create the entity and set up the relation.
+   *
    * @param {Entity|number} entity     Entity or id
    * @param {string}        [property] The name of the property
    *
@@ -147,17 +149,31 @@ export class Entity {
    */
   addCollectionAssociation(entity, property) {
     property    = property || getPropertyForAssociation(this, entity);
-    let idToAdd = entity;
+    let body    = undefined;
+    let url     = [this.getResource(), this.id, property];
 
-    if (entity instanceof Entity) {
-      if (!entity.id) {
-        return Promise.resolve(null);
-      }
-
-      idToAdd = entity.id;
+    if (this.isNew()) {
+      throw new Error('Cannot add association to entity that does not have an id.');
     }
 
-    return this.getTransport().create([this.getResource(), this.id, property, idToAdd].join('/'));
+    if (!(entity instanceof Entity)) {
+      url.push(entity);
+
+      return this.getTransport().create(url.join('/'));
+    }
+
+    if (entity.isNew()) {
+      // Entity is new! Don't supply an ID, and just pass in the child.
+      body = entity.asObject();
+    } else {
+      // Entity isn't new, just add id to url.
+      url.push(entity.id);
+    }
+
+    return this.getTransport().create(url.join('/'), body)
+      .then(created => {
+        return entity.setData(created).markClean();
+      });
   }
 
   /**
