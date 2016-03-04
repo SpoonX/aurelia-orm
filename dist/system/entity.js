@@ -230,17 +230,28 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
           key: 'addCollectionAssociation',
           value: function addCollectionAssociation(entity, property) {
             property = property || getPropertyForAssociation(this, entity);
-            var idToAdd = entity;
+            var body = undefined;
+            var url = [this.getResource(), this.id, property];
 
-            if (entity instanceof Entity) {
-              if (!entity.id) {
-                return Promise.resolve(null);
-              }
-
-              idToAdd = entity.id;
+            if (this.isNew()) {
+              throw new Error('Cannot add association to entity that does not have an id.');
             }
 
-            return this.getTransport().create([this.getResource(), this.id, property, idToAdd].join('/'));
+            if (!(entity instanceof Entity)) {
+              url.push(entity);
+
+              return this.getTransport().create(url.join('/'));
+            }
+
+            if (entity.isNew()) {
+              body = entity.asObject();
+            } else {
+              url.push(entity.id);
+            }
+
+            return this.getTransport().create(url.join('/'), body).then(function (created) {
+              return entity.setData(created).markClean();
+            });
           }
         }, {
           key: 'removeCollectionAssociation',
