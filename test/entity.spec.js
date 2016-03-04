@@ -55,6 +55,55 @@ describe('Entity', function() {
     });
   });
 
+  describe('.addCollectionAssociation()', function () {
+    it('Should properly add collectionAssociations when requested.', function(done) {
+      let container     = getContainer();
+      let entityManager = new EntityManager(container);
+      let testPromises  = [];
+
+      entityManager.registerEntities([WithAssociations, Foo, Custom]);
+
+      let entity       = entityManager.getEntity('withassociations').setData({id: 123});
+      let brokenParent = entityManager.getEntity('withassociations');
+      let childOne     = entityManager.getEntity('foo').setData({empty: 'child one'});
+      let childTwo     = entityManager.getEntity('foo').setData({empty: 'child two'});
+      let childThree   = entityManager.getEntity('custom').setData({empty: 'If I must'});
+      let childFour    = 1337;
+
+      testPromises.push(entity.addCollectionAssociation(childOne, 'foo'));  // With property
+      testPromises.push(entity.addCollectionAssociation(childTwo));         // Without property
+      testPromises.push(entity.addCollectionAssociation(childThree));       // With one assoc
+      testPromises.push(entity.addCollectionAssociation(childFour, 'foo')); // Without body, only ID
+
+      // Test adding children to parent that hasn't been persisted yet.
+      expect(() => {
+        brokenParent.addCollectionAssociation(childOne);
+      }).toThrowError(Error, 'Cannot add association to entity that does not have an id.');
+
+      // Test results of different ways of adding children to collection
+      Promise.all(testPromises).then(response => {
+        expect(response[0].path).toBe('/withassociations/123/foo');
+        expect(response[1].path).toBe('/withassociations/123/foo');
+        expect(response[2].path).toBe('/withassociations/123/bar');
+        expect(response[3].path).toBe('/withassociations/123/foo/1337');
+
+        expect(response[0] instanceof Foo).toBe(true);
+        expect(response[1] instanceof Foo).toBe(true);
+        expect(response[2] instanceof Custom).toBe(true);
+        expect(response[3] instanceof Object).toBe(true);
+
+        expect(response[0].body).toEqual({empty: 'child one'});
+        expect(response[1].body).toEqual({empty: 'child two'});
+        expect(response[2].body).toEqual({empty: 'If I must'});
+        expect(response[3].body).toEqual({});
+
+        done();
+      }).catch(error => {
+        throw error;
+      });
+    });
+  });
+
   describe('.save()', function() {
     it('Should call .create on REST without an ID. (custom entity)', function(done) {
       var entity = constructEntity(WithResource);
