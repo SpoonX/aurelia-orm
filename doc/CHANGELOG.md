@@ -1,3 +1,12 @@
+<a name"2.2.0"></a>
+## 2.2.0 (2016-03-05)
+
+
+#### Features
+
+* **entity:** Create child when new, upon adding ([a2ff99d9](https://github.com/SpoonX/aurelia-orm/commit/a2ff99d9))
+
+
 <a name"2.1.1"></a>
 ### 2.1.1 (2016-03-02)
 
