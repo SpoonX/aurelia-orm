@@ -11,14 +11,13 @@ var rename = require('gulp-rename');
 var tools = require('aurelia-tools');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
-var debug = require('gulp-debug');
 
 var jsName = paths.packageName + '.js';
 
 gulp.task('build-index', function() {
   var importsToAdd = [];
 
-    return gulp.src([
+  return gulp.src([
       paths.root + '*.js',
       paths.root + '**/*.js',
      '!' + paths.root + 'aurelia-orm.js',
