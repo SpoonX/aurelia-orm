@@ -1,12 +1,13 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Entity = undefined;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _dec, _dec2, _class;
 
 var _aureliaValidation = require('aurelia-validation');
 
@@ -14,9 +15,11 @@ var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
 var _ormMetadata = require('./orm-metadata');
 
-var Entity = (function () {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Entity = exports.Entity = (_dec = (0, _aureliaDependencyInjection.transient)(), _dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaValidation.Validation), _dec(_class = _dec2(_class = function () {
   function Entity(validator) {
-    _classCallCheck(this, _Entity);
+    _classCallCheck(this, Entity);
 
     this.define('__meta', _ormMetadata.OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
 
@@ -27,303 +30,270 @@ var Entity = (function () {
     return this.define('__validator', validator);
   }
 
-  _createClass(Entity, [{
-    key: 'getTransport',
-    value: function getTransport() {
-      return this.getRepository().getTransport();
-    }
-  }, {
-    key: 'getRepository',
-    value: function getRepository() {
-      return this.__repository;
-    }
-  }, {
-    key: 'setRepository',
-    value: function setRepository(repository) {
-      return this.define('__repository', repository);
-    }
-  }, {
-    key: 'define',
-    value: function define(property, value, writable) {
-      Object.defineProperty(this, property, {
-        value: value,
-        writable: !!writable,
-        enumerable: false
-      });
+  Entity.prototype.getTransport = function getTransport() {
+    return this.getRepository().getTransport();
+  };
 
-      return this;
+  Entity.prototype.getRepository = function getRepository() {
+    return this.__repository;
+  };
+
+  Entity.prototype.setRepository = function setRepository(repository) {
+    return this.define('__repository', repository);
+  };
+
+  Entity.prototype.define = function define(property, value, writable) {
+    Object.defineProperty(this, property, {
+      value: value,
+      writable: !!writable,
+      enumerable: false
+    });
+
+    return this;
+  };
+
+  Entity.prototype.getMeta = function getMeta() {
+    return this.__meta;
+  };
+
+  Entity.prototype.save = function save() {
+    var _this = this;
+
+    if (!this.isNew()) {
+      return this.update();
     }
-  }, {
-    key: 'getMeta',
-    value: function getMeta() {
-      return this.__meta;
+
+    var response = void 0;
+    return this.getTransport().create(this.getResource(), this.asObject(true)).then(function (created) {
+      _this.id = created.id;
+      response = created;
+    }).then(function () {
+      return _this.saveCollections();
+    }).then(function () {
+      return _this.markClean();
+    }).then(function () {
+      return response;
+    });
+  };
+
+  Entity.prototype.update = function update() {
+    var _this2 = this;
+
+    if (this.isNew()) {
+      throw new Error('Required value "id" missing on entity.');
     }
-  }, {
-    key: 'save',
-    value: function save() {
-      var _this = this;
 
-      if (!this.isNew()) {
-        return this.update();
-      }
-
-      var response = undefined;
-      return this.getTransport().create(this.getResource(), this.asObject(true)).then(function (created) {
-        _this.id = created.id;
-        response = created;
-      }).then(function () {
-        return _this.saveCollections();
-      }).then(function () {
-        return _this.markClean();
-      }).then(function () {
-        return response;
-      });
+    if (this.isClean()) {
+      return Promise.resolve(null);
     }
-  }, {
-    key: 'update',
-    value: function update() {
-      var _this2 = this;
 
-      if (this.isNew()) {
-        throw new Error('Required value "id" missing on entity.');
-      }
+    var requestBody = this.asObject(true);
+    var response = void 0;
 
-      if (this.isClean()) {
+    delete requestBody.id;
+
+    return this.getTransport().update(this.getResource(), this.id, requestBody).then(function (updated) {
+      return response = updated;
+    }).then(function () {
+      return _this2.saveCollections();
+    }).then(function () {
+      return _this2.markClean();
+    }).then(function () {
+      return response;
+    });
+  };
+
+  Entity.prototype.addCollectionAssociation = function addCollectionAssociation(entity, property) {
+    property = property || getPropertyForAssociation(this, entity);
+    var body = undefined;
+    var url = [this.getResource(), this.id, property];
+
+    if (this.isNew()) {
+      throw new Error('Cannot add association to entity that does not have an id.');
+    }
+
+    if (!(entity instanceof Entity)) {
+      url.push(entity);
+
+      return this.getTransport().create(url.join('/'));
+    }
+
+    if (entity.isNew()) {
+      body = entity.asObject();
+    } else {
+      url.push(entity.id);
+    }
+
+    return this.getTransport().create(url.join('/'), body).then(function (created) {
+      return entity.setData(created).markClean();
+    });
+  };
+
+  Entity.prototype.removeCollectionAssociation = function removeCollectionAssociation(entity, property) {
+    property = property || getPropertyForAssociation(this, entity);
+    var idToRemove = entity;
+
+    if (entity instanceof Entity) {
+      if (!entity.id) {
         return Promise.resolve(null);
       }
 
-      var requestBody = this.asObject(true);
-      var response = undefined;
-
-      delete requestBody.id;
-
-      return this.getTransport().update(this.getResource(), this.id, requestBody).then(function (updated) {
-        return response = updated;
-      }).then(function () {
-        return _this2.saveCollections();
-      }).then(function () {
-        return _this2.markClean();
-      }).then(function () {
-        return response;
-      });
+      idToRemove = entity.id;
     }
-  }, {
-    key: 'addCollectionAssociation',
-    value: function addCollectionAssociation(entity, property) {
-      property = property || getPropertyForAssociation(this, entity);
-      var body = undefined;
-      var url = [this.getResource(), this.id, property];
 
-      if (this.isNew()) {
-        throw new Error('Cannot add association to entity that does not have an id.');
+    return this.getTransport().destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+  };
+
+  Entity.prototype.saveCollections = function saveCollections() {
+    var _this3 = this;
+
+    var tasks = [];
+    var currentCollections = getCollectionsCompact(this);
+    var cleanCollections = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
+
+    var addTasksForDifferences = function addTasksForDifferences(base, candidate, method) {
+      if (base === null) {
+        return;
       }
 
-      if (!(entity instanceof Entity)) {
-        url.push(entity);
-
-        return this.getTransport().create(url.join('/'));
-      }
-
-      if (entity.isNew()) {
-        body = entity.asObject();
-      } else {
-        url.push(entity.id);
-      }
-
-      return this.getTransport().create(url.join('/'), body).then(function (created) {
-        return entity.setData(created).markClean();
-      });
-    }
-  }, {
-    key: 'removeCollectionAssociation',
-    value: function removeCollectionAssociation(entity, property) {
-      property = property || getPropertyForAssociation(this, entity);
-      var idToRemove = entity;
-
-      if (entity instanceof Entity) {
-        if (!entity.id) {
-          return Promise.resolve(null);
-        }
-
-        idToRemove = entity.id;
-      }
-
-      return this.getTransport().destroy([this.getResource(), this.id, property, idToRemove].join('/'));
-    }
-  }, {
-    key: 'saveCollections',
-    value: function saveCollections() {
-      var _this3 = this;
-
-      var tasks = [];
-      var currentCollections = getCollectionsCompact(this);
-      var cleanCollections = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
-
-      var addTasksForDifferences = function addTasksForDifferences(base, candidate, method) {
-        if (base === null) {
-          return;
-        }
-
-        Object.getOwnPropertyNames(base).forEach(function (property) {
-          base[property].forEach(function (id) {
-            if (candidate === null || !Array.isArray(candidate[property]) || candidate[property].indexOf(id) === -1) {
-              tasks.push(method.call(_this3, id, property));
-            }
-          });
+      Object.getOwnPropertyNames(base).forEach(function (property) {
+        base[property].forEach(function (id) {
+          if (candidate === null || !Array.isArray(candidate[property]) || candidate[property].indexOf(id) === -1) {
+            tasks.push(method.call(_this3, id, property));
+          }
         });
-      };
-
-      addTasksForDifferences(currentCollections, cleanCollections, this.addCollectionAssociation);
-
-      addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
-
-      return Promise.all(tasks).then(function (results) {
-        if (!Array.isArray(results)) {
-          return _this3;
-        }
-
-        var newState = null;
-
-        while (newState === null) {
-          newState = results.pop();
-        }
-
-        if (newState) {
-          _this3.getRepository().getPopulatedEntity(newState, _this3);
-        }
-
-        return _this3;
       });
-    }
-  }, {
-    key: 'markClean',
-    value: function markClean() {
-      var cleanValues = getFlat(this);
-      this.__cleanValues = {
-        checksum: JSON.stringify(cleanValues),
-        data: cleanValues
-      };
+    };
 
+    addTasksForDifferences(currentCollections, cleanCollections, this.addCollectionAssociation);
+
+    addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
+
+    return Promise.all(tasks).then(function (results) {
+      if (!Array.isArray(results)) {
+        return _this3;
+      }
+
+      var newState = null;
+
+      while (newState === null) {
+        newState = results.pop();
+      }
+
+      if (newState) {
+        _this3.getRepository().getPopulatedEntity(newState, _this3);
+      }
+
+      return _this3;
+    });
+  };
+
+  Entity.prototype.markClean = function markClean() {
+    var cleanValues = getFlat(this);
+    this.__cleanValues = {
+      checksum: JSON.stringify(cleanValues),
+      data: cleanValues
+    };
+
+    return this;
+  };
+
+  Entity.prototype.isClean = function isClean() {
+    return getFlat(this, true) === this.__cleanValues.checksum;
+  };
+
+  Entity.prototype.isDirty = function isDirty() {
+    return !this.isClean();
+  };
+
+  Entity.prototype.isNew = function isNew() {
+    return typeof this.id === 'undefined';
+  };
+
+  Entity.getResource = function getResource() {
+    return _ormMetadata.OrmMetadata.forTarget(this).fetch('resource');
+  };
+
+  Entity.prototype.getResource = function getResource() {
+    return this.__resource || this.getMeta().fetch('resource');
+  };
+
+  Entity.prototype.setResource = function setResource(resource) {
+    return this.define('__resource', resource);
+  };
+
+  Entity.prototype.destroy = function destroy() {
+    if (!this.id) {
+      throw new Error('Required value "id" missing on entity.');
+    }
+
+    return this.getTransport().destroy(this.getResource(), this.id);
+  };
+
+  Entity.prototype.getName = function getName() {
+    var metaName = this.getMeta().fetch('name');
+
+    if (metaName) {
+      return metaName;
+    }
+
+    return this.getResource();
+  };
+
+  Entity.getName = function getName() {
+    var metaName = _ormMetadata.OrmMetadata.forTarget(this).fetch('name');
+
+    if (metaName) {
+      return metaName;
+    }
+
+    return this.getResource();
+  };
+
+  Entity.prototype.setData = function setData(data) {
+    Object.assign(this, data);
+
+    return this;
+  };
+
+  Entity.prototype.enableValidation = function enableValidation() {
+    if (!this.hasValidation()) {
+      throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
+    }
+
+    if (this.__validation) {
       return this;
     }
-  }, {
-    key: 'isClean',
-    value: function isClean() {
-      return getFlat(this, true) === this.__cleanValues.checksum;
-    }
-  }, {
-    key: 'isDirty',
-    value: function isDirty() {
-      return !this.isClean();
-    }
-  }, {
-    key: 'isNew',
-    value: function isNew() {
-      return typeof this.id === 'undefined';
-    }
-  }, {
-    key: 'getResource',
-    value: function getResource() {
-      return this.__resource || this.getMeta().fetch('resource');
-    }
-  }, {
-    key: 'setResource',
-    value: function setResource(resource) {
-      return this.define('__resource', resource);
-    }
-  }, {
-    key: 'destroy',
-    value: function destroy() {
-      if (!this.id) {
-        throw new Error('Required value "id" missing on entity.');
-      }
 
-      return this.getTransport().destroy(this.getResource(), this.id);
-    }
-  }, {
-    key: 'getName',
-    value: function getName() {
-      var metaName = this.getMeta().fetch('name');
+    return this.define('__validation', this.__validator.on(this));
+  };
 
-      if (metaName) {
-        return metaName;
-      }
-
-      return this.getResource();
+  Entity.prototype.getValidation = function getValidation() {
+    if (!this.hasValidation()) {
+      return null;
     }
-  }, {
-    key: 'setData',
-    value: function setData(data) {
-      Object.assign(this, data);
 
-      return this;
+    if (!this.__validation) {
+      this.enableValidation();
     }
-  }, {
-    key: 'enableValidation',
-    value: function enableValidation() {
-      if (!this.hasValidation()) {
-        throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
-      }
 
-      if (this.__validation) {
-        return this;
-      }
+    return this.__validation;
+  };
 
-      return this.define('__validation', this.__validator.on(this));
-    }
-  }, {
-    key: 'getValidation',
-    value: function getValidation() {
-      if (!this.hasValidation()) {
-        return null;
-      }
+  Entity.prototype.hasValidation = function hasValidation() {
+    return !!this.getMeta().fetch('validation');
+  };
 
-      if (!this.__validation) {
-        this.enableValidation();
-      }
+  Entity.prototype.asObject = function asObject(shallow) {
+    return _asObject(this, shallow);
+  };
 
-      return this.__validation;
-    }
-  }, {
-    key: 'hasValidation',
-    value: function hasValidation() {
-      return !!this.getMeta().fetch('validation');
-    }
-  }, {
-    key: 'asObject',
-    value: function asObject(shallow) {
-      return _asObject(this, shallow);
-    }
-  }, {
-    key: 'asJson',
-    value: function asJson(shallow) {
-      return _asJson(this, shallow);
-    }
-  }], [{
-    key: 'getResource',
-    value: function getResource() {
-      return _ormMetadata.OrmMetadata.forTarget(this).fetch('resource');
-    }
-  }, {
-    key: 'getName',
-    value: function getName() {
-      var metaName = _ormMetadata.OrmMetadata.forTarget(this).fetch('name');
+  Entity.prototype.asJson = function asJson(shallow) {
+    return _asJson(this, shallow);
+  };
 
-      if (metaName) {
-        return metaName;
-      }
-
-      return this.getResource();
-    }
-  }]);
-
-  var _Entity = Entity;
-  Entity = (0, _aureliaDependencyInjection.inject)(_aureliaValidation.Validation)(Entity) || Entity;
-  Entity = (0, _aureliaDependencyInjection.transient)()(Entity) || Entity;
   return Entity;
-})();
-
-exports.Entity = Entity;
+}()) || _class) || _class);
 
 function _asObject(entity, shallow) {
   var pojo = {};
@@ -338,7 +308,7 @@ function _asObject(entity, shallow) {
       return;
     }
 
-    if (shallow && typeof value === 'object' && value.id) {
+    if (shallow && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && value.id) {
       pojo[propertyName] = value.id;
 
       return;
@@ -353,7 +323,7 @@ function _asObject(entity, shallow) {
     var asObjects = [];
 
     value.forEach(function (childValue) {
-      if (typeof childValue !== 'object') {
+      if ((typeof childValue === 'undefined' ? 'undefined' : _typeof(childValue)) !== 'object') {
         return;
       }
 
@@ -363,7 +333,7 @@ function _asObject(entity, shallow) {
         return;
       }
 
-      if (!shallow || typeof childValue === 'object' && !childValue.id) {
+      if (!shallow || (typeof childValue === 'undefined' ? 'undefined' : _typeof(childValue)) === 'object' && !childValue.id) {
         asObjects.push(childValue.asObject(shallow));
       }
     });
@@ -377,7 +347,7 @@ function _asObject(entity, shallow) {
 }
 
 function _asJson(entity, shallow) {
-  var json = undefined;
+  var json = void 0;
 
   try {
     json = JSON.stringify(_asObject(entity, shallow));
