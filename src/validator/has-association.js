@@ -1,5 +1,5 @@
 import {ValidationRule} from 'aurelia-validation';
-import {Entity} from '../index';
+import {Entity} from '../aurelia-orm';
 
 export class HasAssociationValidationRule extends ValidationRule {
   constructor() {
