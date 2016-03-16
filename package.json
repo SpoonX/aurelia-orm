@@ -34,7 +34,7 @@
     "express": "^4.13.3",
     "gulp": "^3.8.10",
     "gulp-babel": "^5.1.0",
-    "gulp-bump": "^0.3.1",
+    "gulp-bump": "^2.0.1",
     "gulp-eslint": "^1.1.1",
     "gulp-yuidoc": "^0.1.2",
     "jasmine-core": "^2.1.3",
