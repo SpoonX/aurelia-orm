@@ -1,7 +1,9 @@
 # Components
+
 Aurelia-orm comes bundled with some (at the time of writing just one) components to simplify working with entity data.
 
 ## association-select
+
 > The `<association-select />` component composes a `<select />` element, of which the options have been populated from an endpoint.
 
 **Basic example**
@@ -48,18 +50,22 @@ Aurelia-orm comes bundled with some (at the time of writing just one) components
 Following are all attributes, and how they work.
 
 ### value
+
 This is the selected value of the element. This functions the same as a regular `<select />` would.
 
 ### property
+
 This tells the component which property to use from the data sent back by the resource (using the repository). **Defaults to `name`**.
 
 ### repository
+
 This tells the component where it can find the data to populate the element. This is a simple `EntityManager.getRepository('resource')`.
 
 ### association
+
 Add the association to the criteria, and listen for changes on the association so it can update when it does.
 
-*This attribute accepts arrays, and can be combined with the `manyAssociation` attribute*.
+_This attribute accepts arrays, and can be combined with the `manyAssociation` attribute_.
 
 This roughly translates to:
 
@@ -68,9 +74,11 @@ repository.find({association: association.id});
 ```
 
 ### manyAssociation
+
 Almost exactly the same as the `association` attribute, except for a `many` association. This will look up the data from the association's side. 
 
 _This attribute does **not** accept arrays, but can be combined with the `association` attribute_.
 
 ### criteria
+
 Pass along filter criteria to the element. These will be used to restrict the data returned from the API.
