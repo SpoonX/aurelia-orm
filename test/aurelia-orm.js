@@ -1,9 +1,9 @@
-import {configure} from '../src/index';
+import {configure} from '../src/aurelia-orm';
 import {Entity} from  '../src/entity-manager';
 import {Container} from 'aurelia-dependency-injection';
 import {EntityManager} from '../src/entity-manager';
 
-describe('index', function () {
+describe('aurelia-orm', function () {
   it('Should export a configure method which returns the entityManager', function () {
     expect(typeof configure).toEqual('function');
 

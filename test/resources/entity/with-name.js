@@ -1,5 +1,5 @@
 import {Entity} from '../../../src/entity';
-import {resource, name} from '../../../src/index';
+import {resource, name} from '../../../src/aurelia-orm';
 
 @resource()
 @name('cool name')

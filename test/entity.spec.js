@@ -1,4 +1,4 @@
-import {EntityManager} from '../src/index';
+import {EntityManager} from '../src/aurelia-orm';
 import {OrmMetadata, Metadata} from '../src/orm-metadata';
 import {WithResource} from './resources/entity/with-resource';
 import {WithValidation} from './resources/entity/with-validation';

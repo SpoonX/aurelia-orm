@@ -1,4 +1,4 @@
-import {repository, resource} from '../../../src/index';
+import {repository, resource} from '../../../src/aurelia-orm';
 import {Entity} from '../../../src/entity';
 import {SimpleCustom} from '../repository/simple-custom';
 

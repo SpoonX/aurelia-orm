@@ -24,14 +24,17 @@ This library is used directly by applications only.
 This library can be used in the **browser** only.
 
 ## Installation
+
 Installing this module is fairly simple.
 
 Run `jspm install github:spoonx/aurelia-orm` from your project root.
 
 ## Example
+
 Here's a snippet to give you an idea of what this module does.
 
 ### entity/user.js
+
 ```javascript
 import {Entity, validatedResource} from 'spoonx/aurelia-orm';
 import {ensure} from 'aurelia-validation';
@@ -50,6 +53,7 @@ export class UserEntity extends Entity {
 ```
 
 ### page/some-view-model.js
+
 ```javascript
 import {EntityManager} from 'spoonx/aurelia-orm';
 import {inject} from 'aurelia-framework';
@@ -80,9 +84,11 @@ export class Create {
 ```
 
 ## Gotchas
+
 When using this module, please keep in mind the following gotchas.
 
 ### Bundling
+
 When bundling your aurelia app, the bundler renames your modules (to save space).
 This is fine, but aurelia-orm allows you to add decorators without values, and uses the module name to set the value.
 For instance, `@resource()` would use the module's name to set the resource.
@@ -91,4 +97,5 @@ So keep in mind: When using aurelia-orm in a bundled application, you must speci
 For instance, `@decorator('category')`.
 
 ## Documentation
+
 You can find usage examples and documentation in the [Getting started](doc/getting-started.md) or the `doc/` directory.

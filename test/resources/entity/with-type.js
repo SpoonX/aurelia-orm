@@ -1,4 +1,4 @@
-import {resource, type} from '../../../src/index';
+import {resource, type} from '../../../src/aurelia-orm';
 import {Entity} from '../../../src/entity';
 
 @resource('with-type')
