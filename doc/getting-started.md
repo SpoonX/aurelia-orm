@@ -1,16 +1,20 @@
 # Getting started
+
 In this document, we'll be modifying the skeleton to use aurelia-orm.
 
 ## Prerequisites
+
 For this guide, we assume you have the [aurelia skeleton](https://github.com/aurelia/skeleton-navigation) set up.
 We'll also assume you have [node](https://nodejs.org/en/) and [npm](https://www.npmjs.com/) installed, and that you're familiar with [installing modules](https://docs.npmjs.com/).
 
-Finally, we'll assume that you have [jspm](jspm.io) installed. If you don't, run `npm i -g jspm`.
+Finally, we'll assume that you have [jspm](http://jspm.io) installed. If you don't, run `npm i -g jspm`.
 
 ## Basic usage
+
 The getting started guide will focus on the easiest use cases imaginable. We'll replace the standard functionality provided by the skeleton with aurelia-orm.
 
 ### Installing aurelia-orm
+
 We'll start off by installing aurelia-orm. Head over to your terminal of choice, and navigate to your skeleton.
 Now run the following command:
 
@@ -19,11 +23,13 @@ Now run the following command:
 This will install aurelia-orm and [aurelia-api](https://github.com/SpoonX/aurelia-api). Aurelia-orm uses [aurelia-api](https://github.com/SpoonX/aurelia-api) to talk to the server. By default, it will communicate with the domain it's being used on. Seeing how for this guide we'll be doing cross-domain communication, we'll have to configure it, and thus we installed it.
 
 ### But first...
+
 Cool, the orm has been installed... But now we want it to _do_ something, right? Head on over to your favorite editor, open up the project and open file `src/users.js`.
 
 As you can see, it's using `aurelia-fetch-client` to do the API calls to `https://api.github.com/`. We're going to change that, and make use of aurelia-orm.
 
 ### Configuration
+
 This is the boring part. Head back to your editor and open up `src/main.js`. Configure aurelia-api and register `https://api.github.com/` as a new endpoint.
 You can find more information on this in the [aurelia-api getting started](https://github.com/SpoonX/aurelia-api/blob/master/doc/getting-started.md#multiple-endpoints).
 
@@ -49,6 +55,7 @@ export function configure(aurelia) {
 All we're doing here, is telling aurelia to register aurelia-api as a plugin, and configuring aurelia-api with a new endpoint.
 
 ### Use it
+
 Now head back to `src/users.js`. Change the file to look like this:
 
 ```javascript
@@ -81,12 +88,14 @@ Here's what we've changed. We've:
 
 And done! We've now successfully swapped auth aurelia-fetch-client with `aurelia-orm`.
 
-Head back to your terminal, run `gulp watch` and open the project in your browser. Now, when you navigate to http://localhost:9000/#/users, you'll notice that absolutely nothing has changed; which was the point of this getting started.
+Head back to your terminal, run `gulp watch` and open the project in your browser. Now, when you navigate to <http://localhost:9000/#/users>, you'll notice that absolutely nothing has changed; which was the point of this getting started.
 
 ## Customize it
+
 What we've done here, is familiarize ourselves with the way to set this module up. There's a lot more this module can do to make talking to restful api's more comfortable (and organized).
 
 ### Registering entities
+
 So far, we've only used a default entity, default repository, and only the .find() method.
 
 ```javascript
@@ -113,6 +122,7 @@ export function configure(aurelia) {
   aurelia.start().then(a => a.setRoot());
 }
 ```
+
 Here's what your `config/entities.js` file might look like:
 
 ```javascript
@@ -147,6 +157,7 @@ export class Article extends Entity {
 ```
 
 ### Use it
+
 We can now get cracking. In any ViewModel, you can now get the desired repository, and start querying. Here's an extended example (based on the above code snippets):
 
 ```javascript
@@ -186,10 +197,9 @@ export class ViewModel {
 ```
 
 ### Endpoints
+
 Every entity can be configured to use an endpoint (see [decorators](decorators.md#endpoint)).
 This allows you to use the same entities, the same orm, without worrying about changing the endpoint (api url) to talk to.
-
-
 
 ### Further reading
 

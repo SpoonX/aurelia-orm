@@ -1,4 +1,4 @@
-import {EntityManager} from '../src/index';
+import {EntityManager} from '../src/aurelia-orm';
 import {Container} from 'aurelia-dependency-injection';
 import {WithResource} from './resources/entity/with-resource';
 import {WithCustomRepository} from './resources/entity/with-custom-repository';

@@ -1,3 +1,12 @@
+<a name"2.2.1"></a>
+### 2.2.1 (2016-03-25)
+
+
+#### Features
+
+* **project:** add d.ts file ([6a6368ce](https://github.com/SpoonX/aurelia-orm/commit/6a6368ce))
+
+
 <a name"2.2.0"></a>
 ## 2.2.0 (2016-03-05)
 

@@ -1,7 +1,9 @@
 # Entities
+
 This document is a collection of snippets and examples considering entities and what they can do.
 
 ## Create
+
 Following is a small, but more complete example of how you would implement a create. This example uses [aurelia-validation](https://github.com/aurelia/validation).
 
 ### File: entity/user-entity.js
@@ -69,5 +71,4 @@ export class Create {
     working.bind     = "requestInFlight">
   </location-form>
 </template>
-
 ```

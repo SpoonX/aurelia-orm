@@ -1,176 +1,173 @@
-define(['exports', 'aurelia-dependency-injection', 'spoonx/aurelia-api', 'typer'], function (exports, _aureliaDependencyInjection, _spoonxAureliaApi, _typer) {
+define(['exports', 'aurelia-dependency-injection', 'spoonx/aurelia-api', 'typer'], function (exports, _aureliaDependencyInjection, _aureliaApi, _typer) {
   'use strict';
 
-  Object.defineProperty(exports, '__esModule', {
+  Object.defineProperty(exports, "__esModule", {
     value: true
   });
-
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  exports.Repository = undefined;
 
   var _typer2 = _interopRequireDefault(_typer);
 
-  var Repository = (function () {
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  };
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  var _dec, _class;
+
+  var Repository = exports.Repository = (_dec = (0, _aureliaDependencyInjection.inject)(_aureliaApi.Config), _dec(_class = function () {
     function Repository(clientConfig) {
-      _classCallCheck(this, _Repository);
+      _classCallCheck(this, Repository);
 
       this.transport = null;
 
       this.clientConfig = clientConfig;
     }
 
-    _createClass(Repository, [{
-      key: 'getTransport',
-      value: function getTransport() {
-        if (this.transport === null) {
-          this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
+    Repository.prototype.getTransport = function getTransport() {
+      if (this.transport === null) {
+        this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
+      }
+
+      return this.transport;
+    };
+
+    Repository.prototype.setMeta = function setMeta(meta) {
+      this.meta = meta;
+    };
+
+    Repository.prototype.getMeta = function getMeta() {
+      return this.meta;
+    };
+
+    Repository.prototype.setResource = function setResource(resource) {
+      this.resource = resource;
+
+      return this;
+    };
+
+    Repository.prototype.getResource = function getResource() {
+      return this.resource;
+    };
+
+    Repository.prototype.find = function find(criteria, raw) {
+      return this.findPath(this.resource, criteria, raw);
+    };
+
+    Repository.prototype.findPath = function findPath(path, criteria, raw) {
+      var _this = this;
+
+      var findQuery = this.getTransport().find(path, criteria);
+
+      if (raw) {
+        return findQuery;
+      }
+
+      return findQuery.then(function (x) {
+        return _this.populateEntities(x);
+      }).then(function (populated) {
+        if (!Array.isArray(populated)) {
+          return populated.markClean();
         }
 
-        return this.transport;
-      }
-    }, {
-      key: 'setMeta',
-      value: function setMeta(meta) {
-        this.meta = meta;
-      }
-    }, {
-      key: 'getMeta',
-      value: function getMeta() {
-        return this.meta;
-      }
-    }, {
-      key: 'setResource',
-      value: function setResource(resource) {
-        this.resource = resource;
-
-        return this;
-      }
-    }, {
-      key: 'getResource',
-      value: function getResource() {
-        return this.resource;
-      }
-    }, {
-      key: 'find',
-      value: function find(criteria, raw) {
-        return this.findPath(this.resource, criteria, raw);
-      }
-    }, {
-      key: 'findPath',
-      value: function findPath(path, criteria, raw) {
-        var _this = this;
-
-        var findQuery = this.getTransport().find(path, criteria);
-
-        if (raw) {
-          return findQuery;
-        }
-
-        return findQuery.then(function (x) {
-          return _this.populateEntities(x);
-        }).then(function (populated) {
-          if (!Array.isArray(populated)) {
-            return populated.markClean();
-          }
-
-          populated.forEach(function (entity) {
-            return entity.markClean();
-          });
-
-          return populated;
-        });
-      }
-    }, {
-      key: 'count',
-      value: function count(criteria) {
-        return this.getTransport().find(this.resource + '/count', criteria);
-      }
-    }, {
-      key: 'populateEntities',
-      value: function populateEntities(data) {
-        var _this2 = this;
-
-        if (!data) {
-          return null;
-        }
-
-        if (!Array.isArray(data)) {
-          return this.getPopulatedEntity(data);
-        }
-
-        var collection = [];
-
-        data.forEach(function (source) {
-          collection.push(_this2.getPopulatedEntity(source));
+        populated.forEach(function (entity) {
+          return entity.markClean();
         });
 
-        return collection;
+        return populated;
+      });
+    };
+
+    Repository.prototype.count = function count(criteria) {
+      return this.getTransport().find(this.resource + '/count', criteria);
+    };
+
+    Repository.prototype.populateEntities = function populateEntities(data) {
+      var _this2 = this;
+
+      if (!data) {
+        return null;
       }
-    }, {
-      key: 'getPopulatedEntity',
-      value: function getPopulatedEntity(data, entity) {
-        entity = entity || this.getNewEntity();
-        var entityMetadata = entity.getMeta();
-        var populatedData = {};
-        var key = undefined;
 
-        for (key in data) {
-          if (!data.hasOwnProperty(key)) {
-            continue;
-          }
+      if (!Array.isArray(data)) {
+        return this.getPopulatedEntity(data);
+      }
 
-          var value = data[key];
+      var collection = [];
 
-          if (entityMetadata.has('types', key)) {
-            populatedData[key] = _typer2['default'].cast(value, entityMetadata.fetch('types', key));
+      data.forEach(function (source) {
+        collection.push(_this2.getPopulatedEntity(source));
+      });
 
-            continue;
-          }
+      return collection;
+    };
 
-          if (!entityMetadata.has('associations', key) || typeof value !== 'object') {
-            populatedData[key] = value;
+    Repository.prototype.getPopulatedEntity = function getPopulatedEntity(data, entity) {
+      entity = entity || this.getNewEntity();
+      var entityMetadata = entity.getMeta();
+      var populatedData = {};
+      var key = void 0;
 
-            continue;
-          }
-
-          var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
-          populatedData[key] = repository.populateEntities(value);
+      for (key in data) {
+        if (!data.hasOwnProperty(key)) {
+          continue;
         }
 
-        return entity.setData(populatedData);
-      }
-    }, {
-      key: 'getNewEntity',
-      value: function getNewEntity() {
-        return this.entityManager.getEntity(this.resource);
-      }
-    }, {
-      key: 'getNewPopulatedEntity',
-      value: function getNewPopulatedEntity() {
-        var entity = this.getNewEntity();
-        var associations = entity.getMeta().fetch('associations');
+        var value = data[key];
 
-        for (var property in associations) {
-          var assocMeta = associations[property];
+        if (entityMetadata.has('types', key)) {
+          populatedData[key] = _typer2.default.cast(value, entityMetadata.fetch('types', key));
 
-          if (assocMeta.type !== 'entity') {
-            continue;
-          }
-
-          entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
+          continue;
         }
 
-        return entity;
-      }
-    }]);
+        if (!entityMetadata.has('associations', key) || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') {
+          populatedData[key] = value;
 
-    var _Repository = Repository;
-    Repository = (0, _aureliaDependencyInjection.inject)(_spoonxAureliaApi.Config)(Repository) || Repository;
+          continue;
+        }
+
+        var repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+        populatedData[key] = repository.populateEntities(value);
+      }
+
+      return entity.setData(populatedData);
+    };
+
+    Repository.prototype.getNewEntity = function getNewEntity() {
+      return this.entityManager.getEntity(this.resource);
+    };
+
+    Repository.prototype.getNewPopulatedEntity = function getNewPopulatedEntity() {
+      var entity = this.getNewEntity();
+      var associations = entity.getMeta().fetch('associations');
+
+      for (var property in associations) {
+        var assocMeta = associations[property];
+
+        if (assocMeta.type !== 'entity') {
+          continue;
+        }
+
+        entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
+      }
+
+      return entity;
+    };
+
     return Repository;
-  })();
-
-  exports.Repository = Repository;
+  }()) || _class);
 });

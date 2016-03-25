@@ -1,7 +1,7 @@
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
-import {EntityManager, OrmMetadata, Entity} from '../index';
+import {EntityManager, OrmMetadata, Entity} from '../aurelia-orm';
 import extend from 'extend';
 
 @customElement('association-select')
