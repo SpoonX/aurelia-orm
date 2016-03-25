@@ -1,11 +1,10 @@
 define(['exports', '../orm-metadata'], function (exports, _ormMetadata) {
   'use strict';
 
-  Object.defineProperty(exports, '__esModule', {
+  Object.defineProperty(exports, "__esModule", {
     value: true
   });
   exports.association = association;
-
   function association(associationData) {
     return function (target, propertyName) {
       if (!associationData) {
