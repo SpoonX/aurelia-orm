@@ -12,7 +12,7 @@ app.all('*', function(req, res) {
     path: req.path,
     query: req.query,
     body: req.body,
-    host: req.host,
+    host: req.hostname,
     method: req.method
   });
 });
