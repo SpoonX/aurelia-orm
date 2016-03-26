@@ -2,8 +2,8 @@ import {WithValidatedResource} from '../resources/entity/with-validated-resource
 import {WithValidatedCustomResource} from '../resources/entity/with-validated-custom-resource';
 import {OrmMetadata} from '../../src/orm-metadata';
 
-describe('@validatedResource()', function () {
-  it('Should set resource and enable validation on the entity.', function () {
+describe('@validatedResource()', function() {
+  it('Should set resource and enable validation on the entity.', function() {
     expect(OrmMetadata.forTarget(WithValidatedResource).fetch('validation')).toBe(true);
     expect(OrmMetadata.forTarget(WithValidatedResource).fetch('resource')).toEqual('withvalidatedresource');
 

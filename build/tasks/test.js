@@ -11,7 +11,7 @@ gulp.task('test', ['lint'], function(done) {
       configFile: __dirname + '/../../karma.conf.js',
       singleRun: true
     }, function() {
-      server.stop(function () {
+      server.stop(function() {
         done();
 
         process.exit();
