@@ -43,5 +43,5 @@ describe('@endpoint()', function() {
     ]).then(() => {
       done();
     });
-  })
+  });
 });

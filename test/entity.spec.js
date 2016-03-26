@@ -1,8 +1,7 @@
 import {EntityManager} from '../src/aurelia-orm';
-import {OrmMetadata, Metadata} from '../src/orm-metadata';
+import {Metadata} from '../src/orm-metadata';
 import {WithResource} from './resources/entity/with-resource';
 import {WithValidation} from './resources/entity/with-validation';
-import {SimpleCustom} from './resources/repository/simple-custom';
 import {Foo} from './resources/entity/foo';
 import {Custom} from './resources/entity/custom';
 import {WithAssociations} from './resources/entity/with-associations';
@@ -34,28 +33,28 @@ function constructEntity(entity) {
 describe('Entity', function() {
   describe('.constructor()', function() {
     it('Should set the meta data.', function() {
-      var validation = new Validation(),
-          entity     = new WithValidation(validation);
+      let validation = new Validation();
+      let entity     = new WithValidation(validation);
 
       expect(entity.__meta).not.toBe(undefined);
     });
 
     it('Should set the validator constructor.', function() {
-      var validation = new Validation(),
-          entity     = new WithValidation(validation);
+      let validation = new Validation();
+      let entity     = new WithValidation(validation);
 
       expect(entity.__validator).toBe(validation);
     });
 
     it('Should not set the validator constructor.', function() {
-      var validation = new Validation();
-      var entity     = new WithResource(validation);
+      let validation = new Validation();
+      let entity     = new WithResource(validation);
 
       expect(entity.__validator).toBe(undefined);
     });
   });
 
-  describe('.addCollectionAssociation()', function () {
+  describe('.addCollectionAssociation()', function() {
     it('Should properly add collectionAssociations when requested.', function(done) {
       let container     = getContainer();
       let entityManager = new EntityManager(container);
@@ -106,7 +105,7 @@ describe('Entity', function() {
 
   describe('.save()', function() {
     it('Should call .create on REST without an ID. (custom entity)', function(done) {
-      var entity = constructEntity(WithResource);
+      let entity = constructEntity(WithResource);
       entity.foo = 'bar';
 
       entity.save().then(response => {
@@ -174,7 +173,7 @@ describe('Entity', function() {
     });
 
     it('Should call .create with the full body.', function(done) {
-      var entity  = constructEntity(WithResource);
+      let entity  = constructEntity(WithResource);
       entity.foo  = 'bar';
       entity.city = {awesome: true};
 
@@ -188,7 +187,7 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with an ID. (custom entity)', function(done) {
-      var entity = constructEntity(WithResource);
+      let entity = constructEntity(WithResource);
       entity.foo = 'bar';
       entity.id  = 1337;
 
@@ -206,8 +205,8 @@ describe('Entity', function() {
 
       container.registerInstance(Rest);
 
-      var entityManager = new EntityManager(container),
-          entity        = entityManager.getEntity('default-entity');
+      let entityManager = new EntityManager(container);
+      let entity        = entityManager.getEntity('default-entity');
 
       entity.bacon = 'great!';
 
@@ -226,10 +225,10 @@ describe('Entity', function() {
 
       entityManager.registerEntities([WithAssociations, Foo, Custom]);
 
-      var parentEntity = entityManager.getEntity('withassociations'),
-          fooEntityOne = entityManager.getEntity('foo'),
-          fooEntityTwo = entityManager.getEntity('foo'),
-          customEntity = entityManager.getEntity('custom');
+      let parentEntity = entityManager.getEntity('withassociations');
+      let fooEntityOne = entityManager.getEntity('foo');
+      let fooEntityTwo = entityManager.getEntity('foo');
+      let customEntity = entityManager.getEntity('custom');
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -265,8 +264,8 @@ describe('Entity', function() {
 
       container.registerInstance(Rest);
 
-      var entityManager = new EntityManager(container),
-          entity        = entityManager.getEntity('default-entity');
+      let entityManager = new EntityManager(container);
+      let entity        = entityManager.getEntity('default-entity');
 
       entity.bacon = 'great!';
       entity.id    = 1991;
@@ -283,7 +282,7 @@ describe('Entity', function() {
 
   describe('.define()', function() {
     it('Should define a non-enumerable property on the entity.', function() {
-      var entity = new WithResource(new Validation());
+      let entity = new WithResource(new Validation());
 
       entity.define('__test', 'value');
       entity.define('__testWritable', 'value', true);
@@ -293,8 +292,8 @@ describe('Entity', function() {
       expect(Object.keys(entity).indexOf('__test')).toBe(-1);
       expect(Object.keys(entity).indexOf('__testWritable')).toBe(-1);
 
-      var testDescriptor         = Object.getOwnPropertyDescriptor(entity, '__test');
-      var testWritableDescriptor = Object.getOwnPropertyDescriptor(entity, '__testWritable');
+      let testDescriptor         = Object.getOwnPropertyDescriptor(entity, '__test');
+      let testWritableDescriptor = Object.getOwnPropertyDescriptor(entity, '__testWritable');
 
       expect(testDescriptor.enumerable).toBe(false);
       expect(testDescriptor.writable).toBe(false);
@@ -305,7 +304,7 @@ describe('Entity', function() {
 
   describe('.isDirty()', function() {
     it('Should properly return if the entity is dirty.', function() {
-      var entity = new WithResource(new Validation());
+      let entity = new WithResource(new Validation());
 
       entity.setData({
         id: 667,
@@ -323,7 +322,7 @@ describe('Entity', function() {
 
   describe('.isClean()', function() {
     it('Should properly return if the entity is clean.', function() {
-      var entity = new WithResource(new Validation());
+      let entity = new WithResource(new Validation());
 
       entity.setData({
         id: 667,
@@ -341,7 +340,7 @@ describe('Entity', function() {
 
   describe('.isNew()', function() {
     it('Should properly return if the entity is new.', function() {
-      var entity = new WithResource(new Validation());
+      let entity = new WithResource(new Validation());
 
       expect(entity.isNew()).toBe(true);
       entity.setData({id: 667}).markClean();
@@ -351,7 +350,7 @@ describe('Entity', function() {
 
   describe('.markClean()', function() {
     it('Should properly mark the entity as clean.', function() {
-      var entity = new WithResource(new Validation());
+      let entity = new WithResource(new Validation());
 
       entity.setData({
         id: 667,
@@ -373,7 +372,7 @@ describe('Entity', function() {
 
   describe('.update()', function() {
     it('Should call .update with complete body.', function(done) {
-      var entity  = constructEntity(WithResource);
+      let entity  = constructEntity(WithResource);
       entity.id   = 666;
       entity.foo  = 'bar';
       entity.city = {awesome: true};
@@ -388,7 +387,7 @@ describe('Entity', function() {
     });
 
     it('Should not send a PUT request for .update when clean.', function(done) {
-      var entity = constructEntity(WithResource);
+      let entity = constructEntity(WithResource);
       entity.setData({
         id: 667,
         foo: 'bar',
@@ -403,7 +402,7 @@ describe('Entity', function() {
     });
 
     it('Should throw an error with missing id.', function() {
-      var entity = constructEntity(WithResource);
+      let entity = constructEntity(WithResource);
       entity.foo = 'bar';
 
       expect(function() {
@@ -412,10 +411,10 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with nested body (associations).', function(done) {
-      var parentEntity = constructEntity(WithAssociations),
-          fooEntityOne = new Foo(),
-          fooEntityTwo = new Foo(),
-          customEntity = new Custom();
+      let parentEntity = constructEntity(WithAssociations);
+      let fooEntityOne = new Foo();
+      let fooEntityTwo = new Foo();
+      let customEntity = new Custom();
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -450,7 +449,7 @@ describe('Entity', function() {
 
   describe('.getMeta()', function() {
     it('Should return the entity metadata', function() {
-      var instance = new WithResource();
+      let instance = new WithResource();
 
       expect(instance.getMeta() instanceof Metadata).toBe(true);
     });
@@ -468,13 +467,13 @@ describe('Entity', function() {
 
   describe('.getResource()', function() {
     it('Should return the entity resource. (Default)', function() {
-      var instance = new Entity();
+      let instance = new Entity();
 
       expect(instance.getResource()).toEqual(null);
     });
 
     it('Should return the entity resource. (Custom)', function() {
-      var instance = new WithResource();
+      let instance = new WithResource();
 
       expect(instance.getResource()).toEqual('with-resource');
     });
@@ -490,9 +489,9 @@ describe('Entity', function() {
 
   describe('.getName()', function() {
     it('Should return the entity name.', function() {
-      var withName     = new WithName();
-      var withResource = new WithResource();
-      var entity       = new Entity();
+      let withName     = new WithName();
+      let withResource = new WithResource();
+      let entity       = new Entity();
 
       expect(withName.getName()).toEqual('cool name');
       expect(withResource.getName()).toEqual('with-resource');
@@ -502,7 +501,7 @@ describe('Entity', function() {
 
   describe('.setResource()', function() {
     it('Should set the entity resource. (Default)', function() {
-      var instance = new Entity();
+      let instance = new Entity();
 
       instance.setResource('testing-resource');
 
@@ -510,7 +509,7 @@ describe('Entity', function() {
     });
 
     it('Should set the entity resource. (Custom)', function() {
-      var instance = new WithResource();
+      let instance = new WithResource();
 
       instance.setResource('testing-resource-again');
 
@@ -520,7 +519,7 @@ describe('Entity', function() {
 
   describe('.destroy()', function() {
     it('Should call .destroy.', function(done) {
-      var entity = constructEntity(WithResource);
+      let entity = constructEntity(WithResource);
       entity.id  = 666;
 
       entity.destroy().then(response => {
@@ -532,7 +531,7 @@ describe('Entity', function() {
     });
 
     it('Should throw an error with missing id.', function() {
-      var entity = constructEntity(WithResource);
+      let entity = constructEntity(WithResource);
 
       expect(function() {
         entity.destroy();
@@ -542,7 +541,7 @@ describe('Entity', function() {
 
   describe('.setData()', function() {
     it('Should set data on an entity.', function() {
-      var entity = new Entity();
+      let entity = new Entity();
 
       entity.setResource('unittest .setDate');
 
@@ -551,12 +550,12 @@ describe('Entity', function() {
       expect(entity.cake).toEqual('delicious');
       expect(entity.but).toEqual('So is bacon');
       expect(entity.asObject()).toEqual({cake: 'delicious', but: 'So is bacon'});
-    })
+    });
   });
 
   describe('.enableValidation()', function() {
     it('Should enable validation on the entity.', function() {
-      var mockValidator = {
+      let mockValidator = {
         on: function() {
           return {};
         }
@@ -564,7 +563,7 @@ describe('Entity', function() {
 
       spyOn(mockValidator, 'on');
 
-      var entity = new WithValidation(mockValidator);
+      let entity = new WithValidation(mockValidator);
 
       entity.enableValidation();
 
@@ -572,7 +571,7 @@ describe('Entity', function() {
     });
 
     it('Should throw an error when called with validation disabled', function() {
-      var entity = new WithResource({});
+      let entity = new WithResource({});
 
       expect(function() {
         entity.enableValidation();
@@ -580,7 +579,7 @@ describe('Entity', function() {
     });
 
     it('Should not enable validation on the entity more than once.', function() {
-      var mockValidatorMultiple = {
+      let mockValidatorMultiple = {
         on: function() {
           return {};
         }
@@ -588,7 +587,7 @@ describe('Entity', function() {
 
       spyOn(mockValidatorMultiple, 'on').and.callThrough();
 
-      var entity = new WithValidation(mockValidatorMultiple);
+      let entity = new WithValidation(mockValidatorMultiple);
 
       entity.enableValidation();
 
@@ -604,19 +603,19 @@ describe('Entity', function() {
 
   describe('.getValidation()', function() {
     it('Should return null if validation meta is not true.', function() {
-      var entity = new WithResource('space camp');
+      let entity = new WithResource('space camp');
 
       expect(entity.getValidation()).toBe(null);
     });
 
     it('Should return validation for the entity (and create the instance).', function() {
-      var mockValidator = {
+      let mockValidator = {
         on: function() {
-          return 'The validator. But, not really.'
+          return 'The validator. But, not really.';
         }
       };
 
-      var entity = new WithValidation(mockValidator);
+      let entity = new WithValidation(mockValidator);
 
       // Instance
       expect(entity.getValidation()).toEqual('The validator. But, not really.');
@@ -628,13 +627,13 @@ describe('Entity', function() {
 
   describe('.hasValidation()', function() {
     it('Should return entity has validation disabled.', function() {
-      var entity = new WithResource({});
+      let entity = new WithResource({});
 
       expect(entity.hasValidation()).toEqual(false);
     });
 
     it('Should return entity has validation enabled.', function() {
-      var entity = new WithValidation({});
+      let entity = new WithValidation({});
 
       expect(entity.hasValidation()).toEqual(true);
     });
@@ -642,12 +641,12 @@ describe('Entity', function() {
 
   describe('.asObject()', function() {
     it('Should return a POJO (simple).', function() {
-      var entity     = new Entity(),
-          entityData = {
-            foo: 'bar',
-            some: 'properties',
-            nothing: 'special'
-          };
+      let entity     = new Entity();
+      let entityData = {
+        foo: 'bar',
+        some: 'properties',
+        nothing: 'special'
+      };
 
       entity.setResource('unittest .asObject simple');
 
@@ -657,15 +656,15 @@ describe('Entity', function() {
     });
 
     it('Should return a POJO (complex).', function() {
-      var entity     = new Entity(),
-          entityData = {
-            foo: 'bar',
-            some: 'properties',
-            nothing: 'special',
-            also: {
-              something: 'Nested!'
-            }
-          };
+      let entity     = new Entity();
+      let entityData = {
+        foo: 'bar',
+        some: 'properties',
+        nothing: 'special',
+        also: {
+          something: 'Nested!'
+        }
+      };
 
       entity.setResource('unittest .asJson complex');
       entity.setData(entityData);
@@ -674,10 +673,10 @@ describe('Entity', function() {
     });
 
     it('Should return a POJO (associations).', function() {
-      var parentEntity = new WithAssociations(),
-          fooEntityOne = new Foo(),
-          fooEntityTwo = new Foo(),
-          customEntity = new Custom();
+      let parentEntity = new WithAssociations();
+      let fooEntityOne = new Foo();
+      let fooEntityTwo = new Foo();
+      let customEntity = new Custom();
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -703,10 +702,10 @@ describe('Entity', function() {
     });
 
     it('Should return a POJO (associations with shallow set to true).', function() {
-      var parentEntity = new WithAssociations(),
-          fooEntityOne = new Foo(),
-          fooEntityTwo = new Foo(),
-          customEntity = new Custom();
+      let parentEntity = new WithAssociations();
+      let fooEntityOne = new Foo();
+      let fooEntityTwo = new Foo();
+      let customEntity = new Custom();
 
       fooEntityOne.id    = 6;
       fooEntityOne.some  = 'value';
@@ -732,10 +731,10 @@ describe('Entity', function() {
     });
 
     it('Should return a POJO and not break on empty association.', function() {
-      var parentEntity = new WithAssociations(),
-          fooEntityOne = new Foo(),
-          fooEntityTwo = new Foo(),
-          customEntity = new Custom();
+      let parentEntity = new WithAssociations();
+      let fooEntityOne = new Foo();
+      let fooEntityTwo = new Foo();
+      let customEntity = new Custom();
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -760,12 +759,12 @@ describe('Entity', function() {
 
   describe('.asJson()', function() {
     it('Should return a JSON string (simple).', function() {
-      var entity     = new Entity(),
-          entityData = {
-            foo: 'bar',
-            some: 'properties',
-            nothing: 'special'
-          };
+      let entity     = new Entity();
+      let entityData = {
+        foo: 'bar',
+        some: 'properties',
+        nothing: 'special'
+      };
 
       entity.setResource('unittest .asJson simple');
       entity.setData(entityData);
@@ -774,15 +773,15 @@ describe('Entity', function() {
     });
 
     it('Should return a JSON string (complex).', function() {
-      var entity     = new Entity(),
-          entityData = {
-            foo: 'bar',
-            some: 'properties',
-            nothing: 'special',
-            also: {
-              something: 'Nested!'
-            }
-          };
+      let entity     = new Entity();
+      let entityData = {
+        foo: 'bar',
+        some: 'properties',
+        nothing: 'special',
+        also: {
+          something: 'Nested!'
+        }
+      };
 
       entity.setResource('unittest .asJson complex');
 
@@ -792,10 +791,10 @@ describe('Entity', function() {
     });
 
     it('Should return a POJO (associations).', function() {
-      var parentEntity = new WithAssociations(),
-          fooEntityOne = new Foo(),
-          fooEntityTwo = new Foo(),
-          customEntity = new Custom();
+      let parentEntity = new WithAssociations();
+      let fooEntityOne = new Foo();
+      let fooEntityTwo = new Foo();
+      let customEntity = new Custom();
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';

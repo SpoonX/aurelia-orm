@@ -1,9 +1,7 @@
-import {Rest} from 'spoonx/aurelia-api';
-import {EntityManager, Repository, DefaultRepository, Entity} from '../src/aurelia-orm';
+import {EntityManager, Repository, Entity} from '../src/aurelia-orm';
 import {WithResource} from './resources/entity/with-resource';
 import {WithAssociations} from './resources/entity/with-associations';
 import {WithCustomRepository} from './resources/entity/with-custom-repository';
-import {SimpleCustom} from './resources/repository/simple-custom';
 import {Container} from 'aurelia-dependency-injection';
 import {Foo} from './resources/entity/foo';
 import {WithType} from './resources/entity/with-type';
@@ -43,7 +41,7 @@ function getEntityManager(container) {
 describe('Repository', function() {
   describe('.setResource()', function() {
     it('Should set the resource.', function() {
-      var repository = new Repository(getApiConfig());
+      let repository = new Repository(getApiConfig());
 
       repository.setResource('foo');
 
@@ -51,7 +49,7 @@ describe('Repository', function() {
     });
 
     it('Should return self.', function() {
-      var repository = new Repository(getApiConfig());
+      let repository = new Repository(getApiConfig());
 
       expect(repository.setResource('foo')).toBe(repository);
     });
@@ -59,7 +57,7 @@ describe('Repository', function() {
 
   describe('.find()', function() {
     it('Should perform a regular findAll. (Default repository)', function(done) {
-      var repository = constructRepository('find-test');
+      let repository = constructRepository('find-test');
 
       repository.find().then(response => {
         expect(response.path).toEqual('/find-test');
@@ -73,7 +71,7 @@ describe('Repository', function() {
     });
 
     it('Should perform a find with criteria. (Default repository)', function(done) {
-      var repository = constructRepository('find-test');
+      let repository = constructRepository('find-test');
 
       repository.find({foo: 'bar', bar: 'baz', skip: 10}).then(response => {
         expect(response.path).toEqual('/find-test');
@@ -88,7 +86,7 @@ describe('Repository', function() {
     });
 
     it('Should perform a regular findAll. (Custom repository)', function(done) {
-      var repository = constructRepository('withcustomrepository');
+      let repository = constructRepository('withcustomrepository');
 
       repository.find().then(response => {
         expect(response.path).toEqual('/withcustomrepository');
@@ -102,7 +100,7 @@ describe('Repository', function() {
     });
 
     it('Should perform a find with criteria. (Custom repository)', function(done) {
-      var repository = constructRepository('withcustomrepository');
+      let repository = constructRepository('withcustomrepository');
 
       repository.find({foo: 'bar', bar: 'baz', skip: 10}).then(response => {
         expect(response.path).toEqual('/withcustomrepository');
@@ -117,7 +115,7 @@ describe('Repository', function() {
     });
 
     it('Should use raw', function(done) {
-      var repository = constructRepository('find-test');
+      let repository = constructRepository('find-test');
 
       repository.find(null, true).then(response => {
         expect(response.path).toEqual('/find-test');
@@ -131,18 +129,18 @@ describe('Repository', function() {
 
   describe('.count()', function() {
     it('Should make a count call to the api', function(done) {
-      var repository = constructRepository('find-test');
+      let repository = constructRepository('find-test');
 
       repository.count().then(response => {
         expect(response.path).toEqual('/find-test/count');
         expect(response.method).toEqual('GET');
 
         done();
-      })
+      });
     });
 
     it('Should make a count call to the api with criteria', function(done) {
-      var repository = constructRepository('find-test');
+      let repository = constructRepository('find-test');
 
       repository.count({where: 'something'}).then(response => {
         expect(response.path).toEqual('/find-test/count');
@@ -150,27 +148,27 @@ describe('Repository', function() {
         expect(response.method).toEqual('GET');
 
         done();
-      })
+      });
     });
   });
 
   describe('.populateEntities()', function() {
     it('Should return null if no data was supplied.', function() {
-      var repository = constructRepository('populate--test');
+      let repository = constructRepository('populate--test');
 
       expect(repository.populateEntities()).toBe(null);
     });
 
     it('Should return instance if object was supplied.', function() {
-      var repository = constructRepository('populate-test'),
-          populated  = repository.populateEntities({});
+      let repository = constructRepository('populate-test');
+      let populated  = repository.populateEntities({});
 
       expect(populated instanceof Entity).toBe(true);
     });
 
     it('Should return an array of instances if array was supplied.', function() {
-      var repository = constructRepository('find-test'),
-          populated  = repository.populateEntities([{}, {}]);
+      let repository = constructRepository('find-test');
+      let populated  = repository.populateEntities([{}, {}]);
 
       expect(Array.isArray(populated)).toBe(true);
       expect(populated[0] instanceof Entity).toBe(true);
@@ -180,15 +178,15 @@ describe('Repository', function() {
 
   describe('.getPopulatedEntity()', function() {
     it('Should return a populated instance.', function() {
-      var repository = constructRepository('populated-test'),
-          populated  = repository.getPopulatedEntity({});
+      let repository = constructRepository('populated-test');
+      let populated  = repository.getPopulatedEntity({});
 
       expect(populated instanceof Entity).toBe(true);
     });
 
     it('Should mark populated instance as clean.', function() {
-      var repository = constructRepository('populated-test'),
-          populated  = repository.getPopulatedEntity({}).markClean();
+      let repository = constructRepository('populated-test');
+      let populated  = repository.getPopulatedEntity({}).markClean();
 
       expect(populated instanceof Entity).toBe(true);
       expect(populated.isClean()).toBe(true);
@@ -196,13 +194,13 @@ describe('Repository', function() {
     });
 
     it('Should properly cast values when defined in the entity', function() {
-      var repository = constructRepository('with-type'),
-          populated  = repository.getPopulatedEntity({
-            created : '2016-02-22T18:00:00.000Z',
-            disabled: '0',
-            age     : '24',
-            titanic : '500'
-          });
+      let repository = constructRepository('with-type');
+      let populated  = repository.getPopulatedEntity({
+        created : '2016-02-22T18:00:00.000Z',
+        disabled: '0',
+        age     : '24',
+        titanic : '500'
+      });
 
       expect(populated instanceof Entity).toBe(true);
       expect(populated.created).toEqual(new Date('2016-02-22T18:00:00.000Z'));
@@ -215,19 +213,19 @@ describe('Repository', function() {
     });
 
     it('Should return a populated instance with associations.', function() {
-      var entityManager = getEntityManager(),
-          repository    = entityManager.getRepository(WithAssociations),
-          populated     = repository.getPopulatedEntity({
-            control: 'science!',
-            foo    : {
-              my : 'anaconda',
-              don: 't'
-            },
-            bar    : [
-              {want: 'none'},
-              {unless: 'you got buns hun'}
-            ]
-          });
+      let entityManager = getEntityManager();
+      let repository    = entityManager.getRepository(WithAssociations);
+      let populated     = repository.getPopulatedEntity({
+        control: 'science!',
+        foo    : {
+          my : 'anaconda',
+          don: 't'
+        },
+        bar    : [
+          {want: 'none'},
+          {unless: 'you got buns hun'}
+        ]
+      });
 
       expect(populated.foo instanceof Foo).toBe(true);
       expect(Array.isArray(populated.bar)).toBe(true);
@@ -242,17 +240,17 @@ describe('Repository', function() {
 
   describe('.getNewEntity()', function() {
     it('Should give me a new entity instance. (Default)', function() {
-      var repository = constructRepository('new-entity-test'),
-          newEntity  = repository.getNewEntity();
+      let repository = constructRepository('new-entity-test');
+      let newEntity  = repository.getNewEntity();
 
       expect(newEntity instanceof Entity).toBe(true);
       expect(newEntity.getResource()).toBe('new-entity-test');
     });
 
     it('Should give me a new entity instance. (Custom)', function() {
-      var entityManager = getEntityManager(),
-          repository    = entityManager.getRepository(WithResource),
-          newEntity     = repository.getNewEntity();
+      let entityManager = getEntityManager();
+      let repository    = entityManager.getRepository(WithResource);
+      let newEntity     = repository.getNewEntity();
 
       expect(newEntity instanceof WithResource).toBe(true);
       expect(newEntity.getResource()).toBe('with-resource');
@@ -261,8 +259,8 @@ describe('Repository', function() {
 
   describe('.getNewPopulatedEntity()', function() {
     it('Should return a new entity, with its children populated.', function() {
-      var repository      = constructRepository('withassociations'),
-          populatedEntity = repository.getNewPopulatedEntity();
+      let repository      = constructRepository('withassociations');
+      let populatedEntity = repository.getNewPopulatedEntity();
 
       expect(populatedEntity instanceof WithAssociations).toBe(true);
       expect(populatedEntity.bar instanceof Custom).toBe(true);
@@ -270,10 +268,10 @@ describe('Repository', function() {
     });
 
     it('Should compose empty values with .asObject().', function() {
-      var repository      = constructRepository('withassociations');
-      var populatedEntity = repository.getNewPopulatedEntity();
-      var fooOne          = new Foo();
-      var fooTwo          = new Foo();
+      let repository      = constructRepository('withassociations');
+      let populatedEntity = repository.getNewPopulatedEntity();
+      let fooOne          = new Foo();
+      let fooTwo          = new Foo();
 
       fooOne.cake   = 'yum';
       fooOne.candy  = 'yummer';

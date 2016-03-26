@@ -1,14 +1,7 @@
-import {HasAssociationValidationRule} from '../../src/validator/has-association';
 import {WithAssociationValidation} from '../resources/entity/with-association-validation';
 import {Container} from 'aurelia-dependency-injection';
 import {EntityManager, configure} from '../../src/aurelia-orm';
 import {ValidationResultProperty} from 'aurelia-validation';
-
-function getEntityManager() {
-  var entityManager = new EntityManager(new Container());
-
-  return entityManager.registerEntities([WithAssociationValidation]);
-}
 
 function noop() {
 }
@@ -16,8 +9,8 @@ function noop() {
 describe('HasAssociationValidationRule', function() {
   describe('.validate()', function() {
     it('Validate entity association values properly and fail.', function(done) {
-      var container     = new Container();
-      var entityManager = new EntityManager(container);
+      let container     = new Container();
+      let entityManager = new EntityManager(container);
 
       configure({container: container, globalResources: noop}, function() {
       });
@@ -38,8 +31,8 @@ describe('HasAssociationValidationRule', function() {
     });
 
     it('Validate entity association values properly.', function(done) {
-      var container     = new Container();
-      var entityManager = new EntityManager(container);
+      let container     = new Container();
+      let entityManager = new EntityManager(container);
 
       configure({container: container, globalResources: noop}, function() {
       });
@@ -62,8 +55,8 @@ describe('HasAssociationValidationRule', function() {
   });
 
   it('Validate entity association values properly for actual association with value.', function(done) {
-    var container     = new Container();
-    var entityManager = new EntityManager(container);
+    let container     = new Container();
+    let entityManager = new EntityManager(container);
 
     configure({container: container, globalResources: noop}, function() {
     });
@@ -85,8 +78,8 @@ describe('HasAssociationValidationRule', function() {
   });
 
   it('Validate entity association values properly and fail for actual association without value.', function(done) {
-    var container     = new Container();
-    var entityManager = new EntityManager(container);
+    let container     = new Container();
+    let entityManager = new EntityManager(container);
 
     configure({container: container, globalResources: noop}, function() {});
 
