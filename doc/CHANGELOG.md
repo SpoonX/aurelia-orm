@@ -1,3 +1,12 @@
+<a name"2.2.3"></a>
+### 2.2.3 (2016-03-26)
+
+
+#### Bug Fixes
+
+* **project:** fix wrong dependency introduced in 2.2.2 ([ae8a42d0](https://github.com/SpoonX/aurelia-orm/commit/ae8a42d0))
+
+
 <a name"2.2.2"></a>
 ### 2.2.2 (2016-03-25)
 
