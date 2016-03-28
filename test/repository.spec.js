@@ -60,7 +60,7 @@ describe('Repository', function() {
       let repository = constructRepository('find-test');
 
       repository.find().then(response => {
-        expect(response.path).toEqual('/find-test');
+        expect(response.path).toEqual('/find-testy');
         expect(response.method).toEqual('GET');
         expect(response instanceof Entity).toBe(true);
         expect(response.isClean()).toBe(true);

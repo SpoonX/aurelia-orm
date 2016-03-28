@@ -1,4 +1,4 @@
-module.exports = function (config) {
+module.exports = function(config) {
   var configuration = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -10,8 +10,8 @@ module.exports = function (config) {
 
     jspm: {
       // Edit this to your needs
-      loadFiles: ['test/setup.js', 'test/**/*.js'],
-      serveFiles: ['src/**/*.js'],
+      loadFiles: ['test/setup.js', 'test/**/*.spec.js'],
+      serveFiles: ['src/**/*.js', 'src/**/*.html', 'test/resources/**/*.js', 'test/component-tester.js']
     },
 
     // list of files / patterns to load in the browser
@@ -41,7 +41,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress'], //, 'verbose-summary'],
 
     // web server port
     port: 9876,
@@ -58,7 +58,7 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'Firefox', 'ChromeCanary'],
+    browsers: ['Chrome'], //, 'Firefox', 'ChromeCanary'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

@@ -13,8 +13,6 @@ gulp.task('test', ['lint'], function(done) {
     }, function() {
       server.stop(function() {
         done();
-
-        process.exit();
       });
     });
 
