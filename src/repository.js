@@ -25,6 +25,10 @@ export class Repository {
   getTransport() {
     if (this.transport === null) {
       this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
+
+      if (!this.transport) {
+        throw new Error(`No transport found for '${this.getMeta().fetch('endpoint') || 'default'}'.`);
+      }
     }
 
     return this.transport;

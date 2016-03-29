@@ -6,6 +6,7 @@ import {Container} from 'aurelia-dependency-injection';
 import {Foo} from './resources/entity/foo';
 import {WithType} from './resources/entity/with-type';
 import {Custom} from './resources/entity/custom';
+import {OrmMetadata} from '../src/orm-metadata';
 import {Config} from 'aurelia-api';
 
 function getContainer() {
@@ -39,6 +40,40 @@ function getEntityManager(container) {
 }
 
 describe('Repository', function() {
+  describe('.getTransport()', function() {
+    it('Should get default endpoint.', function() {
+      let repository = new Repository(getApiConfig());
+      repository.meta = OrmMetadata.forTarget({});
+
+      expect(repository.getTransport().endpoint).toBe('sx/default');
+    });
+
+    it('Should get named endpoint.', function() {
+      let repository = new Repository(getApiConfig());
+      repository.meta = OrmMetadata.forTarget({});
+      repository.meta.put('endpoint', 'sx/default');
+
+      expect(repository.getTransport().endpoint).toBe('sx/default');
+    });
+
+    it('Should throw for unknown endpoint.', function() {
+      let repository = new Repository(getApiConfig());
+      repository.meta = OrmMetadata.forTarget({});
+      repository.meta.put('endpoint', 'some');
+
+      let getTransportWithTypo = () => repository.getTransport();
+
+      expect(getTransportWithTypo).toThrow();
+    });
+
+    it('Should not re-use transport', function() {
+      let repository = new Repository(getApiConfig());
+      repository.transport = 'a previously created transport';
+
+      expect(repository.getTransport()).toBe('a previously created transport');
+    });
+  });
+
   describe('.setResource()', function() {
     it('Should set the resource.', function() {
       let repository = new Repository(getApiConfig());
