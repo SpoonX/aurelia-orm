@@ -5,10 +5,9 @@ Aurelia-orm ships with a couple of decorators that help you configure your entit
 ## Small example
 
 Here's an example using (almost) all decorators available:
- 
 
 ```javascript
-import {Entity, resource, repository, validation, association} from 'spoonx/aurelia-orm';
+import {Entity, resource, repository, validation, association} from 'aurelia-orm';
 import {ensure} from 'aurelia-validation';
 import {CustomRepository} from 'repository/custom-repository';
 
@@ -18,11 +17,11 @@ validation()
 export class MyEntity extends Entity {
   @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   name = null;
-  
+
   // Will use string 'onetoone' as resource name.
   @association()
   oneToOne = null
-  
+
   // Will use 'multiple' as resource name.
   @association('multiple')
   oneManyToMany = null
@@ -64,7 +63,7 @@ class HelloWorld {}
 Usually, you won't need the `@repository()` decorator. It's used to define a custom repository for your entity (which can be useful if you wish to implement different methods).
 
 ```javascript
-import {Entity, repository} from 'spoonx/aurelia-orm';
+import {Entity, repository} from 'aurelia-orm';
 import {CustomRepository} from 'repository/custom-repository';
 
 @repository(CustomRepository)
@@ -94,15 +93,15 @@ This decorator allows you to add types to your properties. These types will be u
 ### Example
 
 ```javascript
-import {Entity, type} from 'spoonx/aurelia-orm';
+import {Entity, type} from 'aurelia-orm';
 
 export class MyEntity extends Entity {
   @type('string')
   name = null;
-  
+
   @type('date')
   created = null;
-  
+
   @type('boolean')
   disabled = false;
 }
@@ -135,7 +134,7 @@ When not set, the orm will use the defaultEndpoint.
 An example for a User entity
 
 ```javascript
-import {Entity, endpoint} from 'spoonx/aurelia-orm';
+import {Entity, endpoint} from 'aurelia-orm';
 
 @endpoint('auth')
 export class User extends Entity {}
@@ -146,7 +145,7 @@ export class User extends Entity {}
 An example for a weather entity
 
 ```javascript
-import {Entity, endpoint} from 'spoonx/aurelia-orm';
+import {Entity, endpoint} from 'aurelia-orm';
 
 @endpoint('weather')
 export class Weather extends Entity {}
@@ -159,7 +158,7 @@ To add validation for associations, simply use the .hasAssociation() rule like s
 
 ```javascript
 import {ensure} from 'aurelia-validation';
-import {association, validatedResource, Entity} from 'spoonx/aurelia-orm';
+import {association, validatedResource, Entity} from 'aurelia-orm';
 
 validatedResource()
 export class SomeEntity extends Entity {

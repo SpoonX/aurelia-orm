@@ -1,7 +1,7 @@
 Docs for the {`Entity`} class
 =======
 
-This class can optionally be used with validation. 
+This class can optionally be used with validation.
 The following is a full example, with validation included.
 
 For a larger example, take a look at the end of this document.
@@ -149,13 +149,13 @@ A new `Promise` to be resolved when `.destroy()` has completed.
 
 ```javascript
 import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 
 @inject(EntityManager)
 export class SomeViewModel {
   constructor (entityManager) {
     let repository = entityManager.getRepository('user');
-    
+
     // Find a single record.
     repository.find(7)
       .then(entity => {

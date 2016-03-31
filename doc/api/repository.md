@@ -25,13 +25,13 @@ A new `Promise` to be resolved when `.find()` has completed.
 
 ```javascript
 import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 
 @inject(EntityManager)
 export class SomeViewModel {
   constructor (entityManager) {
     let repository = entityManager.getRepository('user');
-    
+
     // Find a single record.
     repository.find(7)
       .then(console.log)
@@ -63,13 +63,13 @@ A new `Entity` instance with the populated data.
 
 ```javascript
 import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 
 @inject(EntityManager)
 export class SomeViewModel {
   constructor (entityManager) {
     let repository = entityManager.getRepository('user');
-    
+
     // Create a new entity
     repository
       .getPopulatedEntity({username: 'bob', password: 'bacon'})
@@ -101,13 +101,13 @@ A new `Entity` instance with the populated data, or an array or `Entity` instanc
 
 ```javascript
 import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 
 @inject(EntityManager)
 export class SomeViewModel {
   constructor (entityManager) {
     let repository = entityManager.getRepository('notes');
-    
+
     // entities is an array of Entity instances.
     let entities = repository.populateEntities([{note: 'laundry'}, {note: 'bacon'}]);
   }

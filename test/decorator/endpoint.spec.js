@@ -3,7 +3,7 @@ import {Foo} from '../resources/entity/foo';
 import {OrmMetadata} from '../../src/orm-metadata';
 import {EntityManager} from '../../src/aurelia-orm';
 import {Container} from 'aurelia-dependency-injection';
-import {Config} from 'spoonx/aurelia-api';
+import {Config} from 'aurelia-api';
 
 function getContainer() {
   let container = new Container();

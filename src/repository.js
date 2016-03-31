@@ -1,5 +1,5 @@
 import {inject} from 'aurelia-dependency-injection';
-import {Config} from 'spoonx/aurelia-api';
+import {Config} from 'aurelia-api';
 import typer from 'typer';
 
 @inject(Config)

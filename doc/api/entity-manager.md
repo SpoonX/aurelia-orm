@@ -24,7 +24,7 @@ A `Repository` instance.
 
 ```javascript
 import {inject}           from 'aurelia-framework';
-import {EntityManager} 	  from 'spoonx/aurelia-orm';
+import {EntityManager} 	  from 'aurelia-orm';
 import UserEntity         from 'entity/user';
 
 @inject(EntityManager)
@@ -59,7 +59,7 @@ An `Entity` instance.
 
 ```javascript
 import {inject}           from 'aurelia-framework';
-import {EntityManager} 	  from 'spoonx/aurelia-orm';
+import {EntityManager} 	  from 'aurelia-orm';
 import UserEntity         from 'entity/user';
 
 @inject(EntityManager)
@@ -67,7 +67,7 @@ export class SomeUpdateViewModel {
   constructor (entityManager) {
     // Get a custom Entity instance for the User entity
     entityManager.getEntity(UserEntity);
-    
+
     // Get a default entity for the 'article' resource
     entityManager.getEntity('article');
   }
@@ -96,7 +96,7 @@ Itself to allow chaining.
 
 ```javascript
 import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 import UserEntity      from 'entity/user';
 
 @inject(EntityManager)
@@ -127,7 +127,7 @@ Itself to allow chaining.
 
 ```javascript
 import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 import UserEntity      from 'entity/user';
 import CategoryEntity  from 'entity/category';
 

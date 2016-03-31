@@ -9,7 +9,7 @@ Following is a small, but more complete example of how you would implement a cre
 ### File: entity/user-entity.js
 
 ```javascript
-import {Entity, validatedResource} from 'spoonx/aurelia-orm';
+import {Entity, validatedResource} from 'aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
 @validatedResource('user')
@@ -28,7 +28,7 @@ export default class UserEntity extends Entity {
 ### File: page/user/create.js
 
 ```javascript
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 import {inject} from 'aurelia-framework';
 
 @inject(EntityManager)

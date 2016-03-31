@@ -18,7 +18,7 @@ The getting started guide will focus on the easiest use cases imaginable. We'll 
 We'll start off by installing aurelia-orm. Head over to your terminal of choice, and navigate to your skeleton.
 Now run the following command:
 
-`jspm i github:spoonx/aurelia-orm github:spoonx/aurelia-api`
+`jspm i aurelia-orm aurelia-api`
 
 This will install aurelia-orm and [aurelia-api](https://github.com/SpoonX/aurelia-api). Aurelia-orm uses [aurelia-api](https://github.com/SpoonX/aurelia-api) to talk to the server. By default, it will communicate with the domain it's being used on. Seeing how for this guide we'll be doing cross-domain communication, we'll have to configure it, and thus we installed it.
 
@@ -42,7 +42,7 @@ export function configure(aurelia) {
     .developmentLogging()
 
     // Load the plugin, and set the base url.
-    .plugin('spoonx/aurelia-api', config => {
+    .plugin('aurelia-api', config => {
       config
         .registerEndpoint('github', 'https://api.github.com/')
         .setDefaultEndpoint('github');
@@ -60,7 +60,7 @@ Now head back to `src/users.js`. Change the file to look like this:
 
 ```javascript
 import {inject} from 'aurelia-framework';
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 import 'fetch';
 
 @inject(EntityManager)
@@ -108,14 +108,14 @@ export function configure(aurelia) {
     .developmentLogging()
 
     // Register the plugin, and set the base url.
-    .plugin('spoonx/aurelia-api', builder => {
+    .plugin('aurelia-api', builder => {
       config
         .registerEndpoint('github', 'https://api.github.com/')
         .setDefaultEndpoint('github');
     })
-    
+
     // Register the plugin, and register our entities.
-    .plugin('spoonx/aurelia-orm', builder => {
+    .plugin('aurelia-orm', builder => {
       builder.registerEntities(entities);
     });
 
@@ -136,20 +136,20 @@ What this does, is tell the `EntityManager` that you have built entities for you
 To give you an idea, here's what the article entity might look like:
 
 ```javascript
-import {Entity, validatedResource, association} from 'spoonx/aurelia-orm';
+import {Entity, validatedResource, association} from 'aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
 @validatedResource()
 export class Article extends Entity {
   @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   name = null;
-  
+
   @ensure(it => it.isNotEmpty())
   body = null;
 
   @association()
   user = null;
-  
+
   // Specify the name of the resource: property is called `categories`
   @association('category')
   categories = [];
@@ -161,7 +161,7 @@ export class Article extends Entity {
 We can now get cracking. In any ViewModel, you can now get the desired repository, and start querying. Here's an extended example (based on the above code snippets):
 
 ```javascript
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 import {inject} from 'aurelia-framework';
 
 @inject(EntityManager)
@@ -198,7 +198,7 @@ export class ViewModel {
 
 ### Endpoints
 
-Every entity can be configured to use an endpoint (see [decorators](decorators.md#endpoint)).
+Every entity can be configured to use an endpoint (see [decorators](decorators.md#endpoint).
 This allows you to use the same entities, the same orm, without worrying about changing the endpoint (api url) to talk to.
 
 ### Further reading

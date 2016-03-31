@@ -6,7 +6,7 @@ import {Container} from 'aurelia-dependency-injection';
 import {Foo} from './resources/entity/foo';
 import {WithType} from './resources/entity/with-type';
 import {Custom} from './resources/entity/custom';
-import {Config} from 'spoonx/aurelia-api';
+import {Config} from 'aurelia-api';
 
 function getContainer() {
   let container = new Container();
