@@ -1,11 +1,11 @@
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
-import {bindable, customElement} from 'aurelia-templating';
+import {bindable, customElement, CompositionTransaction} from 'aurelia-templating';
 import {EntityManager, OrmMetadata, Entity} from '../aurelia-orm';
 import extend from 'extend';
 
 @customElement('association-select')
-@inject(BindingEngine, EntityManager, Element)
+@inject(BindingEngine, CompositionTransaction, EntityManager, Element)
 export class AssociationSelect {
   @bindable criteria = null;
 
@@ -25,21 +25,62 @@ export class AssociationSelect {
 
   ownMeta;
 
+  status = 'pending';
+
   /**
    * Create a new select element.
    *
-   * @param {BindingEngine} bindingEngine
-   * @param {EntityManager} entityManager
-   * @param {Element}       element
+   * @param {BindingEngine}          bindingEngine
+   * @param {CompositionTransaction} compositionTransaction
+   * @param {EntityManager}          entityManager
+   * @param {Element}                element
    */
-  constructor(bindingEngine, entityManager, element) {
+  constructor(bindingEngine, compositionTransaction, entityManager, element) {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
     this.entityManager  = entityManager;
     this.multiple       = typeof element.getAttribute('multiple') === 'string';
+
+    this.compositionTransaction = compositionTransaction;
+    this.compositionTransactionNotifier = null;
   }
 
   /**
+  * When bound, initialize the component and let attached wait till resolved
+ *
+ */
+  bind() {
+    this.compositionTransactionNotifier = this.compositionTransaction.enlist();
+
+    new Promise((resolve, reject) => {
+      if (!this.association && !this.manyAssociation) {
+        this.load(this.value)
+          .then(resolve);
+
+        return;
+      }
+
+
+      this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
+
+      if (this.manyAssociation) {
+        this.observe(this.manyAssociation);
+      }
+
+      if (this.association) {
+        this.observe(this.association);
+      }
+
+      if (this.value) {
+        this.load(this.value)
+          .then(resolve);
+      }
+    })
+    .catch()
+    .then(this.compositionTransactionNotifier.done);
+  }
+
+    /**
    * (Re)Load the data for the select.
    *
    * @param {string|Array} [reservedValue]
@@ -47,12 +88,20 @@ export class AssociationSelect {
    * @return {Promise}
    */
   load(reservedValue) {
+    this.status = 'pending';
+
     return this.buildFind()
       .then(options => {
         let result   = options;
         this.options = Array.isArray(result) ? result : [result];
 
         this.setValue(reservedValue);
+
+        this.status = 'resolved';
+      })
+      .catch(e => {
+        // data failed to load
+        this.status = 'failed';
       });
   }
 
@@ -101,30 +150,32 @@ export class AssociationSelect {
    * @return {Promise}
    */
   buildFind() {
-    let repository    = this.repository;
-    let criteria      = this.getCriteria();
-    let findPath      = repository.getResource();
-    criteria.populate = false;
+    return new Promise(resolve => {
+      let repository    = this.repository;
+      let criteria      = this.getCriteria();
+      let findPath      = repository.getResource();
+      criteria.populate = false;
 
-    // Check if there are `many` associations. If so, the repository find path changes.
-    // the path will become `/:association/:id/:entity`.
-    if (this.manyAssociation) {
-      let assoc = this.manyAssociation;
+      // Check if there are `many` associations. If so, the repository find path changes.
+      // the path will become `/:association/:id/:entity`.
+      if (this.manyAssociation) {
+        let assoc = this.manyAssociation;
 
-      // When disabling populate here, the API won't return any data.
-      delete criteria.populate;
+        // When disabling populate here, the API won't return any data.
+        delete criteria.populate;
 
-      let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath     = `${assoc.getResource()}/${assoc.id}/${property}`;
-    } else if (this.association) {
-      let associations = Array.isArray(this.association) ? this.association : [this.association];
+        let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
+        findPath     = `${assoc.getResource()}/${assoc.id}/${property}`;
+      } else if (this.association) {
+        let associations = Array.isArray(this.association) ? this.association : [this.association];
 
-      associations.forEach(association => {
-        criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.id;
-      });
-    }
+        associations.forEach(association => {
+          criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.id;
+        });
+      }
 
-    return repository.findPath(findPath, criteria);
+      resolve(repository.findPath(findPath, criteria));
+    });
   }
 
   /**
@@ -171,31 +222,6 @@ export class AssociationSelect {
     }));
 
     return this;
-  }
-
-  /**
-   * When attached to the DOM, initialize the component.
-   */
-  attached() {
-    if (!this.association && !this.manyAssociation) {
-      this.load(this.value);
-
-      return;
-    }
-
-    this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
-
-    if (this.manyAssociation) {
-      this.observe(this.manyAssociation);
-    }
-
-    if (this.association) {
-      this.observe(this.association);
-    }
-
-    if (this.value) {
-      this.load(this.value);
-    }
   }
 
   /**
