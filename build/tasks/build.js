@@ -11,24 +11,24 @@ var rename = require('gulp-rename');
 var tools = require('aurelia-tools');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
+var dtsOptions = require('../dts-builder-options.js');
 
 // merged output file name. a folder of paths.packageName is temporarly created in build-dts
 var jsName = paths.packageName + '.js';
 
 
 gulp.task('build-dts', function() {
-  var importsToAdd = []; // stores extracted imports
-
   return gulp.src(paths.tsSource)
     //.pipe(tools.sortFiles()) // sort fails with subdirectories!
-    .pipe(through2.obj(function(file, enc, callback) {  // extract all imports to importsToAdd
-      file.contents = new Buffer(tools.extractImports(file.contents.toString('utf8'), importsToAdd));
+    .pipe(through2.obj(function(file, enc, callback) {  // extract all imports to importsToAdd 
+      var dummyImports = [];
+      file.contents = new Buffer(tools.extractImports(file.contents.toString('utf8'), dummyImports));
       this.push(file);
       return callback();
     }))
     .pipe(concat(jsName)) // concat all selected files to jsName (now without their imports)
     .pipe(insert.transform(function(contents) { // re-add extracted imports on top
-      return tools.createImportBlock(importsToAdd) + contents;
+      return tools.createImportBlock(dtsOptions.extraImports) + contents;
     }))
     .pipe(to5(assign({}, compilerOptions.dts()))); // compile to d.ts from file jsName. d.ts file is in folder paths.packageName
 });
