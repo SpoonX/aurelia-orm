@@ -1,4 +1,4 @@
-module.exports = function (config) {
+module.exports = function(config) {
   var configuration = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -11,7 +11,7 @@ module.exports = function (config) {
     jspm: {
       // Edit this to your needs
       loadFiles: ['test/setup.js', 'test/**/*.spec.js'],
-      serveFiles: ['src/**/*.js', 'test/resources/**/*.js'],
+      serveFiles: ['src/**/*.js', 'src/**/*.html', 'test/resources/**/*.js', 'test/component-tester.js']
     },
 
     // list of files / patterns to load in the browser
