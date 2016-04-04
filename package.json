@@ -10,7 +10,7 @@
     "orm",
     "api"
   ],
-  "homepage": "https://github.com/SpoonX/aurelia-orm",
+  "homepage": "http://aurelia-orm.spoonx.org/",
   "bugs": {
     "url": "https://github.com/SpoonX/aurelia-orm/issues"
   },
