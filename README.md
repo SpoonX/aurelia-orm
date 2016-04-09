@@ -4,30 +4,37 @@
 [![Known Vulnerabilities](https://snyk.io/test/npm/name/badge.svg)](https://snyk.io/test/npm/aurelia-orm)
 [![Join the chat at https://gitter.im/aurelia/discuss](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/aurelia/discuss?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-> Makes working with entities and calling your Rest API simple.
+Working with endpoints and client-side entities is unavoidable when doing API driven development. You end up writing a small wrapper for your XHRs / websocket events and putting your request methods in one place.
+Another option is just using Breeze, which is large, complex and not meant for most applications. Even though your endpoints are important, you still end up neglecting them.
+
+Enter aurelia-orm. This module provides you with some useful and cool features, such as:
+
+* Entity definitions
+* Repositories
+* Associations
+* Validation
+* Type casting
+* Self-populating select element
+* And more
+
+This makes it easier to focus on your application and organize your code.
 
 This library is an unofficial plugin for the [Aurelia](http://www.aurelia.io/) platform.
 This library plays nice with the [Sails.js framework](http://sailsjs.org).
 
-> To keep up to date on [Aurelia](http://www.aurelia.io/), please visit and subscribe to [the official blog](http://blog.durandal.io/). If you have questions, we invite you to [join us on Gitter](https://gitter.im/aurelia/discuss). If you would like to have deeper insight into our development process, please install the [ZenHub](https://zenhub.io) Chrome Extension and visit any of our repository's boards. You can get an overview of all Aurelia work by visiting [the framework board](https://github.com/aurelia/framework#boards).
+## Important note
 
-## Polyfills
-
-* None
-
-## Used By
-
-This library is used directly by applications only.
-
-## Platform Support
-
-This library can be used in the **browser** only.
+We've simplified installation and usage! This plugin should now be installed using `jspm i aurelia-orm` or (for webpack) `npm i aurelia-orm`. Make sure you update all references to `spoonx/aurelia-orm` and `spoonx/aurelia-api` and remove the `spoonx/` prefix (don't forget your config.js, package.json, imports and bundles).
 
 ## Installation
 
-Installing this module is fairly simple.
+Run `jspm i aurelia-orm`, or (for webpack) `npm i aurelia-orm`, from your project root.
 
-Run `jspm install github:spoonx/aurelia-orm` from your project root.
+## Documentation
+
+You can find usage examples and the documentation at [aurelia-orm-doc](http://aurelia-orm.spoonx.org/).
+
+The [changelog](doc/changelog.md) provides you with information about important changes.
 
 ## Example
 
@@ -36,7 +43,7 @@ Here's a snippet to give you an idea of what this module does.
 ### entity/user.js
 
 ```javascript
-import {Entity, validatedResource} from 'spoonx/aurelia-orm';
+import {Entity, validatedResource} from 'aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
 @validatedResource('user')
@@ -55,7 +62,7 @@ export class UserEntity extends Entity {
 ### page/some-view-model.js
 
 ```javascript
-import {EntityManager} from 'spoonx/aurelia-orm';
+import {EntityManager} from 'aurelia-orm';
 import {inject} from 'aurelia-framework';
 
 @inject(EntityManager)
@@ -95,7 +102,3 @@ For instance, `@resource()` would use the module's name to set the resource.
 
 So keep in mind: When using aurelia-orm in a bundled application, you must specify a value for your decorators.
 For instance, `@decorator('category')`.
-
-## Documentation
-
-You can find usage examples and documentation in the [Getting started](doc/getting-started.md) or the `doc/` directory.
