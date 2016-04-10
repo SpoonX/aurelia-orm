@@ -14,7 +14,7 @@ module.exports = {
     appRoot + '**/*.js',          // list files to parse for d.ts
     '!' + appRoot + entryFileName  // exclude entry file
   ],
-  components: 'component/*.js', // relative to root, components can not that easily be bundled into a single file (due to naming conventions)
+  resources: 'component/*.js', // relative to root, resources can not that easily be bundled into a single file (due to naming conventions)
   html: appRoot + '**/*.html',
   style: 'styles/**/*.css',
   output: 'dist/',
