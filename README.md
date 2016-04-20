@@ -28,7 +28,23 @@ We've simplified installation and usage! This plugin should now be installed usi
 
 ## Installation
 
-Run `jspm i aurelia-orm`, or (for webpack) `npm i aurelia-orm`, from your project root.
+### Jspm/SytemJs
+
+Run `jspm i aurelia-orm` from your project root.
+
+### Webpack
+
+Run `npm i aurelia-orm` from your project root.
+
+Aurelia-orm has several submodules. So you need to add it to the AureliaWebpackPlugin includeSubModules list.
+
+```js
+AureliaWebpackPlugin({
+    includeSubModules: [
+      { moduleId: 'aurelia-orm' }
+    ]
+  }),
+```
 
 ## Documentation
 
