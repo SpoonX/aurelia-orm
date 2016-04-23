@@ -1,15 +1,15 @@
-import {EntityManager} from '../src/aurelia-orm';
-import {Metadata} from '../src/orm-metadata';
-import {WithResource} from './resources/entity/with-resource';
-import {WithValidation} from './resources/entity/with-validation';
-import {Foo} from './resources/entity/foo';
-import {Custom} from './resources/entity/custom';
-import {WithAssociations} from './resources/entity/with-associations';
-import {WithName} from './resources/entity/with-name';
-import {Entity} from  '../src/entity';
-import {Container} from 'aurelia-dependency-injection';
-import {Config, Rest} from 'aurelia-api';
-import {Validation} from 'aurelia-validation';
+import {EntityManager} from "../src/aurelia-orm";
+import {Metadata} from "../src/orm-metadata";
+import {WithResource} from "./resources/entity/with-resource";
+import {WithValidation} from "./resources/entity/with-validation";
+import {Foo} from "./resources/entity/foo";
+import {Custom} from "./resources/entity/custom";
+import {WithAssociations} from "./resources/entity/with-associations";
+import {WithName} from "./resources/entity/with-name";
+import {Entity} from "../src/entity";
+import {Container} from "aurelia-dependency-injection";
+import {Config, Rest} from "aurelia-api";
+import {Validation} from "aurelia-validation";
 
 function getContainer() {
   let container = new Container();
@@ -80,19 +80,14 @@ describe('Entity', function() {
 
       // Test results of different ways of adding children to collection
       Promise.all(testPromises).then(response => {
-        expect(response[0].path).toBe('/withassociations/123/foo');
-        expect(response[1].path).toBe('/withassociations/123/foo');
-        expect(response[2].path).toBe('/withassociations/123/bar');
-        expect(response[3].path).toBe('/withassociations/123/foo/1337');
-
         expect(response[0] instanceof Foo).toBe(true);
         expect(response[1] instanceof Foo).toBe(true);
         expect(response[2] instanceof Custom).toBe(true);
         expect(response[3] instanceof Object).toBe(true);
 
-        expect(response[0].body).toEqual({empty: 'child one'});
-        expect(response[1].body).toEqual({empty: 'child two'});
-        expect(response[2].body).toEqual({empty: 'If I must'});
+        expect(typeof response[0].id).toEqual('number');
+        expect(typeof response[1].id).toEqual('number');
+        expect(typeof response[2].id).toEqual('number');
         expect(response[3].body).toEqual({});
 
         done();
@@ -236,24 +231,18 @@ describe('Entity', function() {
 
       parentEntity.setData({
         test: 'case',
-        foo: [fooEntityOne, fooEntityTwo],
-        bar: customEntity
+        foo : [fooEntityOne, fooEntityTwo],
+        bar : customEntity
       });
 
       parentEntity.save().then(response => {
-        expect(response.path).toEqual('/withassociations');
-        expect(response.method).toEqual('POST');
-        expect(response.body).toEqual({
-          foo: [
-            {some: 'value', other: 'other value'},
-            {what: 'Jup'}
-          ],
-          bar: {
-            baby: 'steps'
-          },
-          test: 'case'
-        });
+        let idBar = response.bar.id;
+        let idParent = response.id;
 
+        expect(typeof idParent).toEqual('number');
+        expect(typeof idBar).toEqual('number');
+
+        expect(response).toEqual({bar: {baby: 'steps', id: idBar}, test: 'case', id: idParent});
         done();
       });
     });
@@ -306,8 +295,8 @@ describe('Entity', function() {
       let entity = new WithResource(new Validation());
 
       entity.setData({
-        id: 667,
-        foo: 'bar',
+        id  : 667,
+        foo : 'bar',
         city: {awesome: true}
       }).markClean();
 
@@ -324,8 +313,8 @@ describe('Entity', function() {
       let entity = new WithResource(new Validation());
 
       entity.setData({
-        id: 667,
-        foo: 'bar',
+        id  : 667,
+        foo : 'bar',
         city: {awesome: true}
       }).markClean();
 
@@ -352,8 +341,8 @@ describe('Entity', function() {
       let entity = new WithResource(new Validation());
 
       entity.setData({
-        id: 667,
-        foo: 'bar',
+        id  : 667,
+        foo : 'bar',
         city: {awesome: true}
       }).markClean();
 
@@ -388,8 +377,8 @@ describe('Entity', function() {
     it('Should not send a PUT request for .update when clean.', function(done) {
       let entity = constructEntity(WithResource);
       entity.setData({
-        id: 667,
-        foo: 'bar',
+        id  : 667,
+        foo : 'bar',
         city: {awesome: true}
       }).markClean();
 
@@ -410,10 +399,15 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with nested body (associations).', function(done) {
-      let parentEntity = constructEntity(WithAssociations);
-      let fooEntityOne = new Foo();
-      let fooEntityTwo = new Foo();
-      let customEntity = new Custom();
+      let container     = getContainer();
+      let entityManager = new EntityManager(container);
+
+      entityManager.registerEntities([WithAssociations, Foo, Custom]);
+
+      let parentEntity = entityManager.getEntity(WithAssociations);
+      let fooEntityOne = entityManager.getEntity(Foo);
+      let fooEntityTwo = entityManager.getEntity(Foo);
+      let customEntity = entityManager.getEntity(Custom);
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -421,21 +415,17 @@ describe('Entity', function() {
       customEntity.baby  = 'steps';
 
       parentEntity.setData({
-        id: 1,
+        id  : 1,
         test: 'case',
-        foo: [fooEntityOne, fooEntityTwo],
-        bar: customEntity
+        foo : [fooEntityOne, fooEntityTwo],
+        bar : customEntity
       });
 
       parentEntity.save().then(response => {
         expect(response.path).toEqual('/withassociations/1');
         expect(response.method).toEqual('PUT');
         expect(response.body).toEqual({
-          foo: [
-            {some: 'value', other: 'other value'},
-            {what: 'Jup'}
-          ],
-          bar: {
+          bar : {
             baby: 'steps'
           },
           test: 'case'
@@ -642,8 +632,8 @@ describe('Entity', function() {
     it('Should return a POJO (simple).', function() {
       let entity     = new Entity();
       let entityData = {
-        foo: 'bar',
-        some: 'properties',
+        foo    : 'bar',
+        some   : 'properties',
         nothing: 'special'
       };
 
@@ -657,10 +647,10 @@ describe('Entity', function() {
     it('Should return a POJO (complex).', function() {
       let entity     = new Entity();
       let entityData = {
-        foo: 'bar',
-        some: 'properties',
+        foo    : 'bar',
+        some   : 'properties',
         nothing: 'special',
-        also: {
+        also   : {
           something: 'Nested!'
         }
       };
@@ -684,16 +674,16 @@ describe('Entity', function() {
 
       parentEntity.setData({
         test: 'case',
-        foo: [fooEntityOne, fooEntityTwo],
-        bar: customEntity
+        foo : [fooEntityOne, fooEntityTwo],
+        bar : customEntity
       });
 
       expect(parentEntity.asObject()).toEqual({
-        foo: [
+        foo : [
           {some: 'value', other: 'other value'},
           {what: 'Jup'}
         ],
-        bar: {
+        bar : {
           baby: 'steps'
         },
         test: 'case'
@@ -714,15 +704,12 @@ describe('Entity', function() {
 
       parentEntity.setData({
         test: 'case',
-        foo: [fooEntityOne, fooEntityTwo],
-        bar: customEntity
+        foo : [fooEntityOne, fooEntityTwo],
+        bar : customEntity
       });
 
       expect(parentEntity.asObject(true)).toEqual({
-        foo: [
-          {what: 'Jup'}
-        ],
-        bar: {
+        bar : {
           baby: 'steps'
         },
         test: 'case'
@@ -742,13 +729,13 @@ describe('Entity', function() {
 
       parentEntity.setData({
         test: 'case',
-        foo: null,
-        bar: customEntity
+        foo : null,
+        bar : customEntity
       });
 
       expect(parentEntity.asObject()).toEqual({
-        foo: null,
-        bar: {
+        foo : null,
+        bar : {
           baby: 'steps'
         },
         test: 'case'
@@ -760,8 +747,8 @@ describe('Entity', function() {
     it('Should return a JSON string (simple).', function() {
       let entity     = new Entity();
       let entityData = {
-        foo: 'bar',
-        some: 'properties',
+        foo    : 'bar',
+        some   : 'properties',
         nothing: 'special'
       };
 
@@ -774,10 +761,10 @@ describe('Entity', function() {
     it('Should return a JSON string (complex).', function() {
       let entity     = new Entity();
       let entityData = {
-        foo: 'bar',
-        some: 'properties',
+        foo    : 'bar',
+        some   : 'properties',
         nothing: 'special',
-        also: {
+        also   : {
           something: 'Nested!'
         }
       };
@@ -802,8 +789,8 @@ describe('Entity', function() {
 
       parentEntity.setData({
         test: 'case',
-        foo: [fooEntityOne, fooEntityTwo],
-        bar: customEntity
+        foo : [fooEntityOne, fooEntityTwo],
+        bar : customEntity
       });
 
       expect(parentEntity.asJson()).toEqual('{"foo":[{"some":"value","other":"other value"},{"what":"Jup"}],"bar":{"baby":"steps"},"test":"case"}');

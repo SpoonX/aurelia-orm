@@ -157,8 +157,7 @@ describe('EntityManager', function() {
       let entityManager = new EntityManager(new Container());
 
       expect(function() {
-        let e = entityManager.getEntity(Entity);
-        console.log('heh?', e);
+        entityManager.getEntity(Entity);
       }).toThrowError(Error, 'Unable to find resource for entity.');
     });
   });
