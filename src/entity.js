@@ -562,15 +562,15 @@ function getCollectionsCompact(forEntity, includeNew) {
       return;
     }
 
-  forEntity[index].forEach(entity => {
-    if (typeof entity === 'number') {
-      collections[index].push(entity);
+    forEntity[index].forEach(entity => {
+      if (typeof entity === 'number') {
+        collections[index].push(entity);
 
-      return;
-    }
+        return;
+      }
 
-    if (entity.id) {
-      collections[index].push(entity.id);
+      if (entity.id) {
+        collections[index].push(entity.id);
       } else if (includeNew && entity instanceof Entity) {
         collections[index].push(entity);
       }
