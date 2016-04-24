@@ -1,6 +1,7 @@
 import {EntityManager} from '../src/aurelia-orm';
 import {Metadata} from '../src/orm-metadata';
 import {WithResource} from './resources/entity/with-resource';
+import {WithEndpoint} from './resources/entity/with-endpoint';
 import {WithValidation} from './resources/entity/with-validation';
 import {Foo} from './resources/entity/foo';
 import {Custom} from './resources/entity/custom';
@@ -17,6 +18,7 @@ function getContainer() {
 
   config
     .registerEndpoint('sx/default', 'http://localhost:1927/')
+    .registerEndpoint('sx/alternative', 'http://127.0.0.1:1927/')
     .setDefaultEndpoint('sx/default');
 
   return container;
@@ -176,6 +178,20 @@ describe('Entity', function() {
         expect(response.path).toEqual('/with-resource');
         expect(response.method).toEqual('POST');
 
+        done();
+      });
+    });
+
+    it('Should call .create with custom endpoint.', function(done) {
+      let entity  = constructEntity(WithEndpoint);
+      entity.foo  = 'bar';
+      entity.city = {awesome: true};
+
+      entity.save().then(response => {
+        expect(response.body).toEqual({foo: 'bar', city: {awesome: true}});
+        expect(response.host).toEqual('127.0.0.1');
+        expect(response.path).toEqual('/withendpoint');
+        expect(response.method).toEqual('POST');
         done();
       });
     });
