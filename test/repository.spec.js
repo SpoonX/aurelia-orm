@@ -131,7 +131,7 @@ describe('Repository', function() {
         expect(response.isDirty()).toBe(false);
 
         done();
-      }).catch(y => console.log(y.stack));
+      });
     });
 
     it('Should perform a find with criteria. (Custom repository)', function(done) {
@@ -146,7 +146,7 @@ describe('Repository', function() {
         expect(response.isDirty()).toBe(false);
 
         done();
-      }).catch(y => console.log(y.stack));
+      });
     });
 
     it('Should use raw', function(done) {
@@ -231,19 +231,19 @@ describe('Repository', function() {
     it('Should properly cast values when defined in the entity', function() {
       let repository = constructRepository('with-type');
       let populated  = repository.getPopulatedEntity({
-        created : '2016-02-22T18:00:00.000Z',
+        created: '2016-02-22T18:00:00.000Z',
         disabled: '0',
-        age     : '24',
-        titanic : '500'
+        age: '24',
+        titanic: '500'
       });
 
       expect(populated instanceof Entity).toBe(true);
       expect(populated.created).toEqual(new Date('2016-02-22T18:00:00.000Z'));
       expect(populated.asObject()).toEqual({
-        created : new Date('2016-02-22T18:00:00.000Z'),
+        created: new Date('2016-02-22T18:00:00.000Z'),
         disabled: false,
-        age     : 24,
-        titanic : 500.00
+        age: 24,
+        titanic: 500.00
       });
     });
 
@@ -252,11 +252,11 @@ describe('Repository', function() {
       let repository    = entityManager.getRepository(WithAssociations);
       let populated     = repository.getPopulatedEntity({
         control: 'science!',
-        foo    : {
-          my : 'anaconda',
+        foo: {
+          my: 'anaconda',
           don: 't'
         },
-        bar    : [
+        bar: [
           {want: 'none'},
           {unless: 'you got buns hun'}
         ]
