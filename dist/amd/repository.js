@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', 'spoonx/aurelia-api', 'typer'], function (exports, _aureliaDependencyInjection, _aureliaApi, _typer) {
+define(['exports', 'aurelia-dependency-injection', 'aurelia-api', 'typer'], function (exports, _aureliaDependencyInjection, _aureliaApi, _typer) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -40,6 +40,10 @@ define(['exports', 'aurelia-dependency-injection', 'spoonx/aurelia-api', 'typer'
     Repository.prototype.getTransport = function getTransport() {
       if (this.transport === null) {
         this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
+
+        if (!this.transport) {
+          throw new Error('No transport found for \'' + (this.getMeta().fetch('endpoint') || 'default') + '\'.');
+        }
       }
 
       return this.transport;

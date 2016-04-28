@@ -11,7 +11,7 @@ var _dec, _class;
 
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 
-var _aureliaApi = require('spoonx/aurelia-api');
+var _aureliaApi = require('aurelia-api');
 
 var _typer = require('typer');
 
@@ -33,6 +33,10 @@ var Repository = exports.Repository = (_dec = (0, _aureliaDependencyInjection.in
   Repository.prototype.getTransport = function getTransport() {
     if (this.transport === null) {
       this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
+
+      if (!this.transport) {
+        throw new Error('No transport found for \'' + (this.getMeta().fetch('endpoint') || 'default') + '\'.');
+      }
     }
 
     return this.transport;

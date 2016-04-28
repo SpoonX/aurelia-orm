@@ -15,15 +15,26 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
 
     Object.keys(entity).forEach(function (propertyName) {
       var value = entity[propertyName];
+      var association = metadata.fetch('associations', propertyName);
 
-      if (!metadata.has('associations', propertyName) || !value) {
+      if (!association || !value) {
         pojo[propertyName] = value;
 
         return;
       }
 
-      if (shallow && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && value.id) {
-        pojo[propertyName] = value.id;
+      if (shallow) {
+        if (association.type === 'collection') {
+          return;
+        }
+
+        if (value.id) {
+          pojo[propertyName] = value.id;
+        } else if (value instanceof Entity) {
+          pojo[propertyName] = value.asObject();
+        } else if (['string', 'number', 'boolean'].indexOf(typeof value === 'undefined' ? 'undefined' : _typeof(value)) > -1 || value.constructor === Object) {
+          pojo[propertyName] = value;
+        }
 
         return;
       }
@@ -72,7 +83,7 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
     return json;
   }
 
-  function getCollectionsCompact(forEntity) {
+  function getCollectionsCompact(forEntity, includeNew) {
     var associations = forEntity.getMeta().fetch('associations');
     var collections = {};
 
@@ -98,6 +109,8 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
 
         if (entity.id) {
           collections[index].push(entity.id);
+        } else if (includeNew && entity instanceof Entity) {
+          collections[index].push(entity);
         }
       });
     });
@@ -208,7 +221,11 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
           }
 
           if (this.isClean()) {
-            return Promise.resolve(null);
+            return this.saveCollections().then(function () {
+              return _this2.markClean();
+            }).then(function () {
+              return null;
+            });
           }
 
           var requestBody = this.asObject(true);
@@ -228,8 +245,9 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
         };
 
         Entity.prototype.addCollectionAssociation = function addCollectionAssociation(entity, property) {
+          var _this3 = this;
+
           property = property || getPropertyForAssociation(this, entity);
-          var body = undefined;
           var url = [this.getResource(), this.id, property];
 
           if (this.isNew()) {
@@ -243,13 +261,26 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
           }
 
           if (entity.isNew()) {
-            body = entity.asObject();
-          } else {
-            url.push(entity.id);
+            var associationProperty = getPropertyForAssociation(entity, this);
+            var relation = entity.getMeta().fetch('association', associationProperty);
+
+            if (!relation || relation.type !== 'entity') {
+              return entity.save().then(function () {
+                return _this3.addCollectionAssociation(entity, property);
+              });
+            }
+
+            entity[associationProperty] = this.id;
+
+            return entity.save().then(function () {
+              return entity;
+            });
           }
 
-          return this.getTransport().create(url.join('/'), body).then(function (created) {
-            return entity.setData(created).markClean();
+          url.push(entity.id);
+
+          return this.getTransport().create(url.join('/')).then(function () {
+            return entity;
           });
         };
 
@@ -269,10 +300,10 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
         };
 
         Entity.prototype.saveCollections = function saveCollections() {
-          var _this3 = this;
+          var _this4 = this;
 
           var tasks = [];
-          var currentCollections = getCollectionsCompact(this);
+          var currentCollections = getCollectionsCompact(this, true);
           var cleanCollections = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
 
           var addTasksForDifferences = function addTasksForDifferences(base, candidate, method) {
@@ -283,7 +314,7 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
             Object.getOwnPropertyNames(base).forEach(function (property) {
               base[property].forEach(function (id) {
                 if (candidate === null || !Array.isArray(candidate[property]) || candidate[property].indexOf(id) === -1) {
-                  tasks.push(method.call(_this3, id, property));
+                  tasks.push(method.call(_this4, id, property));
                 }
               });
             });
@@ -294,21 +325,7 @@ System.register(['aurelia-validation', 'aurelia-dependency-injection', './orm-me
           addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
 
           return Promise.all(tasks).then(function (results) {
-            if (!Array.isArray(results)) {
-              return _this3;
-            }
-
-            var newState = null;
-
-            while (newState === null) {
-              newState = results.pop();
-            }
-
-            if (newState) {
-              _this3.getRepository().getPopulatedEntity(newState, _this3);
-            }
-
-            return _this3;
+            return _this4;
           });
         };
 

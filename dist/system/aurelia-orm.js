@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['./entity-manager', 'aurelia-validation', './validator/has-association', './default-repository', './repository', './entity', './orm-metadata', './decorator/association', './decorator/resource', './decorator/endpoint', './decorator/name', './decorator/repository', './decorator/validation', './decorator/type', './decorator/validated-resource'], function (_export, _context) {
+System.register(['./entity-manager', 'aurelia-validation', './validator/has-association', './default-repository', './repository', './entity', './orm-metadata', './decorator/association', './decorator/resource', './decorator/endpoint', './decorator/name', './decorator/repository', './decorator/validation', './decorator/type', './decorator/validated-resource', './component/association-select'], function (_export, _context) {
   var EntityManager, ValidationGroup, HasAssociationValidationRule, DefaultRepository, Repository, Entity, OrmMetadata, association, resource, endpoint, name, repository, validation, type, validatedResource;
 
 
@@ -47,7 +47,7 @@ System.register(['./entity-manager', 'aurelia-validation', './validator/has-asso
       type = _decoratorType.type;
     }, function (_decoratorValidatedResource) {
       validatedResource = _decoratorValidatedResource.validatedResource;
-    }],
+    }, function (_componentAssociationSelect) {}],
     execute: function () {
       _export('configure', configure);
 
