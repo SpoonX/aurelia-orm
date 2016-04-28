@@ -6,7 +6,7 @@ import {Foo} from './resources/entity/foo';
 import {Custom} from './resources/entity/custom';
 import {WithAssociations} from './resources/entity/with-associations';
 import {WithName} from './resources/entity/with-name';
-import {Entity} from  '../src/entity';
+import {Entity} from '../src/entity';
 import {Container} from 'aurelia-dependency-injection';
 import {Config, Rest} from 'aurelia-api';
 import {Validation} from 'aurelia-validation';
@@ -80,19 +80,14 @@ describe('Entity', function() {
 
       // Test results of different ways of adding children to collection
       Promise.all(testPromises).then(response => {
-        expect(response[0].path).toBe('/withassociations/123/foo');
-        expect(response[1].path).toBe('/withassociations/123/foo');
-        expect(response[2].path).toBe('/withassociations/123/bar');
-        expect(response[3].path).toBe('/withassociations/123/foo/1337');
-
         expect(response[0] instanceof Foo).toBe(true);
         expect(response[1] instanceof Foo).toBe(true);
         expect(response[2] instanceof Custom).toBe(true);
         expect(response[3] instanceof Object).toBe(true);
 
-        expect(response[0].body).toEqual({empty: 'child one'});
-        expect(response[1].body).toEqual({empty: 'child two'});
-        expect(response[2].body).toEqual({empty: 'If I must'});
+        expect(typeof response[0].id).toEqual('number');
+        expect(typeof response[1].id).toEqual('number');
+        expect(typeof response[2].id).toEqual('number');
         expect(response[3].body).toEqual({});
 
         done();
@@ -241,19 +236,13 @@ describe('Entity', function() {
       });
 
       parentEntity.save().then(response => {
-        expect(response.path).toEqual('/withassociations');
-        expect(response.method).toEqual('POST');
-        expect(response.body).toEqual({
-          foo: [
-            {some: 'value', other: 'other value'},
-            {what: 'Jup'}
-          ],
-          bar: {
-            baby: 'steps'
-          },
-          test: 'case'
-        });
+        let idBar = response.bar.id;
+        let idParent = response.id;
 
+        expect(typeof idParent).toEqual('number');
+        expect(typeof idBar).toEqual('number');
+
+        expect(response).toEqual({bar: {baby: 'steps', id: idBar}, test: 'case', id: idParent});
         done();
       });
     });
@@ -410,10 +399,15 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with nested body (associations).', function(done) {
-      let parentEntity = constructEntity(WithAssociations);
-      let fooEntityOne = new Foo();
-      let fooEntityTwo = new Foo();
-      let customEntity = new Custom();
+      let container     = getContainer();
+      let entityManager = new EntityManager(container);
+
+      entityManager.registerEntities([WithAssociations, Foo, Custom]);
+
+      let parentEntity = entityManager.getEntity(WithAssociations);
+      let fooEntityOne = entityManager.getEntity(Foo);
+      let fooEntityTwo = entityManager.getEntity(Foo);
+      let customEntity = entityManager.getEntity(Custom);
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -431,10 +425,6 @@ describe('Entity', function() {
         expect(response.path).toEqual('/withassociations/1');
         expect(response.method).toEqual('PUT');
         expect(response.body).toEqual({
-          foo: [
-            {some: 'value', other: 'other value'},
-            {what: 'Jup'}
-          ],
           bar: {
             baby: 'steps'
           },
@@ -719,9 +709,6 @@ describe('Entity', function() {
       });
 
       expect(parentEntity.asObject(true)).toEqual({
-        foo: [
-          {what: 'Jup'}
-        ],
         bar: {
           baby: 'steps'
         },

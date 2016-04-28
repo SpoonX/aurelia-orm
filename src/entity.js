@@ -121,7 +121,10 @@ export class Entity {
 
     // We're clean, no need to update.
     if (this.isClean()) {
-      return Promise.resolve(null);
+      // Always save collections (might have new).
+      return this.saveCollections()
+        .then(() => this.markClean())
+        .then(() => null);
     }
 
     let requestBody = this.asObject(true);
@@ -148,9 +151,8 @@ export class Entity {
    * @return {Promise}
    */
   addCollectionAssociation(entity, property) {
-    property    = property || getPropertyForAssociation(this, entity);
-    let body    = undefined;
-    let url     = [this.getResource(), this.id, property];
+    property = property || getPropertyForAssociation(this, entity);
+    let url  = [this.getResource(), this.id, property];
 
     if (this.isNew()) {
       throw new Error('Cannot add association to entity that does not have an id.');
@@ -163,17 +165,30 @@ export class Entity {
     }
 
     if (entity.isNew()) {
-      // Entity is new! Don't supply an ID, and just pass in the child.
-      body = entity.asObject();
-    } else {
-      // Entity isn't new, just add id to url.
-      url.push(entity.id);
+      let associationProperty = getPropertyForAssociation(entity, this);
+      let relation            = entity.getMeta().fetch('association', associationProperty);
+
+      if (!relation || relation.type !== 'entity') {
+        // Many relation, create and then link.
+        return entity.save().then(() => {
+          return this.addCollectionAssociation(entity, property);
+        });
+      }
+
+      // toOne relation, pass in ID to prevent extra request. Something something performance.
+      entity[associationProperty] = this.id;
+
+      return entity.save().then(() => {
+        return entity;
+      });
     }
 
-    return this.getTransport().create(url.join('/'), body)
-      .then(created => {
-        return entity.setData(created).markClean();
-      });
+    // Entity isn't new, just add id to url.
+    url.push(entity.id);
+
+    return this.getTransport().create(url.join('/')).then(() => {
+      return entity;
+    });
   }
 
   /**
@@ -206,7 +221,7 @@ export class Entity {
    */
   saveCollections() {
     let tasks              = [];
-    let currentCollections = getCollectionsCompact(this);
+    let currentCollections = getCollectionsCompact(this, true);
     let cleanCollections   = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
 
     let addTasksForDifferences = (base, candidate, method) => {
@@ -229,23 +244,7 @@ export class Entity {
     // Something to remove?
     addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
 
-    return Promise.all(tasks).then(results => {
-      if (!Array.isArray(results)) {
-        return this;
-      }
-
-      let newState = null;
-
-      while (newState === null) {
-        newState = results.pop();
-      }
-
-      if (newState) {
-        this.getRepository().getPopulatedEntity(newState, this);
-      }
-
-      return this;
-    });
+    return Promise.all(tasks).then(results => this);
   }
 
   /**
@@ -455,18 +454,29 @@ function asObject(entity, shallow) {
   let metadata = entity.getMeta();
 
   Object.keys(entity).forEach(propertyName => {
-    let value = entity[propertyName];
+    let value       = entity[propertyName];
+    let association = metadata.fetch('associations', propertyName);
 
     // No meta data, no value or no association property: simple assignment.
-    if (!metadata.has('associations', propertyName) || !value) {
+    if (!association || !value) {
       pojo[propertyName] = value;
 
       return;
     }
 
-    // If shallow and is object, set id.
-    if (shallow && typeof value === 'object' && value.id) {
-      pojo[propertyName] = value.id;
+    // When shallow, we only assign toOne associations.
+    if (shallow) {
+      if (association.type === 'collection') {
+        return;
+      }
+
+      if (value.id) {
+        pojo[propertyName] = value.id;
+      } else if (value instanceof Entity) {
+        pojo[propertyName] = value.asObject();
+      } else if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
+        pojo[propertyName] = value;
+      }
 
       return;
     }
@@ -530,11 +540,12 @@ function asJson(entity, shallow) {
 /**
  * Get a compact object of collections (arrays of ids)
  *
- * @param {Entity} forEntity
+ * @param {Entity}  forEntity
+ * @param {boolean} [includeNew]
  *
  * @return {{}}
  */
-function getCollectionsCompact(forEntity) {
+function getCollectionsCompact(forEntity, includeNew) {
   let associations = forEntity.getMeta().fetch('associations');
   let collections  = {};
 
@@ -560,6 +571,8 @@ function getCollectionsCompact(forEntity) {
 
       if (entity.id) {
         collections[index].push(entity.id);
+      } else if (includeNew && entity instanceof Entity) {
+        collections[index].push(entity);
       }
     });
   });
