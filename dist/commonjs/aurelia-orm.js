@@ -35,6 +35,8 @@ var _type = require('./decorator/type');
 
 var _validatedResource = require('./decorator/validated-resource');
 
+require('./component/association-select');
+
 function configure(aurelia, configCallback) {
   var entityManagerInstance = aurelia.container.get(_entityManager.EntityManager);
 

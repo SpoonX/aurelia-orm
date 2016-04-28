@@ -1,3 +1,32 @@
+<a name"3.0.0-rc1"></a>
+## 3.0.0-rc1 (2016-04-28)
+
+
+#### Bug Fixes
+
+* **build:** current bundling with folders doesn't work. ([eef385fa](https://github.com/SpoonX/aurelia-orm/commit/eef385fa))
+* **d.ts:** include only necessary imports ([a0ff34c7](https://github.com/SpoonX/aurelia-orm/commit/a0ff34c7))
+
+
+#### Features
+
+* **bundle:** import association select for convinient bundling ([a081f361](https://github.com/SpoonX/aurelia-orm/commit/a081f361))
+* **entity:** Save new children and mark as dirty when children added or removed. ([37f6b515](https://github.com/SpoonX/aurelia-orm/commit/37f6b515))
+* **project:**
+  * Rename project to remove spoonx prefix. enable npm installation ([c2b977fe](https://github.com/SpoonX/aurelia-orm/commit/c2b977fe))
+  * bundle into single file ([91581443](https://github.com/SpoonX/aurelia-orm/commit/91581443))
+
+
+#### Breaking Changes
+
+* `spoonx/` prefix dropped from install name for orm and api. Update `package.json` and `config.js` accordingly.
+
+ ([c2b977fe](https://github.com/SpoonX/aurelia-orm/commit/c2b977fe))
+* all imports but components need to use 'aurelia-orm'
+
+ ([91581443](https://github.com/SpoonX/aurelia-orm/commit/91581443))
+
+
 <a name"2.2.3"></a>
 ### 2.2.3 (2016-03-26)
 

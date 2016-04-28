@@ -14,6 +14,7 @@ import { repository } from './decorator/repository';
 import { validation } from './decorator/validation';
 import { type } from './decorator/type';
 import { validatedResource } from './decorator/validated-resource';
+import './component/association-select';
 
 function configure(aurelia, configCallback) {
   let entityManagerInstance = aurelia.container.get(EntityManager);

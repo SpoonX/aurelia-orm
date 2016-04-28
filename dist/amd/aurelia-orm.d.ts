@@ -1,29 +1,7 @@
 declare module 'aurelia-orm' {
-  import typer from 'typer';
-  import extend from 'extend';
   import {
-    transient,
-    Container,
-    inject
-  } from 'aurelia-dependency-injection';
-  import {
-    Validation,
     ValidationRule
   } from 'aurelia-validation';
-  import {
-    metadata
-  } from 'aurelia-metadata';
-  import {
-    Config
-  } from 'spoonx/aurelia-api';
-  import {
-    bindingMode,
-    BindingEngine
-  } from 'aurelia-binding';
-  import {
-    bindable,
-    customElement
-  } from 'aurelia-templating';
   export class DefaultRepository extends Repository {
   
   }

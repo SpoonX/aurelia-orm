@@ -1,7 +1,7 @@
 var _dec, _class;
 
 import { inject } from 'aurelia-dependency-injection';
-import { Config } from 'spoonx/aurelia-api';
+import { Config } from 'aurelia-api';
 import typer from 'typer';
 
 export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
@@ -14,6 +14,10 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
   getTransport() {
     if (this.transport === null) {
       this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
+
+      if (!this.transport) {
+        throw new Error(`No transport found for '${ this.getMeta().fetch('endpoint') || 'default' }'.`);
+      }
     }
 
     return this.transport;
