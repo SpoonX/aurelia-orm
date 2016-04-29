@@ -3,7 +3,7 @@ import {DefaultRepository} from './default-repository';
 
 export class OrmMetadata {
   static forTarget(target) {
-    return metadata.getOrCreateOwn(Metadata.key, Metadata, target);
+    return metadata.getOrCreateOwn(Metadata.key, Metadata, target, target.name);
   }
 }
 
