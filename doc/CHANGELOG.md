@@ -1,3 +1,12 @@
+<a name"3.0.0-rc2"></a>
+### 3.0.0-rc2 (2016-05-04)
+
+
+#### Bug Fixes
+
+* **metadata:** use metadata.getOrCreateOwn 's optional targettKey for TS to circumvent TS's 'ex ([75c23d03](https://github.com/SpoonX/aurelia-orm/commit/75c23d03))
+
+
 <a name"3.0.0-rc1"></a>
 ## 3.0.0-rc1 (2016-04-28)
 
@@ -89,7 +98,7 @@
 
 * **project:**
   * removed aurelia-framework dependency and imported directly ([a23194b5](https://github.com/SpoonX/aurelia-orm/commit/a23194b5))
-  
+
 
 <a name"2.0.1"></a>
 ### 2.0.1 (2016-01-24)

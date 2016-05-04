@@ -26,7 +26,7 @@ define(['exports', 'aurelia-metadata', './default-repository'], function (export
     }
 
     OrmMetadata.forTarget = function forTarget(target) {
-      return _aureliaMetadata.metadata.getOrCreateOwn(Metadata.key, Metadata, target);
+      return _aureliaMetadata.metadata.getOrCreateOwn(Metadata.key, Metadata, target, target.name);
     };
 
     return OrmMetadata;
