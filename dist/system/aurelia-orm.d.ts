@@ -14,7 +14,7 @@ declare module 'aurelia-orm' {
        *
        * @param {Container} container aurelia-dependency-injection container
        */
-    constructor(container: any);
+    constructor(container?: any);
     
     /**
        * Register an array of entity references.
@@ -23,7 +23,7 @@ declare module 'aurelia-orm' {
        *
        * @return {EntityManager}
        */
-    registerEntities(entities: any): any;
+    registerEntities(entities?: any): any;
     
     /**
        * Register an Entity reference.
@@ -32,7 +32,7 @@ declare module 'aurelia-orm' {
        *
        * @return {EntityManager}
        */
-    registerEntity(entity: any): any;
+    registerEntity(entity?: any): any;
     
     /**
        * Get a repository instance.
@@ -43,7 +43,7 @@ declare module 'aurelia-orm' {
        *
        * @throws {Error}
        */
-    getRepository(entity: any): any;
+    getRepository(entity?: any): any;
     
     /**
        * Resolve given resource value to an entityReference
@@ -53,7 +53,7 @@ declare module 'aurelia-orm' {
        * @return {Entity}
        * @throws {Error}
        */
-    resolveEntityReference(resource: any): any;
+    resolveEntityReference(resource?: any): any;
     
     /**
        * Get an instance for `entity`
@@ -62,7 +62,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Entity}
        */
-    getEntity(entity: any): any;
+    getEntity(entity?: any): any;
   }
   export class Entity {
     
@@ -73,7 +73,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Entity}
        */
-    constructor(validator: any);
+    constructor(validator?: any);
     
     /**
        * Get the transport for the resource this repository represents.
@@ -94,7 +94,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Entity}
        */
-    setRepository(repository: any): any;
+    setRepository(repository?: any): any;
     
     /**
        * Define a non-enumerable property on the entity.
@@ -105,7 +105,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Entity}
        */
-    define(property: any, value: any, writable: any): any;
+    define(property?: any, value?: any, writable?: any): any;
     
     /**
        * Get the metadata for this entity.
@@ -143,7 +143,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Promise}
        */
-    addCollectionAssociation(entity: any, property: any): any;
+    addCollectionAssociation(entity?: any, property?: any): any;
     
     /**
        * Remove an entity from a collection.
@@ -153,7 +153,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Promise}
        */
-    removeCollectionAssociation(entity: any, property: any): any;
+    removeCollectionAssociation(entity?: any, property?: any): any;
     
     /**
        * Persist the collections on the entity.
@@ -211,7 +211,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Entity} Fluent interface
        */
-    setResource(resource: any): any;
+    setResource(resource?: any): any;
     
     /**
        * Destroy this entity (DELETE request to the server).
@@ -240,7 +240,7 @@ declare module 'aurelia-orm' {
        * @param {{}} data
        * @return {Entity}
        */
-    setData(data: any): any;
+    setData(data?: any): any;
     
     /**
        * Enable validation for this entity.
@@ -272,7 +272,7 @@ declare module 'aurelia-orm' {
        *
        * @return {{}}
        */
-    asObject(shallow: any): any;
+    asObject(shallow?: any): any;
     
     /**
        * Get the data in this entity as a json string.
@@ -281,10 +281,10 @@ declare module 'aurelia-orm' {
        *
        * @return {string}
        */
-    asJson(shallow: any): any;
+    asJson(shallow?: any): any;
   }
   export class OrmMetadata {
-    static forTarget(target: any): any;
+    static forTarget(target?: any): any;
   }
   export class Metadata {
     
@@ -304,7 +304,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Metadata}
        */
-    addTo(key: any, value: any): any;
+    addTo(key?: any, value?: any): any;
     
     /**
        * Set a value for key, or one level deeper (key.key).
@@ -315,7 +315,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Metadata}
        */
-    put(key: any, valueOrNestedKey: any, valueOrNull: any): any;
+    put(key?: any, valueOrNestedKey?: any, valueOrNull?: any): any;
     
     /**
        * Check if key, or key.nested exists.
@@ -325,7 +325,7 @@ declare module 'aurelia-orm' {
        *
        * @return {boolean}
        */
-    has(key: any, nested: any): any;
+    has(key?: any, nested?: any): any;
     
     /**
        * Fetch key or key.nested from metadata.
@@ -335,7 +335,7 @@ declare module 'aurelia-orm' {
        *
        * @return {*}
        */
-    fetch(key: any, nested: any): any;
+    fetch(key?: any, nested?: any): any;
   }
   export class Repository {
     transport: any;
@@ -347,7 +347,7 @@ declare module 'aurelia-orm' {
        *
        * @constructor
        */
-    constructor(clientConfig: any);
+    constructor(clientConfig?: any);
     
     /**
        * Get the transport for the resource this repository represents.
@@ -361,7 +361,7 @@ declare module 'aurelia-orm' {
        *
        * @param {Object} meta
        */
-    setMeta(meta: any): any;
+    setMeta(meta?: any): any;
     
     /**
        * Get the associated entity's meta data.
@@ -376,7 +376,7 @@ declare module 'aurelia-orm' {
        * @param {string} resource
        * @return {Repository}
        */
-    setResource(resource: any): any;
+    setResource(resource?: any): any;
     
     /**
        * Get the resource name of this repository instance's reference.
@@ -393,7 +393,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Promise}
        */
-    find(criteria: any, raw: any): any;
+    find(criteria?: any, raw?: any): any;
     
     /**
        * Perform a find query for `path`.
@@ -404,7 +404,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Promise}
        */
-    findPath(path: any, criteria: any, raw: any): any;
+    findPath(path?: any, criteria?: any, raw?: any): any;
     
     /**
        * Perform a count.
@@ -413,7 +413,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Promise}
        */
-    count(criteria: any): any;
+    count(criteria?: any): any;
     
     /**
        * Populate entities based on supplied data.
@@ -422,7 +422,7 @@ declare module 'aurelia-orm' {
        *
        * @return {*}
        */
-    populateEntities(data: any): any;
+    populateEntities(data?: any): any;
     
     /**
        * @param {{}}     data
@@ -430,7 +430,7 @@ declare module 'aurelia-orm' {
        *
        * @return {Entity}
        */
-    getPopulatedEntity(data: any, entity: any): any;
+    getPopulatedEntity(data?: any, entity?: any): any;
     
     /**
        * Get a new instance for entityReference.
@@ -464,7 +464,7 @@ declare module 'aurelia-orm' {
        * @param {EntityManager} entityManager
        * @param {Element}       element
        */
-    constructor(bindingEngine: any, entityManager: any, element: any);
+    constructor(bindingEngine?: any, entityManager?: any, element?: any);
     
     /**
        * (Re)Load the data for the select.
@@ -473,14 +473,14 @@ declare module 'aurelia-orm' {
        *
        * @return {Promise}
        */
-    load(reservedValue: any): any;
+    load(reservedValue?: any): any;
     
     /**
        * Set the value for the select.
        *
        * @param {string|Array} value
        */
-    setValue(value: any): any;
+    setValue(value?: any): any;
     
     /**
        * Get criteria, or default to empty object.
@@ -511,7 +511,7 @@ declare module 'aurelia-orm' {
        *
        * @return {AssociationSelect}
        */
-    observe(association: any): any;
+    observe(association?: any): any;
     
     /**
        * When attached to the DOM, initialize the component.
@@ -526,26 +526,26 @@ declare module 'aurelia-orm' {
        *
        * @return {string}
        */
-    propertyForResource(meta: any, resource: any): any;
+    propertyForResource(meta?: any, resource?: any): any;
     
     /**
        * Dispose all subscriptions on unbind.
        */
     unbind(): any;
   }
-  export function association(associationData: any): any;
+  export function association(associationData?: any): any;
   
   /**
    * @param {String} entityEndpoint
    *
    * @return {Function}
    */
-  export function endpoint(entityEndpoint: any): any;
-  export function name(entityName: any): any;
-  export function repository(repositoryReference: any): any;
-  export function resource(resourceName: any): any;
-  export function type(typeValue: any): any;
-  export function validatedResource(resourceName: any): any;
+  export function endpoint(entityEndpoint?: any): any;
+  export function name(entityName?: any): any;
+  export function repository(repositoryReference?: any): any;
+  export function resource(resourceName?: any): any;
+  export function type(typeValue?: any): any;
+  export function validatedResource(resourceName?: any): any;
   export function validation(): any;
   export class HasAssociationValidationRule extends ValidationRule {
     constructor();

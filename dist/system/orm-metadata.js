@@ -28,7 +28,7 @@ System.register(['aurelia-metadata', './default-repository'], function (_export,
         }
 
         OrmMetadata.forTarget = function forTarget(target) {
-          return metadata.getOrCreateOwn(Metadata.key, Metadata, target);
+          return metadata.getOrCreateOwn(Metadata.key, Metadata, target, target.name);
         };
 
         return OrmMetadata;
