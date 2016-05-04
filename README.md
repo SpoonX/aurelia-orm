@@ -24,7 +24,7 @@ This library plays nice with the [Sails.js framework](http://sailsjs.org).
 
 ## Important note
 
-We've simplified installation and usage! This plugin should now be installed using `jspm i aurelia-orm` or (for webpack) `npm i aurelia-orm`. Make sure you update all references to `spoonx/aurelia-orm` and `spoonx/aurelia-api` and remove the `spoonx/` prefix (don't forget your config.js, package.json, imports and bundles).
+We've simplified installation and usage! This plugin should now be installed using `jspm i aurelia-orm` or (for webpack) `npm i aurelia-orm --save`. Make sure you update all references to `spoonx/aurelia-orm` and `spoonx/aurelia-api` and remove the `spoonx/` prefix (don't forget your config.js, package.json, imports and bundles).
 
 ## Installation
 
@@ -34,7 +34,7 @@ Run `jspm i aurelia-orm` from your project root.
 
 ### Webpack
 
-Run `npm i aurelia-orm` from your project root.
+Run `npm i aurelia-orm --save` from your project root.
 
 Aurelia-orm has several submodules. So you need to add it to the AureliaWebpackPlugin includeSubModules list.
 
