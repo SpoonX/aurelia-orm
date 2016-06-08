@@ -1,4 +1,5 @@
-import {bindable, customElement, bindingMode} from 'aurelia-framework';
+import {bindingMode} from 'aurelia-binding';
+import {bindable, customElement} from 'aurelia-templating';
 
 @customElement('paged')
 export class Paged {
