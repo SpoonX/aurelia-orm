@@ -1,5 +1,5 @@
 # Components
-Aurelia-orm comes bundled with some (at the time of writing just one) components to simplify working with entity data.
+Aurelia-orm comes bundled with some components to simplify working with entity data.
 
 ## association-select
 > The `<association-select />` component composes a `<select />` element, of which the options have been populated from an endpoint.
@@ -74,3 +74,30 @@ _This attribute does **not** accept arrays, but can be combined with the `associ
 
 ### criteria
 Pass along filter criteria to the element. These will be used to restrict the data returned from the API.
+
+## Paged
+Paged component for aurelia. Allows you to display paged information.
+
+### resource
+A repository, simple `EntityManager.getRepository('resource')`.
+
+### criteria (optional)
+Parameter gets passed straight to the query field of `.find()`.
+
+### limit (optional)
+This will determine the amount of items to fetch, default is 30.
+
+### page (optional)
+Which page to load.
+
+### Example:
+
+```html
+<paged resource.bind="userRepository" limit.bind="30" data.bind="data">
+
+  <div class="user" repeat.for="user of data">
+    ${user.id} - ${user.name}
+  </div>
+
+</paged>
+```
