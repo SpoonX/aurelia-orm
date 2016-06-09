@@ -1,7 +1,7 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../aurelia-orm', 'extend'], function (_export, _context) {
-  var inject, bindingMode, BindingEngine, bindable, customElement, EntityManager, OrmMetadata, Entity, extend, _typeof, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, AssociationSelect;
+System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../entity-manager', '../entity', '../orm-metadata', 'extend'], function (_export, _context) {
+  var inject, bindingMode, BindingEngine, bindable, customElement, EntityManager, Entity, OrmMetadata, extend, _typeof, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, AssociationSelect;
 
   function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -61,10 +61,12 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
     }, function (_aureliaTemplating) {
       bindable = _aureliaTemplating.bindable;
       customElement = _aureliaTemplating.customElement;
-    }, function (_aureliaOrm) {
-      EntityManager = _aureliaOrm.EntityManager;
-      OrmMetadata = _aureliaOrm.OrmMetadata;
-      Entity = _aureliaOrm.Entity;
+    }, function (_entityManager) {
+      EntityManager = _entityManager.EntityManager;
+    }, function (_entity) {
+      Entity = _entity.Entity;
+    }, function (_ormMetadata) {
+      OrmMetadata = _ormMetadata.OrmMetadata;
     }, function (_extend) {
       extend = _extend.default;
     }],
@@ -99,6 +101,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
           this.bindingEngine = bindingEngine;
           this.entityManager = entityManager;
           this.multiple = typeof element.getAttribute('multiple') === 'string';
+          this.element = element;
         }
 
         AssociationSelect.prototype.load = function load(reservedValue) {
@@ -205,6 +208,10 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
         };
 
         AssociationSelect.prototype.attached = function attached() {
+          if (!this.repository && this.element.hasAttribute('resource')) {
+            this.repository = this.entityManager.getRepository(this.element.getAttribute('resource'));
+          }
+
           if (!this.association && !this.manyAssociation) {
             this.load(this.value);
 

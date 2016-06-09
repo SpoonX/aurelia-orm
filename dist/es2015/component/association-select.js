@@ -46,7 +46,9 @@ function _initializerWarningHelper(descriptor, context) {
 import { inject } from 'aurelia-dependency-injection';
 import { bindingMode, BindingEngine } from 'aurelia-binding';
 import { bindable, customElement } from 'aurelia-templating';
-import { EntityManager, OrmMetadata, Entity } from '../aurelia-orm';
+import { EntityManager } from '../entity-manager';
+import { Entity } from '../entity';
+import { OrmMetadata } from '../orm-metadata';
 import extend from 'extend';
 
 export let AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = class AssociationSelect {
@@ -71,6 +73,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     this.bindingEngine = bindingEngine;
     this.entityManager = entityManager;
     this.multiple = typeof element.getAttribute('multiple') === 'string';
+    this.element = element;
   }
 
   load(reservedValue) {
@@ -169,6 +172,10 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
   }
 
   attached() {
+    if (!this.repository && this.element.hasAttribute('resource')) {
+      this.repository = this.entityManager.getRepository(this.element.getAttribute('resource'));
+    }
+
     if (!this.association && !this.manyAssociation) {
       this.load(this.value);
 
