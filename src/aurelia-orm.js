@@ -2,6 +2,7 @@ import {EntityManager} from './entity-manager';
 import {HasAssociationValidationRule} from './validator/has-association';
 import {ValidationGroup} from 'aurelia-validation';
 import './component/association-select';
+import './component/paged';
 export {DefaultRepository} from './default-repository';
 export {Repository} from './repository';
 export {Entity} from './entity';
@@ -26,6 +27,7 @@ export function configure(aurelia, configCallback) {
 
 
   aurelia.globalResources('./component/association-select');
+  aurelia.globalResources('./component/paged');
 }
 
 export {EntityManager, HasAssociationValidationRule, ValidationGroup};
