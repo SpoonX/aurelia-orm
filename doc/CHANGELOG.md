@@ -1,3 +1,18 @@
+<a name"3.0.0-rc4"></a>
+### 3.0.0-rc4 (2016-06-09)
+
+
+#### Bug Fixes
+
+* **depend:** fix paged dependencies, move components docs ([89b5b35a](https://github.com/SpoonX/aurelia-orm/commit/89b5b35a))
+
+
+#### Features
+
+* **association-select:** Added resource attribute (no more need for a repository) ([8badedca](https://github.com/SpoonX/aurelia-orm/commit/8badedca))
+* **component:** add paged component ([23df688b](https://github.com/SpoonX/aurelia-orm/commit/23df688b))
+
+
 <a name"3.0.0-rc3"></a>
 ### 3.0.0-rc3 (2016-06-02)
 

@@ -533,6 +533,53 @@ declare module 'aurelia-orm' {
        */
     unbind(): any;
   }
+  export class Paged {
+    data: any;
+    page: any;
+    criteria: any;
+    resource: any;
+    limit: any;
+    
+    /**
+       * Attach to view
+       */
+    attached(): any;
+    
+    /**
+       * Reload data
+       */
+    reloadData(): any;
+    
+    /**
+       * Check if the value is changed
+       *
+       * @param  {string|{}}   newVal New value
+       * @param  {[string|{}]} oldVal Old value
+       * @return {Boolean}     Whenever the value is changed
+       */
+    isChanged(newVal: any, oldVal: any): any;
+    
+    /**
+       * Change page
+       *
+       * @param  {integer} newVal New page value
+       * @param  {integer} oldVal Old page value
+       */
+    pageChanged(newVal: any, oldVal: any): any;
+    
+    /**
+       * Change criteria
+       *
+       * @param  {{}} newVal New criteria value
+       * @param  {{}} oldVal Old criteria value
+       */
+    criteriaChanged(newVal: any, oldVal: any): any;
+    
+    /**
+       * Get data from repository
+       */
+    getData(): any;
+  }
   export function association(associationData: any): any;
   
   /**
