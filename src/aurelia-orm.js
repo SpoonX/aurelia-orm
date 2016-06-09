@@ -15,6 +15,7 @@ import {validation} from './decorator/validation';
 import {type} from './decorator/type';
 import {validatedResource} from './decorator/validated-resource';
 import './component/association-select';
+import './component/paged';
 
 function configure(aurelia, configCallback) {
   let entityManagerInstance = aurelia.container.get(EntityManager);
@@ -26,6 +27,7 @@ function configure(aurelia, configCallback) {
   };
 
   aurelia.globalResources('./component/association-select');
+  aurelia.globalResources('./component/paged');
 }
 
 export {
