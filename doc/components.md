@@ -2,24 +2,30 @@
 Aurelia-orm comes bundled with some components to simplify working with entity data.
 
 ## association-select
-> The `<association-select />` component composes a `<select />` element, of which the options have been populated from an endpoint.
 
-**Easiest example**
+> The `<association-select />` component composes a `<select />` element, of which the options have been populated from an endpoint. The selects value is the 'id' property and the displayed textContents are the 'name' properties of the resource. You can change the textContent by setting the property attribute of the association-select.
+
+## Easiest example
+
+Get all entries of the resource 'category' and populate the select using the 'id' and the 'name' properties of your resource for the value and the textContent respectively.
 
 ```html
 <association-select resource="category"></association-select>
 ```
 
-**Basic example**
+## Basic example
+
+Get all entries of the view-models 'userRepository' repository property and populate the select using the 'id' and the 'fullName' properties of your resource for the value and the textContent respectively. The selects current value is two-way bound to the 'data.author' property of your view-model.
 
 ```html
 <association-select
+  property="fullName"
   value.bind="data.author"
   repository.bind="userRepository"
 ></association-select>
 ```
 
-**Extended example**
+## Extended example
 
 ```html
 <!-- First, populate a list of categories -->
