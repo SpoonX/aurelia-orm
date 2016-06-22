@@ -64,7 +64,7 @@
     "aurelia-dependency-injection": "^1.0.0-beta.1.2.3",
     "aurelia-metadata": "^1.0.0-beta.1.2.1",
     "aurelia-templating": "^1.0.0-beta.1.2.7",
-    "aurelia-validation": "0.6.6",
+    "aurelia-validation": "0.10.0",
     "extend": "^3.0.0",
     "typer": "^1.1.0"
   },
