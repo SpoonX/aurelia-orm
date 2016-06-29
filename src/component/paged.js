@@ -82,7 +82,7 @@ export class Paged {
     this.resource.find(this.criteria, true).then(result => {
       this.data = result;
     }).catch(error => {
-      console.error('Something went wrong.', error);
+      logger.error('Something went wrong.', error);
     });
   }
 }
