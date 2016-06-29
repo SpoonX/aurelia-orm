@@ -46,6 +46,7 @@
       "aurelia-api": "^3.0.0-rc4",
       "aurelia-binding": "^1.0.0-beta.1.3.6",
       "aurelia-dependency-injection": "^1.0.0-beta.1.2.3",
+      "aurelia-logging": "^1.0.0-rc.1.0.0",
       "aurelia-metadata": "^1.0.0-beta.1.2.1",
       "aurelia-templating": "^1.0.0-beta.1.2.7",
       "aurelia-validation": "0.6.6",
