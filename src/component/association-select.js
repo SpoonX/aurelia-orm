@@ -183,6 +183,7 @@ export class AssociationSelect {
     if (!resource) {
       logger.error('resource bindable should be a string instead of ' + typeof resource);
     }
+
     this.repository = this.entityManager.getRepository(resource);
   }
 
