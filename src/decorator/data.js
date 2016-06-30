@@ -18,7 +18,10 @@ export function data(metaData) {
    * @returns {OrmMetadata}
    */
   return function(target, propertyName) {
-    typeof metaData !== 'object' && logger.error('data must be an object, it is a(n) ' + typeof metaData);
+    if (typeof metaData !== 'object') {
+      logger.error('data must be an object, ' + typeof metaData + ' given.');
+    }
+
     OrmMetadata.forTarget(target.constructor).put('data', propertyName, metaData);
   };
 }
