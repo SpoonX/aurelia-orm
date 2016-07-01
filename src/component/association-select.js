@@ -1,3 +1,4 @@
+import {logger} from '../logger';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
@@ -14,6 +15,8 @@ export class AssociationSelect {
   @bindable repository;
 
   @bindable property = 'name';
+
+  @bindable resource;
 
   @bindable options;
 
@@ -176,14 +179,18 @@ export class AssociationSelect {
     return this;
   }
 
+  resourceChanged(resource) {
+    if (!resource) {
+      logger.error('resource bindable should be a string instead of ' + typeof resource);
+    }
+
+    this.repository = this.entityManager.getRepository(resource);
+  }
+
   /**
    * When attached to the DOM, initialize the component.
    */
   attached() {
-    if (!this.repository && this.element.hasAttribute('resource')) {
-      this.repository = this.entityManager.getRepository(this.element.getAttribute('resource'));
-    }
-
     if (!this.association && !this.manyAssociation) {
       this.load(this.value);
 

@@ -15,6 +15,7 @@ export {repository} from './decorator/repository';
 export {validation} from './decorator/validation';
 export {type} from './decorator/type';
 export {validatedResource} from './decorator/validated-resource';
+export {data} from './decorator/data';
 
 export function configure(aurelia, configCallback) {
   let entityManagerInstance = aurelia.container.get(EntityManager);
