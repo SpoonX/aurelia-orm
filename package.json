@@ -68,6 +68,7 @@
     "aurelia-templating": "^1.0.0-beta.1.2.7",
     "aurelia-validation": "0.6.6",
     "extend": "^3.0.0",
+    "get-prop": "^0.0.10",
     "typer": "^1.1.0"
   },
   "devDependencies": {
