@@ -76,9 +76,7 @@ export class AssociationSelect {
     }
 
     if (!Array.isArray(value)) {
-      this.value = (typeof value === 'object') ?
-        getProp(value, this.identifier || 'id') :
-        value;
+      this.value = (typeof value === 'object') ? getProp(value, this.identifier || 'id') : value;
 
       return;
     }
