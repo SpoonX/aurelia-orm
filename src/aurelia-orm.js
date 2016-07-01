@@ -1,3 +1,4 @@
+import {getLogger} from 'aurelia-logging';
 import {EntityManager} from './entity-manager';
 import {HasAssociationValidationRule} from './validator/has-association';
 import {ValidationGroup} from 'aurelia-validation';
@@ -26,13 +27,10 @@ export function configure(aurelia, configCallback) {
     return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
   };
 
-
   aurelia.globalResources('./component/association-select');
   aurelia.globalResources('./component/paged');
 }
 
-export {EntityManager, HasAssociationValidationRule, ValidationGroup};
-
-import {getLogger} from 'aurelia-logging';
 const logger = getLogger('aurelia-orm');
-export {logger};
+
+export {EntityManager, HasAssociationValidationRule, ValidationGroup, logger};
