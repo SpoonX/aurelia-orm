@@ -1,4 +1,4 @@
-import {logger} from '../logger';
+import {logger} from '../aurelia-orm';
 import {bindingMode} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
 

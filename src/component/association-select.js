@@ -1,5 +1,5 @@
 import getProp from 'get-prop';
-import {logger} from '../logger';
+import {logger} from '../aurelia-orm';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
