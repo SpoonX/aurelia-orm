@@ -18,6 +18,7 @@ System.config({
     "aurelia-validation": "npm:aurelia-validation@0.6.6",
     "extend": "npm:extend@3.0.0",
     "fetch": "github:github/fetch@1.0.0",
+    "get-prop": "npm:get-prop@0.0.10",
     "typer": "npm:typer@1.1.0",
     "npm:aurelia-api@3.0.0-rc4": {
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.2.3",

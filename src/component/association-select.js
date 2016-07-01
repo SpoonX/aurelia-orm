@@ -1,3 +1,4 @@
+import getProp from 'get-prop';
 import {logger} from '../logger';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
@@ -13,6 +14,8 @@ export class AssociationSelect {
   @bindable criteria = null;
 
   @bindable repository;
+
+  @bindable identifier;
 
   @bindable property = 'name';
 
@@ -73,7 +76,9 @@ export class AssociationSelect {
     }
 
     if (!Array.isArray(value)) {
-      this.value = value;
+      this.value = (typeof value === 'object') ?
+        getProp(value, this.identifier || 'id') :
+        value;
 
       return;
     }
