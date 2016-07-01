@@ -104,7 +104,7 @@
     "karma-chrome-launcher": "^0.2.2",
     "karma-coverage": "^0.5.3",
     "karma-firefox-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.6",
+    "karma-jasmine": "^1.0.0",
     "karma-jspm": "^2.0.2",
     "object.assign": "^1.0.3",
     "require-dir": "^0.1.0",
