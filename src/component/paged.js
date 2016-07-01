@@ -1,3 +1,4 @@
+import {logger} from '../aurelia-orm';
 import {bindingMode} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
 
@@ -82,7 +83,7 @@ export class Paged {
     this.resource.find(this.criteria, true).then(result => {
       this.data = result;
     }).catch(error => {
-      console.error('Something went wrong.', error);
+      logger.error('Something went wrong.', error);
     });
   }
 }

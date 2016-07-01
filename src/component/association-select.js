@@ -1,3 +1,5 @@
+import getProp from 'get-prop';
+import {logger} from '../aurelia-orm';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
@@ -13,7 +15,11 @@ export class AssociationSelect {
 
   @bindable repository;
 
+  @bindable identifier;
+
   @bindable property = 'name';
+
+  @bindable resource;
 
   @bindable options;
 
@@ -70,7 +76,7 @@ export class AssociationSelect {
     }
 
     if (!Array.isArray(value)) {
-      this.value = value;
+      this.value = (typeof value === 'object') ? getProp(value, this.identifier || 'id') : value;
 
       return;
     }
@@ -176,14 +182,18 @@ export class AssociationSelect {
     return this;
   }
 
+  resourceChanged(resource) {
+    if (!resource) {
+      logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
+    }
+
+    this.repository = this.entityManager.getRepository(resource);
+  }
+
   /**
    * When attached to the DOM, initialize the component.
    */
   attached() {
-    if (!this.repository && this.element.hasAttribute('resource')) {
-      this.repository = this.entityManager.getRepository(this.element.getAttribute('resource'));
-    }
-
     if (!this.association && !this.manyAssociation) {
       this.load(this.value);
 
