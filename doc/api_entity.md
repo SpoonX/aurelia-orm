@@ -250,7 +250,7 @@ Itself to allow chaining.
 
 Get the resource this entity belongs to.
 
-**Note:** Also works when called statically on custom entities.
+**Note:** Also works when called statically on an Entity class.
 
 ### Parameters
 
@@ -266,7 +266,7 @@ The resource it belongs to (string).
 
 Get the name of this entity.
 
-**Note:** Also works when called statically on custom entities.
+**Note:** Also works when called statically on an Entity class.
 
 ### Parameters
 
@@ -276,6 +276,52 @@ Get the name of this entity.
 
 The name of the entity when configured using the `@name` decorator.
 Defaults to the resource name (or null when also not set).
+
+---------
+
+## .getIdProperty()
+
+Get the id property name of this entity.
+
+**Note:** Also works when called statically on an Entity class.
+
+### Parameters
+
+* None
+
+### Returns
+
+The id property name of the entity. Defaults to 'id' or as configured using the `@idProperty` decorator.
+
+---------
+
+## .setId(id)
+
+Set the id for this entity.
+
+### Parameters
+
+| Parameter | Type          | Description           |
+| --------- | ------------- | --------------------- |
+| id        | string|number | The id of the entity. |
+
+### Returns
+
+Itself to allow chaining.
+
+---------
+
+## .getId()
+
+Get the id of this entity.
+
+### Parameters
+
+* None
+
+### Returns
+
+The id of the entity instance.
 
 ---------
 

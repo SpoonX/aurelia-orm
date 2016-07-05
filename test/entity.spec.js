@@ -183,7 +183,7 @@ describe('Entity', function() {
     it('Should call .update on REST with an ID. (custom entity)', function(done) {
       let entity = constructEntity(WithResource);
       entity.foo = 'bar';
-      entity.id  = 1337;
+      entity.idTag  = 1337;
 
       entity.save().then(response => {
         expect(response.body).toEqual({foo: 'bar'});
@@ -331,7 +331,7 @@ describe('Entity', function() {
       let entity = new WithResource(new Validation());
 
       expect(entity.isNew()).toBe(true);
-      entity.setData({id: 667}).markClean();
+      entity.setData({idTag: 667}).markClean();
       expect(entity.isNew()).toBe(false);
     });
   });
@@ -341,7 +341,7 @@ describe('Entity', function() {
       let entity = new WithResource(new Validation());
 
       entity.setData({
-        id: 667,
+        idTag: 667,
         foo: 'bar',
         city: {awesome: true}
       }).markClean();
@@ -361,7 +361,7 @@ describe('Entity', function() {
   describe('.update()', function() {
     it('Should call .update with complete body.', function(done) {
       let entity  = constructEntity(WithResource);
-      entity.id   = 666;
+      entity.idTag   = 666;
       entity.foo  = 'bar';
       entity.city = {awesome: true};
 
@@ -377,7 +377,7 @@ describe('Entity', function() {
     it('Should not send a PUT request for .update when clean.', function(done) {
       let entity = constructEntity(WithResource);
       entity.setData({
-        id: 667,
+        idTag: 667,
         foo: 'bar',
         city: {awesome: true}
       }).markClean();
@@ -441,6 +441,42 @@ describe('Entity', function() {
       let instance = new WithResource();
 
       expect(instance.getMeta() instanceof Metadata).toBe(true);
+    });
+  });
+
+  describe('.getIdProperty()', function() {
+    it(`Should return the entity's id property`, function() {
+      let instance = new WithResource();
+
+      expect(instance.getIdProperty()).toBe('idTag');
+    });
+  });
+
+  describe('static .getIdProperty()', function() {
+    it('Should return the entity id property name. (Default)', function() {
+      expect(Entity.getIdProperty()).toEqual('id');
+    });
+
+    it('Should return the entity id property name. (Custom)', function() {
+      expect(WithResource.getIdProperty()).toEqual('idTag');
+    });
+  });
+
+  describe('.getId()', function() {
+    it(`Should return the entity's id`, function() {
+      let instance = new WithResource();
+      instance.idTag = 1;
+
+      expect(instance.getId()).toBe(1);
+    });
+  });
+
+  describe('.setId()', function() {
+    it(`Should set the entity's id`, function() {
+      let instance = new WithResource();
+      instance.setId(1)
+
+      expect(instance.idTag).toBe(1);
     });
   });
 
@@ -509,7 +545,7 @@ describe('Entity', function() {
   describe('.destroy()', function() {
     it('Should call .destroy.', function(done) {
       let entity = constructEntity(WithResource);
-      entity.id  = 666;
+      entity.idTag  = 666;
 
       entity.destroy().then(response => {
         expect(response.path).toEqual('/with-resource/666');
