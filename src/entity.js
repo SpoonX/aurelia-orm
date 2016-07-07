@@ -513,10 +513,12 @@ function asObject(entity, shallow) {
         return;
       }
 
-      if (value.id) {
-        pojo[propertyName] = value.id; // weird. entities always have an id!?
-      } else if (value instanceof Entity) {
-        pojo[propertyName] = value.asObject();
+      if (value instanceof Entity) {
+        if (value.getId()) {
+          pojo[propertyName] = value.getId();
+        } else {
+          pojo[propertyName] = value.asObject();
+        }
       } else if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
         pojo[propertyName] = value;
       }
@@ -612,10 +614,12 @@ function getCollectionsCompact(forEntity, includeNew) {
         return;
       }
 
-      if (entity.id) {
-        collections[index].push(entity.id);  // again weird. see above
-      } else if (includeNew && entity instanceof Entity) {
-        collections[index].push(entity);
+      if (entity instanceof Entity) {
+        if (entity.getId()) {
+          collections[index].push(entity.getId());
+        } else if (includeNew) {
+          collections[index].push(entity);
+        }
       }
     });
   });

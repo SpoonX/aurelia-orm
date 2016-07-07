@@ -474,7 +474,7 @@ describe('Entity', function() {
   describe('.setId()', function() {
     it(`Should set the entity's id`, function() {
       let instance = new WithResource();
-      instance.setId(1)
+      instance.setId(1);
 
       expect(instance.idTag).toBe(1);
     });
