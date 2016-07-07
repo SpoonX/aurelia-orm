@@ -303,14 +303,14 @@ export class Entity {
     Object.keys(this).forEach(propertyName => {
       let value       = this[propertyName];
       let association = metadata.fetch('associations', propertyName);
-      
+
       // No meta data, no value or no association property: simple assignment.
       if (!association || !value) {
         pojo[propertyName] = value;
 
         return;
       }
-    })
+    });
 
     if (this.isClean()) {
       return this;
@@ -329,7 +329,6 @@ export class Entity {
       this.setData(this.__cleanValues.data.entity);
 
       if (!shallow) {
-
         let collections = this.__cleanValues.data.collections;
         Object.getOwnPropertyNames(collections).forEach(index => {
           this[index] = [];
