@@ -84,6 +84,7 @@ Usually when making a custom entity, it's to add validation. This method simply 
 Use this decorator to indicate that a property has a relationship with another entity and thus should be treated as an entity. This decorator has the following effects:
 
 * It will tell aurelia-orm to populate children (nested) upon fetching data from the server.
+* It will look for the property name in the server requests. Thus, make sure you use the same name here as on your server for your model.
 * It will make sure that calling .asObject() on the entity recursively converts all children to simple objects.
 * It will make sure that upon calling .update(), all children get converted to IDs.
 
