@@ -2,9 +2,9 @@ import {logger} from '../aurelia-orm';
 import {OrmMetadata} from '../orm-metadata';
 
 /**
- * used to set generic data on the metadata
- *
- * @param {object} data
+* Set genenric 'data' metadata.
+*
+ * @param {object} metaData The data to set
  *
  * @returns {function}
  *

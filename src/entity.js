@@ -2,6 +2,10 @@ import {Validation} from 'aurelia-validation';
 import {transient, inject} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
 
+/**
+ * The Entity basis class
+ * @transient
+ */
 @transient()
 @inject(Validation)
 export class Entity {
@@ -46,9 +50,12 @@ export class Entity {
   }
 
   /**
+   * Set reference to the repository.
+   *
    * @param {Repository} repository
    *
-   * @return {Entity}
+   * @return {Entity} this
+   * @chainable
    */
   setRepository(repository) {
     return this.define('__repository', repository);
@@ -61,7 +68,8 @@ export class Entity {
    * @param {*}       value
    * @param {boolean} [writable]
    *
-   * @return {Entity}
+   * @return {Entity} this
+   * @chainable
    */
   define(property, value, writable) {
     Object.defineProperty(this, property, {
@@ -250,7 +258,8 @@ export class Entity {
   /**
    * Mark this entity as clean, in its current state.
    *
-   * @return {Entity}
+   * @return {Entity} this
+   * @chainable
    */
   markClean() {
     let cleanValues    = getFlat(this);
@@ -312,7 +321,8 @@ export class Entity {
    *
    * @param {string} resource
    *
-   * @return {Entity} Fluent interface
+   * @return {Entity} this
+   * @chainable
    */
   setResource(resource) {
     return this.define('__resource', resource);
@@ -365,7 +375,8 @@ export class Entity {
    * Set data on this entity.
    *
    * @param {{}} data
-   * @return {Entity}
+   * @return {Entity} this
+   * @chainable
    */
   setData(data) {
     Object.assign(this, data);
@@ -376,9 +387,9 @@ export class Entity {
   /**
    * Enable validation for this entity.
    *
-   * @return {Entity}
-   *
+   * @return {Entity} this
    * @throws {Error}
+   * @chainable
    */
   enableValidation() {
     if (!this.hasValidation()) {

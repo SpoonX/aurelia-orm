@@ -3,6 +3,9 @@ import {DefaultRepository} from './default-repository';
 import {Container, inject} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
 
+/**
+ * The EntityManager class
+ */
 @inject(Container)
 export class EntityManager {
   repositories = {};
@@ -22,7 +25,8 @@ export class EntityManager {
    *
    * @param {Entity[]|Entity} entities Array or object of entities.
    *
-   * @return {EntityManager}
+   * @return {EntityManager} this
+   * @chainable
    */
   registerEntities(entities) {
     for (let reference in entities) {
@@ -41,7 +45,8 @@ export class EntityManager {
    *
    * @param {Entity} entity
    *
-   * @return {EntityManager}
+   * @return {EntityManager} this
+   * @chainable
    */
   registerEntity(entity) {
     this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
@@ -55,7 +60,6 @@ export class EntityManager {
    * @param {Entity|string} entity
    *
    * @return {Repository}
-   *
    * @throws {Error}
    */
   getRepository(entity) {
