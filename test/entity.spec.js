@@ -539,6 +539,20 @@ describe('Entity', function() {
       expect(entity.cake).toEqual('delicious');
       expect(entity.but).toEqual('So is bacon');
       expect(entity.asObject()).toEqual({cake: 'delicious', but: 'So is bacon'});
+      expect(entity.isDirty()).toEqual(true);
+    });
+
+    it('Should set data on an entity and mark clean.', function() {
+      let entity = new Entity();
+
+      entity.setResource('unittest .setDate');
+
+      entity.setData({cake: 'delicious', but: 'So is bacon'}, true);
+
+      expect(entity.cake).toEqual('delicious');
+      expect(entity.but).toEqual('So is bacon');
+      expect(entity.asObject()).toEqual({cake: 'delicious', but: 'So is bacon'});
+      expect(entity.isDirty()).toEqual(false);
     });
   });
 
