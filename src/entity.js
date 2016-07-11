@@ -371,7 +371,9 @@ export class Entity {
   setData(data, markClean) {
     Object.assign(this, data);
 
-    if (markClean) this.markClean();
+    if (markClean) {
+      this.markClean();
+    }
 
     return this;
   }
