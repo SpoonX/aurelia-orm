@@ -513,17 +513,23 @@ function asObject(entity, shallow) {
         return;
       }
 
-      if (value instanceof Entity) {
-        if (value.getId()) {
-          pojo[propertyName] = value.getId();
-        } else {
-          pojo[propertyName] = value.asObject();
-        }
-      } else if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
-        pojo[propertyName] = value;
+      if (value instanceof Entity && value.getId()) {
+        pojo[propertyName] = value.getId();
+
+        return;
       }
 
-      return;
+      if (value instanceof Entity) {
+        pojo[propertyName] = value.asObject();
+
+        return;
+      }
+
+      if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
+        pojo[propertyName] = value;
+
+        return;
+      }
     }
 
     // Array, treat children as potential entities.
@@ -614,12 +620,20 @@ function getCollectionsCompact(forEntity, includeNew) {
         return;
       }
 
-      if (entity instanceof Entity) {
-        if (entity.getId()) {
-          collections[index].push(entity.getId());
-        } else if (includeNew) {
-          collections[index].push(entity);
-        }
+      if (!entity instanceof Entity) {
+        return;
+      }
+
+      if (entity.getId()) {
+        collections[index].push(entity.getId());
+
+        return;
+      }
+
+      if (includeNew) {
+        collections[index].push(entity);
+
+        return;
       }
     });
   });
