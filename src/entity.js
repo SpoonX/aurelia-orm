@@ -325,21 +325,26 @@ export class Entity {
       }
     });
 
-    if (!isNew) {
-      this.setData(this.__cleanValues.data.entity);
-
-      if (!shallow) {
-        let collections = this.__cleanValues.data.collections;
-        Object.getOwnPropertyNames(collections).forEach(index => {
-          this[index] = [];
-          collections[index].forEach(entity => {
-            if (typeof entity === 'number') {
-              this[index].push(entity);
-            }
-          });
-        });
-      }
+    if (isNew) {
+      return this.markClean();
     }
+
+    this.setData(this.__cleanValues.data.entity);
+
+    if (shallow) {
+      return this.markClean();
+    }
+
+    let collections = this.__cleanValues.data.collections;
+
+    Object.getOwnPropertyNames(collections).forEach(index => {
+      this[index] = [];
+      collections[index].forEach(entity => {
+        if (typeof entity === 'number') {
+          this[index].push(entity);
+        }
+      });
+    });
 
     return this.markClean();
   }
