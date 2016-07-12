@@ -43,6 +43,7 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
+import { logger } from '../aurelia-orm';
 import { bindingMode } from 'aurelia-binding';
 import { bindable, customElement } from 'aurelia-templating';
 
@@ -102,7 +103,7 @@ export let Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
     this.resource.find(this.criteria, true).then(result => {
       this.data = result;
     }).catch(error => {
-      console.error('Something went wrong.', error);
+      logger.error('Something went wrong.', error);
     });
   }
 }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec2], {

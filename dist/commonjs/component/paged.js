@@ -7,6 +7,8 @@ exports.Paged = undefined;
 
 var _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
 
+var _aureliaOrm = require('../aurelia-orm');
+
 var _aureliaBinding = require('aurelia-binding');
 
 var _aureliaTemplating = require('aurelia-templating');
@@ -21,7 +23,7 @@ function _initDefineProp(target, property, descriptor, context) {
   });
 }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
@@ -58,7 +60,7 @@ function _initializerWarningHelper(descriptor, context) {
 
 var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged'), _dec2 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = (_class2 = function () {
   function Paged() {
-    _classCallCheck(this, Paged);
+    
 
     _initDefineProp(this, 'data', _descriptor, this);
 
@@ -116,7 +118,7 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
     this.resource.find(this.criteria, true).then(function (result) {
       _this.data = result;
     }).catch(function (error) {
-      console.error('Something went wrong.', error);
+      _aureliaOrm.logger.error('Something went wrong.', error);
     });
   };
 

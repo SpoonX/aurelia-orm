@@ -1,4 +1,4 @@
-define(['exports', '../orm-metadata'], function (exports, _ormMetadata) {
+define(['exports', '../aurelia-orm', '../orm-metadata'], function (exports, _aureliaOrm, _ormMetadata) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -7,6 +7,10 @@ define(['exports', '../orm-metadata'], function (exports, _ormMetadata) {
   exports.endpoint = endpoint;
   function endpoint(entityEndpoint) {
     return function (target) {
+      if (!_ormMetadata.OrmMetadata.forTarget(target).fetch('resource')) {
+        _aureliaOrm.logger.warn('Need to set the resource before setting the endpoint!');
+      }
+
       _ormMetadata.OrmMetadata.forTarget(target).put('endpoint', entityEndpoint);
     };
   }

@@ -6,11 +6,7 @@ define(['exports', 'aurelia-validation', '../aurelia-orm'], function (exports, _
   });
   exports.HasAssociationValidationRule = undefined;
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  
 
   function _possibleConstructorReturn(self, call) {
     if (!self) {
@@ -40,7 +36,7 @@ define(['exports', 'aurelia-validation', '../aurelia-orm'], function (exports, _
     _inherits(HasAssociationValidationRule, _ValidationRule);
 
     function HasAssociationValidationRule() {
-      _classCallCheck(this, HasAssociationValidationRule);
+      
 
       return _possibleConstructorReturn(this, _ValidationRule.call(this, null, function (value) {
         return !!(value instanceof _aureliaOrm.Entity && typeof value.id === 'number' || typeof value === 'number');

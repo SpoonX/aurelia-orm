@@ -1,13 +1,11 @@
 'use strict';
 
 System.register(['aurelia-validation', '../aurelia-orm'], function (_export, _context) {
+  "use strict";
+
   var ValidationRule, Entity, HasAssociationValidationRule;
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  
 
   function _possibleConstructorReturn(self, call) {
     if (!self) {
@@ -44,7 +42,7 @@ System.register(['aurelia-validation', '../aurelia-orm'], function (_export, _co
         _inherits(HasAssociationValidationRule, _ValidationRule);
 
         function HasAssociationValidationRule() {
-          _classCallCheck(this, HasAssociationValidationRule);
+          
 
           return _possibleConstructorReturn(this, _ValidationRule.call(this, null, function (value) {
             return !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number');

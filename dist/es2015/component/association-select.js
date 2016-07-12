@@ -1,4 +1,4 @@
-var _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9;
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -43,6 +43,8 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
+import getProp from 'get-prop';
+import { logger } from '../aurelia-orm';
 import { inject } from 'aurelia-dependency-injection';
 import { bindingMode, BindingEngine } from 'aurelia-binding';
 import { bindable, customElement } from 'aurelia-templating';
@@ -57,15 +59,19 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
     _initDefineProp(this, 'repository', _descriptor2, this);
 
-    _initDefineProp(this, 'property', _descriptor3, this);
+    _initDefineProp(this, 'identifier', _descriptor3, this);
 
-    _initDefineProp(this, 'options', _descriptor4, this);
+    _initDefineProp(this, 'property', _descriptor4, this);
 
-    _initDefineProp(this, 'association', _descriptor5, this);
+    _initDefineProp(this, 'resource', _descriptor5, this);
 
-    _initDefineProp(this, 'manyAssociation', _descriptor6, this);
+    _initDefineProp(this, 'options', _descriptor6, this);
 
-    _initDefineProp(this, 'value', _descriptor7, this);
+    _initDefineProp(this, 'association', _descriptor7, this);
+
+    _initDefineProp(this, 'manyAssociation', _descriptor8, this);
+
+    _initDefineProp(this, 'value', _descriptor9, this);
 
     this.multiple = false;
 
@@ -91,7 +97,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     }
 
     if (!Array.isArray(value)) {
-      this.value = value;
+      this.value = typeof value === 'object' ? getProp(value, this.identifier || 'id') : value;
 
       return;
     }
@@ -166,16 +172,22 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
       }
 
       this.options = undefined;
+
+      return Promise.resolve();
     }));
 
     return this;
   }
 
-  attached() {
-    if (!this.repository && this.element.hasAttribute('resource')) {
-      this.repository = this.entityManager.getRepository(this.element.getAttribute('resource'));
+  resourceChanged(resource) {
+    if (!resource) {
+      logger.error(`resource is ${ typeof resource }. It should be a string or a reference`);
     }
 
+    this.repository = this.entityManager.getRepository(resource);
+  }
+
+  attached() {
     if (!this.association && !this.manyAssociation) {
       this.load(this.value);
 
@@ -216,21 +228,27 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'property', [bindable], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'identifier', [bindable], {
+  enumerable: true,
+  initializer: null
+}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'property', [bindable], {
   enumerable: true,
   initializer: function () {
     return 'name';
   }
-}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'options', [bindable], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'association', [bindable], {
+}), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'options', [bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'manyAssociation', [bindable], {
+}), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'association', [bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'value', [_dec3], {
+}), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, 'manyAssociation', [bindable], {
+  enumerable: true,
+  initializer: null
+}), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, 'value', [_dec3], {
   enumerable: true,
   initializer: null
 })), _class2)) || _class) || _class);

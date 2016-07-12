@@ -23,7 +23,7 @@ var paths = {
   importsToAdd: [],
   importsToIgnoreForDts: ['extend', 'typer', 'get-prop'],
   sort: true,
-  concat: true,
+  concat: false,
   jsResources: [appRoot + '**/*.js', '!' + appRoot + '*.js'],
   resources: appRoot + '{**/*.css,**/*.html}'
 };
