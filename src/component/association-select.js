@@ -177,6 +177,8 @@ export class AssociationSelect {
       }
 
       this.options = undefined;
+
+      return Promise.resolve();
     }));
 
     return this;

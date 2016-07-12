@@ -493,7 +493,7 @@ describe('Entity', function() {
   });
 
   describe('.getIdProperty()', function() {
-    it(`Should return the entity's id property`, function() {
+    it('Should return the entity\'s id property', function() {
       let instance = new WithResource();
 
       expect(instance.getIdProperty()).toBe('idTag');
@@ -511,7 +511,7 @@ describe('Entity', function() {
   });
 
   describe('.getId()', function() {
-    it(`Should return the entity's id`, function() {
+    it('Should return the entity\'s id', function() {
       let instance = new WithResource();
       instance.idTag = 1;
 
@@ -520,7 +520,7 @@ describe('Entity', function() {
   });
 
   describe('.setId()', function() {
-    it(`Should set the entity's id`, function() {
+    it('Should set the entity\'s id', function() {
       let instance = new WithResource();
       instance.setId(1);
 
