@@ -1,4 +1,4 @@
-import {logger} from './logger';
+import {getLogger} from 'aurelia-logging';
 import {EntityManager} from './entity-manager';
 import {HasAssociationValidationRule} from './validator/has-association';
 import {ValidationGroup} from 'aurelia-validation';
@@ -30,5 +30,7 @@ export function configure(aurelia, configCallback) {
   aurelia.globalResources('./component/association-select');
   aurelia.globalResources('./component/paged');
 }
+
+const logger = getLogger('aurelia-orm');
 
 export {EntityManager, HasAssociationValidationRule, ValidationGroup, logger};

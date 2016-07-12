@@ -12,6 +12,7 @@ describe('OrmMetadata', function() {
         resource: null,
         endpoint: null,
         name: null,
+        idProperty: 'id',
         associations: {}
       });
     });
@@ -26,6 +27,7 @@ describe('OrmMetadata', function() {
         resource: null,
         name: null,
         endpoint: null,
+        idProperty: 'id',
         associations: {}
       });
 
