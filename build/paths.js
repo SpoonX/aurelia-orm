@@ -3,7 +3,7 @@ var fs = require('fs');
 
 // hide warning //
 var emitter = require('events');
-emitter.defaultMaxListeners = 3;
+emitter.defaultMaxListeners = 5;
 
 var appRoot = 'src/';
 var pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
