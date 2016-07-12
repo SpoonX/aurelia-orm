@@ -2,6 +2,9 @@ import {inject} from 'aurelia-dependency-injection';
 import {Config} from 'aurelia-api';
 import typer from 'typer';
 
+/**
+ * The Repository basis class
+ */
 @inject(Config)
 export class Repository {
   transport = null;
@@ -52,11 +55,11 @@ export class Repository {
   }
 
   /**
-   * Set an entity instance.
-   * Used to harvest information such as the resource name.
+   * Set the resource
    *
    * @param {string} resource
-   * @return {Repository}
+   * @return {Repository} this
+   * @chainable
    */
   setResource(resource) {
     this.resource = resource;
@@ -65,7 +68,7 @@ export class Repository {
   }
 
   /**
-   * Get the resource name of this repository instance's reference.
+   * Get the resource
    *
    * @return {string|null}
    */
@@ -74,25 +77,25 @@ export class Repository {
   }
 
   /**
-   * Perform a find query.
+   * Perform a find query and populate entities with the retrieved data.
    *
-   * @param {null|{}|Number} criteria Criteria to add to the query.
-   * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
+   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
-   * @return {Promise}
+   * @return {Promise<Entity|[Entity]>}
    */
   find(criteria, raw) {
     return this.findPath(this.resource, criteria, raw);
   }
 
   /**
-   * Perform a find query for `path`.
+   * Perform a find query for `path` and populate entities with the retrieved data.
    *
-   * @param {string}         path
-   * @param {null|{}|Number} criteria Criteria to add to the query.
-   * @param {boolean}        [raw]    Set to true to get a POJO in stead of populated entities.
+   * @param {string}           path
+   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
-   * @return {Promise}
+   * @return {Promise<Entity|[Entity]>}
    */
   findPath(path, criteria, raw) {
     let findQuery = this.getTransport().find(path, criteria);
@@ -115,22 +118,22 @@ export class Repository {
   }
 
   /**
-   * Perform a count.
+   * Perform a count on the resource.
    *
    * @param {null|{}} criteria
    *
-   * @return {Promise}
+   * @return {Promise<Number>}
    */
   count(criteria) {
     return this.getTransport().find(this.resource + '/count', criteria);
   }
 
   /**
-   * Populate entities based on supplied data.
+   * Get new populated entity or entities based on supplied data including associations
    *
-   * @param {{}} data
+   * @param {{}|[{}]} data|[data] The data to populate with
    *
-   * @return {*}
+   * @return {Entity|[Entity]}
    */
   populateEntities(data) {
     if (!data) {
@@ -151,8 +154,10 @@ export class Repository {
   }
 
   /**
-   * @param {{}}     data
-   * @param {Entity} [entity]
+   * Populate a (new) entity including associations
+   *
+   * @param {{}}     data The data to populate with
+   * @param {Entity} [entity] optional. if not set, a new entity is returned
    *
    * @return {Entity}
    */
@@ -199,7 +204,7 @@ export class Repository {
   }
 
   /**
-   * Populate a new entity, with the (empty) associations already set.
+   * Populate a new entity with the empty associations set.
    *
    * @return {Entity}
    */
