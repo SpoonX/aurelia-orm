@@ -353,7 +353,6 @@ describe('Entity', function() {
 
       expect(entity.isDirty()).toBe(false);
       expect(entity.id).toBe(667);
-      expect(entity.foo[0]).toBe(1);
       expect(entity.bar.buz).toBe(true);
       expect(entity.__cleanValues.checksum).toBe(checksum);
     });

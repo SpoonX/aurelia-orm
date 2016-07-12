@@ -699,7 +699,7 @@ function getCollectionsCompact(forEntity, includeNew) {
         return;
       }
 
-      if (!entity instanceof Entity) {
+      if (!(entity instanceof Entity)) {
         return;
       }
 
