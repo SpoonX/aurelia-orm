@@ -6,7 +6,7 @@ import {Foo} from './resources/entity/foo';
 import {Custom} from './resources/entity/custom';
 import {WithAssociations} from './resources/entity/with-associations';
 import {WithName} from './resources/entity/with-name';
-import {Entity} from  '../src/entity';
+import {Entity} from '../src/entity';
 import {Container} from 'aurelia-dependency-injection';
 import {Config, Rest} from 'aurelia-api';
 import {Validation} from 'aurelia-validation';
@@ -80,19 +80,14 @@ describe('Entity', function() {
 
       // Test results of different ways of adding children to collection
       Promise.all(testPromises).then(response => {
-        expect(response[0].path).toBe('/withassociations/123/foo');
-        expect(response[1].path).toBe('/withassociations/123/foo');
-        expect(response[2].path).toBe('/withassociations/123/bar');
-        expect(response[3].path).toBe('/withassociations/123/foo/1337');
-
         expect(response[0] instanceof Foo).toBe(true);
         expect(response[1] instanceof Foo).toBe(true);
         expect(response[2] instanceof Custom).toBe(true);
         expect(response[3] instanceof Object).toBe(true);
 
-        expect(response[0].body).toEqual({empty: 'child one'});
-        expect(response[1].body).toEqual({empty: 'child two'});
-        expect(response[2].body).toEqual({empty: 'If I must'});
+        expect(typeof response[0].id).toEqual('number');
+        expect(typeof response[1].id).toEqual('number');
+        expect(typeof response[2].id).toEqual('number');
         expect(response[3].body).toEqual({});
 
         done();
@@ -188,7 +183,7 @@ describe('Entity', function() {
     it('Should call .update on REST with an ID. (custom entity)', function(done) {
       let entity = constructEntity(WithResource);
       entity.foo = 'bar';
-      entity.id  = 1337;
+      entity.idTag  = 1337;
 
       entity.save().then(response => {
         expect(response.body).toEqual({foo: 'bar'});
@@ -241,19 +236,7 @@ describe('Entity', function() {
       });
 
       parentEntity.save().then(response => {
-        expect(response.path).toEqual('/withassociations');
-        expect(response.method).toEqual('POST');
-        expect(response.body).toEqual({
-          foo: [
-            {some: 'value', other: 'other value'},
-            {what: 'Jup'}
-          ],
-          bar: {
-            baby: 'steps'
-          },
-          test: 'case'
-        });
-
+        expect(response.body).toEqual({bar: {baby: 'steps'}, test: 'case'});
         done();
       });
     });
@@ -342,8 +325,62 @@ describe('Entity', function() {
       let entity = new WithResource(new Validation());
 
       expect(entity.isNew()).toBe(true);
-      entity.setData({id: 667}).markClean();
+      entity.setData({idTag: 667}).markClean();
       expect(entity.isNew()).toBe(false);
+    });
+  });
+
+  describe('.reset()', function() {
+    it('Should properly reset the entity to the clean status including associations', function() {
+      let entity = new WithAssociations();
+
+      entity.setData({
+        id: 667,
+        foo: [{id: 1, value: 'baz'}],
+        bar: {buz: true}
+      }).markClean();
+
+      let checksum = entity.__cleanValues.checksum;
+
+      expect(entity.isDirty()).toBe(false);
+
+      entity.what = 'You dirty, dirty boy.';
+      entity.foo[0].value = 'bazzing';
+
+      expect(entity.isDirty()).toBe(true);
+
+      entity.reset();
+
+      expect(entity.isDirty()).toBe(false);
+      expect(entity.id).toBe(667);
+      expect(entity.bar.buz).toBe(true);
+      expect(entity.__cleanValues.checksum).toBe(checksum);
+    });
+
+    it('Should properly reset the entity to the clean status excluding associations', function() {
+      let entity = new WithAssociations();
+
+      entity.setData({
+        id: 667,
+        foo: [{id: 1, value: 'baz'}],
+        bar: {buz: true}
+      }).markClean();
+      let checksum = entity.__cleanValues.checksum;
+
+      expect(entity.isDirty()).toBe(false);
+
+      entity.what = 'You dirty, dirty boy.';
+      entity.foo[0].value = 'bazzing';
+
+      expect(entity.isDirty()).toBe(true);
+
+      entity.reset(true);
+
+      expect(entity.isDirty()).toBe(false);
+      expect(entity.id).toBe(667);
+      expect(entity.foo[0].value).toBe('bazzing');
+      expect(entity.bar.buz).toBe(true);
+      expect(entity.__cleanValues.checksum).toBe(checksum);
     });
   });
 
@@ -352,7 +389,7 @@ describe('Entity', function() {
       let entity = new WithResource(new Validation());
 
       entity.setData({
-        id: 667,
+        idTag: 667,
         foo: 'bar',
         city: {awesome: true}
       }).markClean();
@@ -372,7 +409,7 @@ describe('Entity', function() {
   describe('.update()', function() {
     it('Should call .update with complete body.', function(done) {
       let entity  = constructEntity(WithResource);
-      entity.id   = 666;
+      entity.idTag   = 666;
       entity.foo  = 'bar';
       entity.city = {awesome: true};
 
@@ -388,7 +425,7 @@ describe('Entity', function() {
     it('Should not send a PUT request for .update when clean.', function(done) {
       let entity = constructEntity(WithResource);
       entity.setData({
-        id: 667,
+        idTag: 667,
         foo: 'bar',
         city: {awesome: true}
       }).markClean();
@@ -410,10 +447,15 @@ describe('Entity', function() {
     });
 
     it('Should call .update on REST with nested body (associations).', function(done) {
-      let parentEntity = constructEntity(WithAssociations);
-      let fooEntityOne = new Foo();
-      let fooEntityTwo = new Foo();
-      let customEntity = new Custom();
+      let container     = getContainer();
+      let entityManager = new EntityManager(container);
+
+      entityManager.registerEntities([WithAssociations, Foo, Custom]);
+
+      let parentEntity = entityManager.getEntity(WithAssociations);
+      let fooEntityOne = entityManager.getEntity(Foo);
+      let fooEntityTwo = entityManager.getEntity(Foo);
+      let customEntity = entityManager.getEntity(Custom);
 
       fooEntityOne.some  = 'value';
       fooEntityOne.other = 'other value';
@@ -431,10 +473,6 @@ describe('Entity', function() {
         expect(response.path).toEqual('/withassociations/1');
         expect(response.method).toEqual('PUT');
         expect(response.body).toEqual({
-          foo: [
-            {some: 'value', other: 'other value'},
-            {what: 'Jup'}
-          ],
           bar: {
             baby: 'steps'
           },
@@ -451,6 +489,42 @@ describe('Entity', function() {
       let instance = new WithResource();
 
       expect(instance.getMeta() instanceof Metadata).toBe(true);
+    });
+  });
+
+  describe('.getIdProperty()', function() {
+    it('Should return the entity\'s id property', function() {
+      let instance = new WithResource();
+
+      expect(instance.getIdProperty()).toBe('idTag');
+    });
+  });
+
+  describe('static .getIdProperty()', function() {
+    it('Should return the entity id property name. (Default)', function() {
+      expect(Entity.getIdProperty()).toEqual('id');
+    });
+
+    it('Should return the entity id property name. (Custom)', function() {
+      expect(WithResource.getIdProperty()).toEqual('idTag');
+    });
+  });
+
+  describe('.getId()', function() {
+    it('Should return the entity\'s id', function() {
+      let instance = new WithResource();
+      instance.idTag = 1;
+
+      expect(instance.getId()).toBe(1);
+    });
+  });
+
+  describe('.setId()', function() {
+    it('Should set the entity\'s id', function() {
+      let instance = new WithResource();
+      instance.setId(1);
+
+      expect(instance.idTag).toBe(1);
     });
   });
 
@@ -519,7 +593,7 @@ describe('Entity', function() {
   describe('.destroy()', function() {
     it('Should call .destroy.', function(done) {
       let entity = constructEntity(WithResource);
-      entity.id  = 666;
+      entity.idTag  = 666;
 
       entity.destroy().then(response => {
         expect(response.path).toEqual('/with-resource/666');
@@ -549,6 +623,20 @@ describe('Entity', function() {
       expect(entity.cake).toEqual('delicious');
       expect(entity.but).toEqual('So is bacon');
       expect(entity.asObject()).toEqual({cake: 'delicious', but: 'So is bacon'});
+      expect(entity.isDirty()).toEqual(true);
+    });
+
+    it('Should set data on an entity and mark clean.', function() {
+      let entity = new Entity();
+
+      entity.setResource('unittest .setDate');
+
+      entity.setData({cake: 'delicious', but: 'So is bacon'}, true);
+
+      expect(entity.cake).toEqual('delicious');
+      expect(entity.but).toEqual('So is bacon');
+      expect(entity.asObject()).toEqual({cake: 'delicious', but: 'So is bacon'});
+      expect(entity.isDirty()).toEqual(false);
     });
   });
 
@@ -719,9 +807,6 @@ describe('Entity', function() {
       });
 
       expect(parentEntity.asObject(true)).toEqual({
-        foo: [
-          {what: 'Jup'}
-        ],
         bar: {
           baby: 'steps'
         },

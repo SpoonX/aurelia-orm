@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../aurelia-orm', 'extend'], function (exports, _aureliaDependencyInjection, _aureliaBinding, _aureliaTemplating, _aureliaOrm, _extend) {
+define(['exports', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../entity-manager', '../entity', '../orm-metadata', 'extend'], function (exports, _aureliaDependencyInjection, _aureliaBinding, _aureliaTemplating, _entityManager, _entity, _ormMetadata, _extend) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -71,7 +71,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-t
 
   var _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
-  var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplating.customElement)('association-select'), _dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.BindingEngine, _aureliaOrm.EntityManager, Element), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
+  var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplating.customElement)('association-select'), _dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.BindingEngine, _entityManager.EntityManager, Element), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
     function AssociationSelect(bindingEngine, entityManager, element) {
       _classCallCheck(this, AssociationSelect);
 
@@ -95,6 +95,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-t
       this.bindingEngine = bindingEngine;
       this.entityManager = entityManager;
       this.multiple = typeof element.getAttribute('multiple') === 'string';
+      this.element = element;
     }
 
     AssociationSelect.prototype.load = function load(reservedValue) {
@@ -122,7 +123,7 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-t
       var selectedValues = [];
 
       value.forEach(function (selected) {
-        selectedValues.push(selected instanceof _aureliaOrm.Entity ? selected.id : selected);
+        selectedValues.push(selected instanceof _entity.Entity ? selected.id : selected);
       });
 
       this.value = selectedValues;
@@ -201,13 +202,17 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-t
     };
 
     AssociationSelect.prototype.attached = function attached() {
+      if (!this.repository && this.element.hasAttribute('resource')) {
+        this.repository = this.entityManager.getRepository(this.element.getAttribute('resource'));
+      }
+
       if (!this.association && !this.manyAssociation) {
         this.load(this.value);
 
         return;
       }
 
-      this.ownMeta = _aureliaOrm.OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
+      this.ownMeta = _ormMetadata.OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
       if (this.manyAssociation) {
         this.observe(this.manyAssociation);

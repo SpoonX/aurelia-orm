@@ -2,6 +2,10 @@ import {Validation} from 'aurelia-validation';
 import {transient, inject} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
 
+/**
+ * The Entity basis class
+ * @transient
+ */
 @transient()
 @inject(Validation)
 export class Entity {
@@ -46,9 +50,12 @@ export class Entity {
   }
 
   /**
+   * Set reference to the repository.
+   *
    * @param {Repository} repository
    *
-   * @return {Entity}
+   * @return {Entity} this
+   * @chainable
    */
   setRepository(repository) {
     return this.define('__repository', repository);
@@ -60,8 +67,10 @@ export class Entity {
    * @param {string}  property
    * @param {*}       value
    * @param {boolean} [writable]
+   * @chainable
    *
-   * @return {Entity}
+   * @return {Entity} this
+   * @chainable
    */
   define(property, value, writable) {
     Object.defineProperty(this, property, {
@@ -83,6 +92,48 @@ export class Entity {
   }
 
   /**
+   * Get the id property name for this entity.
+   *
+   * return {String} The id property name
+   */
+  getIdProperty() {
+    return this.getMeta().fetch('idProperty');
+  }
+
+
+  /**
+   * Get the id property name of the entity (static).
+   *
+   * @return {string} The id property name
+   */
+  static getIdProperty() {
+    let idProperty = OrmMetadata.forTarget(this).fetch('idProperty');
+
+    return idProperty;
+  }
+
+    /**
+   * Get the Id value for this entity.
+   *
+   * return {Number|String} The id
+   */
+  getId() {
+    return this[this.getIdProperty()];
+  }
+
+  /**
+   * Set the Id value for this entity.
+   *
+   * @return {Entity}  this
+   * @chainable
+   */
+  setId(id) {
+    this[this.getIdProperty()] = id;
+
+    return this;
+  }
+
+  /**
    * Persist the entity's state to the server.
    * Either creates a new record (POST) or updates an existing one (PUT) based on the entity's state,
    *
@@ -97,7 +148,7 @@ export class Entity {
     return this.getTransport()
       .create(this.getResource(), this.asObject(true))
       .then((created) => {
-        this.id  = created.id;
+        this.setId(created[this.getIdProperty()]);
         response = created;
       })
       .then(() => this.saveCollections())
@@ -121,16 +172,19 @@ export class Entity {
 
     // We're clean, no need to update.
     if (this.isClean()) {
-      return Promise.resolve(null);
+      // Always save collections (might have new).
+      return this.saveCollections()
+        .then(() => this.markClean())
+        .then(() => null);
     }
 
     let requestBody = this.asObject(true);
     let response;
 
-    delete requestBody.id;
+    delete requestBody[this.getIdProperty()];
 
     return this.getTransport()
-      .update(this.getResource(), this.id, requestBody)
+      .update(this.getResource(), this.getId(), requestBody)
       .then((updated) => response = updated)
       .then(() => this.saveCollections())
       .then(() => this.markClean())
@@ -148,9 +202,8 @@ export class Entity {
    * @return {Promise}
    */
   addCollectionAssociation(entity, property) {
-    property    = property || getPropertyForAssociation(this, entity);
-    let body    = undefined;
-    let url     = [this.getResource(), this.id, property];
+    property = property || getPropertyForAssociation(this, entity);
+    let url  = [this.getResource(), this.getId(), property];
 
     if (this.isNew()) {
       throw new Error('Cannot add association to entity that does not have an id.');
@@ -163,17 +216,34 @@ export class Entity {
     }
 
     if (entity.isNew()) {
-      // Entity is new! Don't supply an ID, and just pass in the child.
-      body = entity.asObject();
-    } else {
-      // Entity isn't new, just add id to url.
-      url.push(entity.id);
+      let associationProperty = getPropertyForAssociation(entity, this);
+      let relation            = entity.getMeta().fetch('association', associationProperty);
+
+      if (!relation || relation.type !== 'entity') {
+        // Many relation, create and then link.
+        return entity.save().then(() => {
+          if (entity.isNew()) {
+            throw new Error('Entity did not return return an id on saving.');
+          }
+
+          return this.addCollectionAssociation(entity, property);
+        });
+      }
+
+      // toOne relation, pass in ID to prevent extra request. Something something performance.
+      entity[associationProperty] = this.getId();
+
+      return entity.save().then(() => {
+        return entity;
+      });
     }
 
-    return this.getTransport().create(url.join('/'), body)
-      .then(created => {
-        return entity.setData(created).markClean();
-      });
+    // Entity isn't new, just add id to url.
+    url.push(entity.getId());
+
+    return this.getTransport().create(url.join('/')).then(() => {
+      return entity;
+    });
   }
 
   /**
@@ -189,14 +259,14 @@ export class Entity {
     let idToRemove = entity;
 
     if (entity instanceof Entity) {
-      if (!entity.id) {
+      if (!entity.getId()) {
         return Promise.resolve(null);
       }
 
-      idToRemove = entity.id;
+      idToRemove = entity.getId();
     }
 
-    return this.getTransport().destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+    return this.getTransport().destroy([this.getResource(), this.getId(), property, idToRemove].join('/'));
   }
 
   /**
@@ -206,7 +276,7 @@ export class Entity {
    */
   saveCollections() {
     let tasks              = [];
-    let currentCollections = getCollectionsCompact(this);
+    let currentCollections = getCollectionsCompact(this, true);
     let cleanCollections   = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
 
     let addTasksForDifferences = (base, candidate, method) => {
@@ -229,29 +299,14 @@ export class Entity {
     // Something to remove?
     addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
 
-    return Promise.all(tasks).then(results => {
-      if (!Array.isArray(results)) {
-        return this;
-      }
-
-      let newState = null;
-
-      while (newState === null) {
-        newState = results.pop();
-      }
-
-      if (newState) {
-        this.getRepository().getPopulatedEntity(newState, this);
-      }
-
-      return this;
-    });
+    return Promise.all(tasks).then(results => this);
   }
 
   /**
    * Mark this entity as clean, in its current state.
    *
-   * @return {Entity}
+   * @return {Entity} this
+   * @chainable
    */
   markClean() {
     let cleanValues    = getFlat(this);
@@ -287,7 +342,67 @@ export class Entity {
    * @return {boolean}
    */
   isNew() {
-    return typeof this.id === 'undefined';
+    return typeof this.getId() === 'undefined';
+  }
+
+  /**
+   * Resets the entity to the clean state
+   *
+   * @param {boolean} [shallow]
+   *
+   * @return {Entity}
+   */
+  reset(shallow) {
+    let pojo     = {};
+    let metadata = this.getMeta();
+
+    Object.keys(this).forEach(propertyName => {
+      let value       = this[propertyName];
+      let association = metadata.fetch('associations', propertyName);
+
+      // No meta data, no value or no association property: simple assignment.
+      if (!association || !value) {
+        pojo[propertyName] = value;
+
+        return;
+      }
+    });
+
+    if (this.isClean()) {
+      return this;
+    }
+
+    let isNew        = this.isNew();
+    let associations = this.getMeta().fetch('associations');
+
+    Object.keys(this).forEach(propertyName => {
+      if (Object.getOwnPropertyNames(associations).indexOf(propertyName) === -1) {
+        delete this[propertyName];
+      }
+    });
+
+    if (isNew) {
+      return this.markClean();
+    }
+
+    this.setData(this.__cleanValues.data.entity);
+
+    if (shallow) {
+      return this.markClean();
+    }
+
+    let collections = this.__cleanValues.data.collections;
+
+    Object.getOwnPropertyNames(collections).forEach(index => {
+      this[index] = [];
+      collections[index].forEach(entity => {
+        if (typeof entity === 'number') {
+          this[index].push(entity);
+        }
+      });
+    });
+
+    return this.markClean();
   }
 
   /**
@@ -313,7 +428,8 @@ export class Entity {
    *
    * @param {string} resource
    *
-   * @return {Entity} Fluent interface
+   * @return {Entity} this
+   * @chainable
    */
   setResource(resource) {
     return this.define('__resource', resource);
@@ -325,11 +441,11 @@ export class Entity {
    * @return {Promise}
    */
   destroy() {
-    if (!this.id) {
+    if (!this.getId()) {
       throw new Error('Required value "id" missing on entity.');
     }
 
-    return this.getTransport().destroy(this.getResource(), this.id);
+    return this.getTransport().destroy(this.getResource(), this.getId());
   }
 
   /**
@@ -366,10 +482,16 @@ export class Entity {
    * Set data on this entity.
    *
    * @param {{}} data
-   * @return {Entity}
+   * @param {boolean} markClean
+   * @return {Entity} this
+   * @chainable
    */
-  setData(data) {
+  setData(data, markClean) {
     Object.assign(this, data);
+
+    if (markClean) {
+      this.markClean();
+    }
 
     return this;
   }
@@ -377,9 +499,9 @@ export class Entity {
   /**
    * Enable validation for this entity.
    *
-   * @return {Entity}
-   *
+   * @return {Entity} this
    * @throws {Error}
+   * @chainable
    */
   enableValidation() {
     if (!this.hasValidation()) {
@@ -455,20 +577,39 @@ function asObject(entity, shallow) {
   let metadata = entity.getMeta();
 
   Object.keys(entity).forEach(propertyName => {
-    let value = entity[propertyName];
+    let value       = entity[propertyName];
+    let association = metadata.fetch('associations', propertyName);
 
     // No meta data, no value or no association property: simple assignment.
-    if (!metadata.has('associations', propertyName) || !value) {
+    if (!association || !value) {
       pojo[propertyName] = value;
 
       return;
     }
 
-    // If shallow and is object, set id.
-    if (shallow && typeof value === 'object' && value.id) {
-      pojo[propertyName] = value.id;
+    // When shallow, we only assign toOne associations.
+    if (shallow) {
+      if (association.type === 'collection') {
+        return;
+      }
 
-      return;
+      if (value instanceof Entity && value.getId()) {
+        pojo[propertyName] = value.getId();
+
+        return;
+      }
+
+      if (value instanceof Entity) {
+        pojo[propertyName] = value.asObject();
+
+        return;
+      }
+
+      if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
+        pojo[propertyName] = value;
+
+        return;
+      }
     }
 
     // Array, treat children as potential entities.
@@ -493,7 +634,7 @@ function asObject(entity, shallow) {
       }
 
       // If shallow, we don't handle toMany.
-      if (!shallow || (typeof childValue === 'object' && !childValue.id)) {
+      if (!shallow || (typeof childValue === 'object' && !childValue.getId())) {
         asObjects.push(childValue.asObject(shallow));
       }
     });
@@ -530,11 +671,12 @@ function asJson(entity, shallow) {
 /**
  * Get a compact object of collections (arrays of ids)
  *
- * @param {Entity} forEntity
+ * @param {Entity}  forEntity
+ * @param {boolean} [includeNew]
  *
  * @return {{}}
  */
-function getCollectionsCompact(forEntity) {
+function getCollectionsCompact(forEntity, includeNew) {
   let associations = forEntity.getMeta().fetch('associations');
   let collections  = {};
 
@@ -546,7 +688,6 @@ function getCollectionsCompact(forEntity) {
     }
 
     collections[index] = [];
-
     if (!Array.isArray(forEntity[index])) {
       return;
     }
@@ -558,8 +699,20 @@ function getCollectionsCompact(forEntity) {
         return;
       }
 
-      if (entity.id) {
-        collections[index].push(entity.id);
+      if (!(entity instanceof Entity)) {
+        return;
+      }
+
+      if (entity.getId()) {
+        collections[index].push(entity.getId());
+
+        return;
+      }
+
+      if (includeNew) {
+        collections[index].push(entity);
+
+        return;
       }
     });
   });

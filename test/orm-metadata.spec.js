@@ -8,10 +8,11 @@ describe('OrmMetadata', function() {
 
       expect(meta instanceof Metadata).toBe(true);
       expect(meta.metadata).toEqual({
-        repository  : DefaultRepository,
-        resource    : null,
-        endpoint    : null,
-        name        : null,
+        repository: DefaultRepository,
+        resource: null,
+        endpoint: null,
+        name: null,
+        idProperty: 'id',
         associations: {}
       });
     });
@@ -22,10 +23,11 @@ describe('OrmMetadata', function() {
 
       expect(meta instanceof Metadata).toBe(true);
       expect(meta.metadata).toEqual({
-        repository  : DefaultRepository,
-        resource    : null,
-        name        : null,
-        endpoint    : null,
+        repository: DefaultRepository,
+        resource: null,
+        name: null,
+        endpoint: null,
+        idProperty: 'id',
         associations: {}
       });
 

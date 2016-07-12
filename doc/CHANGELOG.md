@@ -1,3 +1,60 @@
+<a name"3.0.0-rc4"></a>
+### 3.0.0-rc4 (2016-06-09)
+
+
+#### Bug Fixes
+
+* **depend:** fix paged dependencies, move components docs ([89b5b35a](https://github.com/SpoonX/aurelia-orm/commit/89b5b35a))
+
+
+#### Features
+
+* **association-select:** Added resource attribute (no more need for a repository) ([8badedca](https://github.com/SpoonX/aurelia-orm/commit/8badedca))
+* **component:** add paged component ([23df688b](https://github.com/SpoonX/aurelia-orm/commit/23df688b))
+
+
+<a name"3.0.0-rc3"></a>
+### 3.0.0-rc3 (2016-06-02)
+
+
+<a name"3.0.0-rc2"></a>
+### 3.0.0-rc2 (2016-05-04)
+
+
+#### Bug Fixes
+
+* **metadata:** use metadata.getOrCreateOwn 's optional targettKey for TS to circumvent TS's 'ex ([75c23d03](https://github.com/SpoonX/aurelia-orm/commit/75c23d03))
+
+
+<a name"3.0.0-rc1"></a>
+## 3.0.0-rc1 (2016-04-28)
+
+
+#### Bug Fixes
+
+* **build:** current bundling with folders doesn't work. ([eef385fa](https://github.com/SpoonX/aurelia-orm/commit/eef385fa))
+* **d.ts:** include only necessary imports ([a0ff34c7](https://github.com/SpoonX/aurelia-orm/commit/a0ff34c7))
+
+
+#### Features
+
+* **bundle:** import association select for convinient bundling ([a081f361](https://github.com/SpoonX/aurelia-orm/commit/a081f361))
+* **entity:** Save new children and mark as dirty when children added or removed. ([37f6b515](https://github.com/SpoonX/aurelia-orm/commit/37f6b515))
+* **project:**
+  * Rename project to remove spoonx prefix. enable npm installation ([c2b977fe](https://github.com/SpoonX/aurelia-orm/commit/c2b977fe))
+  * bundle into single file ([91581443](https://github.com/SpoonX/aurelia-orm/commit/91581443))
+
+
+#### Breaking Changes
+
+* `spoonx/` prefix dropped from install name for orm and api. Update `package.json` and `config.js` accordingly.
+
+ ([c2b977fe](https://github.com/SpoonX/aurelia-orm/commit/c2b977fe))
+* all imports but components need to use 'aurelia-orm'
+
+ ([91581443](https://github.com/SpoonX/aurelia-orm/commit/91581443))
+
+
 <a name"2.2.3"></a>
 ### 2.2.3 (2016-03-26)
 
@@ -60,7 +117,7 @@
 
 * **project:**
   * removed aurelia-framework dependency and imported directly ([a23194b5](https://github.com/SpoonX/aurelia-orm/commit/a23194b5))
-  
+
 
 <a name"2.0.1"></a>
 ### 2.0.1 (2016-01-24)

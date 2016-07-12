@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/SpoonX/aurelia-orm.svg)](https://travis-ci.org/SpoonX/aurelia-orm)
 [![Known Vulnerabilities](https://snyk.io/test/npm/name/badge.svg)](https://snyk.io/test/npm/aurelia-orm)
-[![Join the chat at https://gitter.im/aurelia/discuss](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/aurelia/discuss?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000?style=plastic)](https://gitter.im/SpoonX/Dev)
 
 Working with endpoints and client-side entities is unavoidable when doing API driven development. You end up writing a small wrapper for your XHRs / websocket events and putting your request methods in one place.
 Another option is just using Breeze, which is large, complex and not meant for most applications. Even though your endpoints are important, you still end up neglecting them.
@@ -24,11 +24,76 @@ This library plays nice with the [Sails.js framework](http://sailsjs.org).
 
 ## Important note
 
-We've simplified installation and usage! This plugin should now be installed using `jspm i aurelia-orm` or (for webpack) `npm i aurelia-orm`. Make sure you update all references to `spoonx/aurelia-orm` and `spoonx/aurelia-api` and remove the `spoonx/` prefix (don't forget your config.js, package.json, imports and bundles).
+We've simplified installation and usage! This plugin should now be installed using `jspm i aurelia-orm` or (for webpack) `npm i aurelia-orm --save`. Make sure you update all references to `spoonx/aurelia-orm` and `spoonx/aurelia-api` and remove the `spoonx/` prefix (don't forget your config.js, package.json, imports and bundles).
 
 ## Installation
 
-Run `jspm i aurelia-orm`, or (for webpack) `npm i aurelia-orm`, from your project root.
+### Aureli-Cli
+
+Run `npm i aurelia-orm --save` from your project root.
+
+Add `aurelia-orm` to the `build/bundles/dependencies` section of `aurelia-project/aurelia.json`.
+
+Aurelia-orm has several submodules. You need to add them to the aurelia build resources in your package.json.
+
+```js
+"aurelia": {
+  "build": {
+    "resources": ["aurelia-orm/**/*"]
+  }
+},
+```
+
+### Jspm
+
+Run `jspm i aurelia-orm`
+
+If the installation results in having forks, try resolving them by running:
+
+```sh
+jspm inspect --forks
+jspm resolve --only registry:package-name@version
+```
+
+E.g.
+
+```sh
+jspm inspect --forks
+>     Installed Forks
+>         npm:aurelia-dependency-injection 1.0.0-beta.1.2.3 1.0.0-beta.2.1.0
+
+jspm resolve --only npm:aurelia-dependency-injection@1.0.0-beta.2.1.0
+```
+
+### Webpack
+
+Run `npm i aurelia-orm --save` from your project root.
+
+Aurelia-orm has several submodules. You need to add them to the aurelia build resources in your package.json.
+
+```js
+"aurelia": {
+  "build": {
+    "resources": ["aurelia-orm/**/*"]
+  }
+},
+```
+
+### Typescript
+
+Add to your `typings.json`
+
+```js
+"aurelia-orm": "github:spoonx/aurelia-orm",
+```
+
+and run `typings i`
+
+or run
+
+```sh
+typings i github:spoonx/aurelia-orm
+```
 
 ## Documentation
 

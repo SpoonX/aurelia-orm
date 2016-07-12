@@ -4,7 +4,6 @@ var cors       = require('cors');
 var server;
 
 app.use(bodyParser.json());
-
 app.use(cors());
 
 app.all('*', function(req, res) {
@@ -12,8 +11,11 @@ app.all('*', function(req, res) {
     path: req.path,
     query: req.query,
     body: req.body,
-    host: req.hostname,
-    method: req.method
+    access_token: req.body.access_token,
+    method: req.method,
+    contentType: req.header('content-type'),
+    Authorization: req.header('Authorization'),
+    id: 667
   });
 });
 
