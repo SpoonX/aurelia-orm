@@ -1,4 +1,4 @@
-import {logger} from '../logger';
+import {logger} from '../aurelia-orm';
 import {OrmMetadata} from '../orm-metadata';
 
 /**
