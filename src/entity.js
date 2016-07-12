@@ -171,6 +171,10 @@ export class Entity {
       if (!relation || relation.type !== 'entity') {
         // Many relation, create and then link.
         return entity.save().then(() => {
+          if (entity.isNew()) {
+            throw new Error('Entity did not return return an id on saving.');
+          }
+
           return this.addCollectionAssociation(entity, property);
         });
       }

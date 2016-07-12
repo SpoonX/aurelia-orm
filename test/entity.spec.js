@@ -236,13 +236,7 @@ describe('Entity', function() {
       });
 
       parentEntity.save().then(response => {
-        let idBar = response.bar.id;
-        let idParent = response.id;
-
-        expect(typeof idParent).toEqual('number');
-        expect(typeof idBar).toEqual('number');
-
-        expect(response).toEqual({bar: {baby: 'steps', id: idBar}, test: 'case', id: idParent});
+        expect(response.body).toEqual({bar: {baby: 'steps'}, test: 'case'});
         done();
       });
     });
