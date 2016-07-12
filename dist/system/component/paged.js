@@ -1,7 +1,9 @@
 'use strict';
 
-System.register(['aurelia-binding', 'aurelia-templating'], function (_export, _context) {
-  var bindingMode, bindable, customElement, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, Paged;
+System.register(['../aurelia-orm', 'aurelia-binding', 'aurelia-templating'], function (_export, _context) {
+  "use strict";
+
+  var logger, bindingMode, bindable, customElement, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, Paged;
 
   function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -13,11 +15,7 @@ System.register(['aurelia-binding', 'aurelia-templating'], function (_export, _c
     });
   }
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  
 
   function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
     var desc = {};
@@ -53,7 +51,9 @@ System.register(['aurelia-binding', 'aurelia-templating'], function (_export, _c
   }
 
   return {
-    setters: [function (_aureliaBinding) {
+    setters: [function (_aureliaOrm) {
+      logger = _aureliaOrm.logger;
+    }, function (_aureliaBinding) {
       bindingMode = _aureliaBinding.bindingMode;
     }, function (_aureliaTemplating) {
       bindable = _aureliaTemplating.bindable;
@@ -62,7 +62,7 @@ System.register(['aurelia-binding', 'aurelia-templating'], function (_export, _c
     execute: function () {
       _export('Paged', Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = (_class2 = function () {
         function Paged() {
-          _classCallCheck(this, Paged);
+          
 
           _initDefineProp(this, 'data', _descriptor, this);
 
@@ -120,7 +120,7 @@ System.register(['aurelia-binding', 'aurelia-templating'], function (_export, _c
           this.resource.find(this.criteria, true).then(function (result) {
             _this.data = result;
           }).catch(function (error) {
-            console.error('Something went wrong.', error);
+            logger.error('Something went wrong.', error);
           });
         };
 

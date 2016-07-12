@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['../orm-metadata'], function (_export, _context) {
+  "use strict";
+
   var OrmMetadata;
   return {
     setters: [function (_ormMetadata) {
