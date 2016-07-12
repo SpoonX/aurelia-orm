@@ -60,6 +60,7 @@ export class Entity {
    * @param {string}  property
    * @param {*}       value
    * @param {boolean} [writable]
+   * @chainable
    *
    * @return {Entity}
    */
@@ -83,6 +84,48 @@ export class Entity {
   }
 
   /**
+   * Get the id property name for this entity.
+   *
+   * return {String} The id property name
+   */
+  getIdProperty() {
+    return this.getMeta().fetch('idProperty');
+  }
+
+
+  /**
+   * Get the id property name of the entity (static).
+   *
+   * @return {string} The id property name
+   */
+  static getIdProperty() {
+    let idProperty = OrmMetadata.forTarget(this).fetch('idProperty');
+
+    return idProperty;
+  }
+
+    /**
+   * Get the Id value for this entity.
+   *
+   * return {Number|String} The id
+   */
+  getId() {
+    return this[this.getIdProperty()];
+  }
+
+  /**
+   * Set the Id value for this entity.
+   *
+   * @return {Entity}  this
+   * @chainable
+   */
+  setId(id) {
+    this[this.getIdProperty()] = id;
+
+    return this;
+  }
+
+  /**
    * Persist the entity's state to the server.
    * Either creates a new record (POST) or updates an existing one (PUT) based on the entity's state,
    *
@@ -97,7 +140,7 @@ export class Entity {
     return this.getTransport()
       .create(this.getResource(), this.asObject(true))
       .then((created) => {
-        this.id  = created.id;
+        this.setId(created[this.getIdProperty()]);
         response = created;
       })
       .then(() => this.saveCollections())
@@ -130,10 +173,10 @@ export class Entity {
     let requestBody = this.asObject(true);
     let response;
 
-    delete requestBody.id;
+    delete requestBody[this.getIdProperty()];
 
     return this.getTransport()
-      .update(this.getResource(), this.id, requestBody)
+      .update(this.getResource(), this.getId(), requestBody)
       .then((updated) => response = updated)
       .then(() => this.saveCollections())
       .then(() => this.markClean())
@@ -152,7 +195,7 @@ export class Entity {
    */
   addCollectionAssociation(entity, property) {
     property = property || getPropertyForAssociation(this, entity);
-    let url  = [this.getResource(), this.id, property];
+    let url  = [this.getResource(), this.getId(), property];
 
     if (this.isNew()) {
       throw new Error('Cannot add association to entity that does not have an id.');
@@ -180,7 +223,7 @@ export class Entity {
       }
 
       // toOne relation, pass in ID to prevent extra request. Something something performance.
-      entity[associationProperty] = this.id;
+      entity[associationProperty] = this.getId();
 
       return entity.save().then(() => {
         return entity;
@@ -188,7 +231,7 @@ export class Entity {
     }
 
     // Entity isn't new, just add id to url.
-    url.push(entity.id);
+    url.push(entity.getId());
 
     return this.getTransport().create(url.join('/')).then(() => {
       return entity;
@@ -208,14 +251,14 @@ export class Entity {
     let idToRemove = entity;
 
     if (entity instanceof Entity) {
-      if (!entity.id) {
+      if (!entity.getId()) {
         return Promise.resolve(null);
       }
 
-      idToRemove = entity.id;
+      idToRemove = entity.getId();
     }
 
-    return this.getTransport().destroy([this.getResource(), this.id, property, idToRemove].join('/'));
+    return this.getTransport().destroy([this.getResource(), this.getId(), property, idToRemove].join('/'));
   }
 
   /**
@@ -290,7 +333,7 @@ export class Entity {
    * @return {boolean}
    */
   isNew() {
-    return typeof this.id === 'undefined';
+    return typeof this.getId() === 'undefined';
   }
 
   /**
@@ -388,11 +431,11 @@ export class Entity {
    * @return {Promise}
    */
   destroy() {
-    if (!this.id) {
+    if (!this.getId()) {
       throw new Error('Required value "id" missing on entity.');
     }
 
-    return this.getTransport().destroy(this.getResource(), this.id);
+    return this.getTransport().destroy(this.getResource(), this.getId());
   }
 
   /**
@@ -539,15 +582,23 @@ function asObject(entity, shallow) {
         return;
       }
 
-      if (value.id) {
-        pojo[propertyName] = value.id;
-      } else if (value instanceof Entity) {
-        pojo[propertyName] = value.asObject();
-      } else if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
-        pojo[propertyName] = value;
+      if (value instanceof Entity && value.getId()) {
+        pojo[propertyName] = value.getId();
+
+        return;
       }
 
-      return;
+      if (value instanceof Entity) {
+        pojo[propertyName] = value.asObject();
+
+        return;
+      }
+
+      if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
+        pojo[propertyName] = value;
+
+        return;
+      }
     }
 
     // Array, treat children as potential entities.
@@ -572,7 +623,7 @@ function asObject(entity, shallow) {
       }
 
       // If shallow, we don't handle toMany.
-      if (!shallow || (typeof childValue === 'object' && !childValue.id)) {
+      if (!shallow || (typeof childValue === 'object' && !childValue.getId())) {
         asObjects.push(childValue.asObject(shallow));
       }
     });
@@ -637,10 +688,20 @@ function getCollectionsCompact(forEntity, includeNew) {
         return;
       }
 
-      if (entity.id) {
-        collections[index].push(entity.id);
-      } else if (includeNew && entity instanceof Entity) {
+      if (!entity instanceof Entity) {
+        return;
+      }
+
+      if (entity.getId()) {
+        collections[index].push(entity.getId());
+
+        return;
+      }
+
+      if (includeNew) {
         collections[index].push(entity);
+
+        return;
       }
     });
   });

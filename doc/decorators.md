@@ -59,6 +59,18 @@ class HelloWorld {}
 class HelloWorld {}
 ```
 
+## @idProperty()
+
+Usually, you won't need the `@idProperty()` decorator. Orm uses 'id' as default property for the id, but you can use this decorator to define a different property as the id property.
+
+```js
+import {Entity, idProperty} from 'aurelia-orm';
+
+@resource()
+@idProperty('userId')
+export class User extends Entity {}
+```
+
 ## @repository()
 
 Usually, you won't need the `@repository()` decorator. It's used to define a custom repository for your entity (which can be useful if you wish to implement different methods).

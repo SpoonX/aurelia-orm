@@ -20,6 +20,7 @@ export class Metadata {
       resource: null,
       endpoint: null,
       name: null,
+      idProperty: 'id',
       associations: {}
     };
   }
