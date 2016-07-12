@@ -27,10 +27,10 @@ function cleanGeneratedCode() {
   });
 }
 
-gulp.task('build-index', ['build-resources'], function() {
+gulp.task('build-index', ['build-resources-index'], function() {
   var importsToAdd = paths.importsToAdd.slice();
 
-  var src = gulp.src(paths.files);
+  var src = gulp.src(paths.mainSource);
 
   if (paths.sort) {
     src = src.pipe(tools.sortFiles());
@@ -56,7 +56,7 @@ gulp.task('build-index', ['build-resources'], function() {
     .pipe(gulp.dest(paths.output));
 });
 
-gulp.task('build-resources', ['copy-resources'], function() {
+gulp.task('build-resources-index', ['copy-resources'], function() {
   var src = gulp.src(paths.jsResources);
 
   if (paths.ignore) {
@@ -128,7 +128,7 @@ gulp.task('build-dts', function(){
 
 gulp.task('fixup-dts', function(){
   var importsToAdd = [];
-  return gulp.src([paths.output + '**/*.d.ts'])
+  return gulp.src([paths.output + '**/*.d.ts', '!' + paths.output + 'index.d.ts'])
   .pipe(through2.obj(function(file, enc, callback) {
       file.contents = new Buffer(tools.extractImports(file.contents.toString('utf8'), importsToAdd));
       this.push(file);
