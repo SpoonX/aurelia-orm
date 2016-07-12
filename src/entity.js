@@ -365,10 +365,15 @@ export class Entity {
    * Set data on this entity.
    *
    * @param {{}} data
+   * @param {boolean} markClean
    * @return {Entity}
    */
-  setData(data) {
+  setData(data, markClean) {
     Object.assign(this, data);
+
+    if (markClean) {
+      this.markClean();
+    }
 
     return this;
   }

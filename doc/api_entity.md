@@ -279,15 +279,16 @@ Defaults to the resource name (or null when also not set).
 
 ---------
 
-## .setData(data)
+## .setData(data, markClean)
 
 Set the values of the entity.
 
 ### Parameters
 
-| Parameter | Type   | Description                                |
-| --------- | ------ | ------------------------------------------ |
-| data      | object | An object of data to assign to the entity. |
+| Parameter | Type    | Description                                |
+| --------- | ------- | ------------------------------------------ |
+| data      | object  | An object of data to assign to the entity. |
+| markClean | boolean | Optionally, marks entity as clean          |
 
 ### Returns
 
