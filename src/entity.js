@@ -294,6 +294,66 @@ export class Entity {
   }
 
   /**
+   * Resets the entity to the clean state
+   *
+   * @param {boolean} [shallow]
+   *
+   * @return {Entity}
+   */
+  reset(shallow) {
+    let pojo     = {};
+    let metadata = this.getMeta();
+
+    Object.keys(this).forEach(propertyName => {
+      let value       = this[propertyName];
+      let association = metadata.fetch('associations', propertyName);
+
+      // No meta data, no value or no association property: simple assignment.
+      if (!association || !value) {
+        pojo[propertyName] = value;
+
+        return;
+      }
+    });
+
+    if (this.isClean()) {
+      return this;
+    }
+
+    let isNew        = this.isNew();
+    let associations = this.getMeta().fetch('associations');
+
+    Object.keys(this).forEach(propertyName => {
+      if (Object.getOwnPropertyNames(associations).indexOf(propertyName) === -1) {
+        delete this[propertyName];
+      }
+    });
+
+    if (isNew) {
+      return this.markClean();
+    }
+
+    this.setData(this.__cleanValues.data.entity);
+
+    if (shallow) {
+      return this.markClean();
+    }
+
+    let collections = this.__cleanValues.data.collections;
+
+    Object.getOwnPropertyNames(collections).forEach(index => {
+      this[index] = [];
+      collections[index].forEach(entity => {
+        if (typeof entity === 'number') {
+          this[index].push(entity);
+        }
+      });
+    });
+
+    return this.markClean();
+  }
+
+  /**
    * Get the resource name of this entity's reference (static).
    *
    * @return {string|null}
@@ -566,7 +626,6 @@ function getCollectionsCompact(forEntity, includeNew) {
     }
 
     collections[index] = [];
-
     if (!Array.isArray(forEntity[index])) {
       return;
     }

@@ -330,6 +330,61 @@ describe('Entity', function() {
     });
   });
 
+  describe('.reset()', function() {
+    it('Should properly reset the entity to the clean status including associations', function() {
+      let entity = new WithAssociations();
+
+      entity.setData({
+        id: 667,
+        foo: [{id: 1, value: 'baz'}],
+        bar: {buz: true}
+      }).markClean();
+
+      let checksum = entity.__cleanValues.checksum;
+
+      expect(entity.isDirty()).toBe(false);
+
+      entity.what = 'You dirty, dirty boy.';
+      entity.foo[0].value = 'bazzing';
+
+      expect(entity.isDirty()).toBe(true);
+
+      entity.reset();
+
+      expect(entity.isDirty()).toBe(false);
+      expect(entity.id).toBe(667);
+      expect(entity.foo[0]).toBe(1);
+      expect(entity.bar.buz).toBe(true);
+      expect(entity.__cleanValues.checksum).toBe(checksum);
+    });
+
+    it('Should properly reset the entity to the clean status excluding associations', function() {
+      let entity = new WithAssociations();
+
+      entity.setData({
+        id: 667,
+        foo: [{id: 1, value: 'baz'}],
+        bar: {buz: true}
+      }).markClean();
+      let checksum = entity.__cleanValues.checksum;
+
+      expect(entity.isDirty()).toBe(false);
+
+      entity.what = 'You dirty, dirty boy.';
+      entity.foo[0].value = 'bazzing';
+
+      expect(entity.isDirty()).toBe(true);
+
+      entity.reset(true);
+
+      expect(entity.isDirty()).toBe(false);
+      expect(entity.id).toBe(667);
+      expect(entity.foo[0].value).toBe('bazzing');
+      expect(entity.bar.buz).toBe(true);
+      expect(entity.__cleanValues.checksum).toBe(checksum);
+    });
+  });
+
   describe('.markClean()', function() {
     it('Should properly mark the entity as clean.', function() {
       let entity = new WithResource(new Validation());
