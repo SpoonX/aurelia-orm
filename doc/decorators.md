@@ -45,7 +45,7 @@ class HelloWorld {}
 
 ## @resource()
 
-This decorator is probably the most important one. Without it, aurelia-orm won't know what your **custom entity** is all about. The resource maps to the API endpoint it represents. Simply put, resouce `foo` maps to `/foo`.
+This decorator is probably the most important one. Without it, aurelia-orm won't know what your **custom entity** is all about. The resource maps to the API endpoint it represents. Simply put, resource `foo` maps to `/foo`.
 
 When left empty, the name of the class (.toLowerCase()) will be used as the resource name. This is usually fine.
 
@@ -115,7 +115,7 @@ export class MyEntity extends Entity {
   @association({entity: 'update'}) // links to entity 'update'. (toOne)
   update = null;
 
-  @association({collention: 'foo'}) // links to collection of 'foo' entities.  (toMany)
+  @association({collection: 'foo'}) // links to collection of 'foo' entities.  (toMany)
   foo = false;
 }
 ```
