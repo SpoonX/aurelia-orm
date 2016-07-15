@@ -29,7 +29,7 @@ export class AssociationSelect {
 
   @bindable({defaultBindingMode: bindingMode.twoWay}) value;
 
-  multiple = false;
+  @bindable multiple = false;
 
   ownMeta;
 
@@ -44,7 +44,6 @@ export class AssociationSelect {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
     this.entityManager  = entityManager;
-    this.multiple       = typeof element.getAttribute('multiple') === 'string';
     this.element        = element;
   }
 
