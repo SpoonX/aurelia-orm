@@ -34,14 +34,17 @@ Run `npm i aurelia-orm --save` from your project root.
 
 Add `aurelia-orm` to the `build/bundles/dependencies` section of `aurelia-project/aurelia.json`.
 
-Aurelia-orm has several submodules. You need to add them to the aurelia build resources in your package.json.
+Aurelia-api makes use of `extends`, `typer` and `get-prop`. So, add following to the `build/bundles/dependencies` section of `aurelia-project/aurelia.json`.
 
 ```js
-"aurelia": {
-  "build": {
-    "resources": ["aurelia-orm/**/*"]
-  }
-},
+"dependencies": [
+  // ...
+  'extends',
+  'get-prop',
+  'typer',
+  'aurelia-orm',
+  // ...
+],
 ```
 
 ### Jspm
@@ -69,15 +72,9 @@ jspm resolve --only npm:aurelia-dependency-injection@1.0.0-beta.2.1.0
 
 Run `npm i aurelia-orm --save` from your project root.
 
-Aurelia-orm has several submodules. You need to add them to the aurelia build resources in your package.json.
+Add `'aurelia-orm'` in the `coreBundles.aurelia section` of your `webpack.config.js`.
 
-```js
-"aurelia": {
-  "build": {
-    "resources": ["aurelia-orm/**/*"]
-  }
-},
-```
+Aurelia-orm has several submodules. They are included in it's package.json, so no further action is required.
 
 ### Typescript
 
