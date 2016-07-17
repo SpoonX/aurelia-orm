@@ -4,6 +4,7 @@ import {HasAssociationValidationRule} from './validator/has-association';
 import {ValidationGroup} from 'aurelia-validation';
 import './component/association-select';
 import './component/paged';
+export {Repository} from './repository';
 export {DefaultRepository} from './default-repository';
 export {Repository} from './repository';
 export {Entity} from './entity';
