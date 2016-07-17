@@ -1,7 +1,7 @@
 import {WithEndpoint} from '../resources/entity/with-endpoint';
 import {Foo} from '../resources/entity/foo';
 import {OrmMetadata} from '../../src/orm-metadata';
-import {EntityManager} from '../../src/aurelia-orm';
+import {EntityManager} from '../../src/entity-manager';
 import {Container} from 'aurelia-dependency-injection';
 import {Config} from 'aurelia-api';
 

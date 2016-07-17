@@ -1,6 +1,7 @@
 import {WithAssociationValidation} from '../resources/entity/with-association-validation';
 import {Container} from 'aurelia-dependency-injection';
-import {EntityManager, configure} from '../../src/aurelia-orm';
+import {EntityManager} from '../../src/entity-manager';
+import {configure} from '../../src/aurelia-orm';
 import {ValidationResultProperty} from 'aurelia-validation';
 
 function noop() {

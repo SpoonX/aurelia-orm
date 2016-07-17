@@ -61,7 +61,7 @@ gulp.task('build-index', ['build-resources-index'], function() {
 });
 
 gulp.task('build-resources-index', ['copy-resources'], function() {
-  var src = gulp.src(paths.jsResources);
+  var src = gulp.src(paths.jsResources, {base: paths.root});
 
   if (paths.ignore) {
     paths.ignore.forEach(function(filename){
