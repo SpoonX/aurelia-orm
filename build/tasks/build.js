@@ -42,6 +42,10 @@ gulp.task('build-index', ['build-resources-index'], function() {
     });
   }
 
+  if (!paths.concat) {
+    return src.pipe(gulp.dest(paths.output));
+  }
+
   return src
     .pipe(through2.obj(function(file, enc, callback) {
       if (!file) return callback();
@@ -49,7 +53,7 @@ gulp.task('build-index', ['build-resources-index'], function() {
       this.push(file);
       return callback();
     }))
-    .pipe(paths.concat ? concat(jsName) : dummy())
+    .pipe(concat(jsName))
     .pipe(insert.transform(function(contents) {
       return tools.createImportBlock(importsToAdd) + contents;
     }))
