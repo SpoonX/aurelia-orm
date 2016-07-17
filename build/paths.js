@@ -24,7 +24,7 @@ var paths = {
   importsToIgnoreForDts: ['extend', 'typer', 'get-prop'], // imports that are only used internally. no need to d.ts export them
   jsResources: [appRoot + '**/*.js', '!' + appRoot + '*.js'], // js to transpile, but not be concated and keeping their relative path
   resources: appRoot + '{**/*.css,**/*.html}',
-  sort: true,
+  sort: false,
   concat: false
 };
 
