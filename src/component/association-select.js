@@ -12,7 +12,7 @@ export class AssociationSelect {
 
   @bindable repository;
 
-  @bindable identifier;
+  @bindable identifier = 'id';
 
   @bindable property = 'name';
 
@@ -55,7 +55,7 @@ export class AssociationSelect {
   /**
    * (Re)Load the data for the select.
    *
-   * @param {string|Array} [reservedValue]
+   * @param {string|Array|Object} [reservedValue]
    *
    * @return {Promise}
    */
@@ -72,7 +72,7 @@ export class AssociationSelect {
   /**
    * Set the value for the select.
    *
-   * @param {string|Array} value
+   * @param {string|Array|Object} value
    */
   setValue(value) {
     if (!value) {
@@ -80,7 +80,7 @@ export class AssociationSelect {
     }
 
     if (!Array.isArray(value)) {
-      this.value = (typeof value === 'object') ? getProp(value, this.identifier || 'id') : value;
+      this.value = (typeof value === 'object') ? getProp(value, this.identifier) : value;
 
       return;
     }
@@ -88,7 +88,7 @@ export class AssociationSelect {
     let selectedValues = [];
 
     value.forEach(selected => {
-      selectedValues.push(selected instanceof Entity ? selected.id : selected);
+      selectedValues.push(selected instanceof Entity ? selected.getId() : selected);
     });
 
     this.value = selectedValues;
@@ -128,12 +128,12 @@ export class AssociationSelect {
       delete criteria.populate;
 
       let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath     = `${assoc.getResource()}/${assoc.id}/${property}`;
+      findPath     = `${assoc.getResource()}/${assoc.getId()}/${property}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
       associations.forEach(association => {
-        criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.id;
+        criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.getId();
       });
     }
 
@@ -147,14 +147,14 @@ export class AssociationSelect {
    */
   verifyAssociationValues() {
     if (this.manyAssociation) {
-      return !!this.manyAssociation.id;
+      return !!this.manyAssociation.getId();
     }
 
     if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
       return !associations.some(association => {
-        return !association.id;
+        return !association.getId();
       });
     }
 
@@ -175,7 +175,7 @@ export class AssociationSelect {
       return this;
     }
 
-    this._subscriptions.push(this.bindingEngine.propertyObserver(association, 'id').subscribe(() => {
+    this._subscriptions.push(this.bindingEngine.propertyObserver(association, association.getIdProperty()).subscribe(() => {
       if (this.verifyAssociationValues()) {
         return this.load();
       }
