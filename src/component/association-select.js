@@ -1,11 +1,8 @@
 import getProp from 'get-prop';
-import {logger} from '../aurelia-orm';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
-import {EntityManager} from '../entity-manager';
-import {Entity} from '../entity';
-import {OrmMetadata} from '../orm-metadata';
+import {EntityManager, Entity, OrmMetadata, logger} from '../aurelia-orm';
 import extend from 'extend';
 
 @customElement('association-select')
