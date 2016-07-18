@@ -32,17 +32,24 @@ We've simplified installation and usage! This plugin should now be installed usi
 
 Run `npm i aurelia-orm --save` from your project root.
 
-Add `aurelia-orm` to the `build/bundles/dependencies` section of `aurelia-project/aurelia.json`.
-
-Aurelia-api makes use of `extends`, `typer` and `get-prop`. So, add following to the `build/bundles/dependencies` section of `aurelia-project/aurelia.json`.
+Aurelia-orm has submodules and makes use of `extends`, `get-prop`, `typer` and `aurelia-validation@0.6.6`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
 
 ```js
 "dependencies": [
   // ...
-  'extends',
-  'get-prop',
-  'typer',
-  'aurelia-orm',
+  "extends",
+  "get-prop",
+  "typer",
+  {
+    "name": "aurelia-orm",
+    "path": "../node_modules/aurelia-orm/dist/amd",
+    "main": "aurelia-orm"
+  },
+  {
+  "name": "aurelia-validation",
+  "path": "../node_modules/aurelia-validation/dist/amd",
+  "main": "index"
+  },
   // ...
 ],
 ```
@@ -50,6 +57,10 @@ Aurelia-api makes use of `extends`, `typer` and `get-prop`. So, add following to
 ### Jspm
 
 Run `jspm i aurelia-orm`
+
+Add `aurelia-orm` to the `bundles.dist.aurelia.includes` section of `build/bundles.js`.
+
+Aurelia-orm has submodules. They are imported in it's main file, so no further action is required.
 
 If the installation results in having forks, try resolving them by running:
 
@@ -74,11 +85,11 @@ Run `npm i aurelia-orm --save` from your project root.
 
 Add `'aurelia-orm'` in the `coreBundles.aurelia section` of your `webpack.config.js`.
 
-Aurelia-orm has several submodules. They are included in it's package.json, so no further action is required.
+Aurelia-orm has submodules. They are listed as resources in the package.json. So, no further action is required.
 
 ### Typescript
 
-Add to your `typings.json`
+Npm-based installations pick up the typings automatically. For Jspm-based installations, add to your `typings.json`:
 
 ```js
 "aurelia-orm": "github:spoonx/aurelia-orm",

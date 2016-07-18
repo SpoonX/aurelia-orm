@@ -4,15 +4,24 @@
 
 Run `npm i aurelia-orm --save` from your project root.
 
-Aurelia-orm makes use of `extends`, `typer` and `get-prop`. So, add following to the `build/bundles/dependencies` section of `aurelia-project/aurelia.json`.
+Aurelia-orm has submodules and makes use of `extends`, `get-prop`, `typer` and `aurelia-validation@0.6.6`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
 
 ```js
 "dependencies": [
   // ...
-  'extends',
-  'get-prop',
-  'typer',
-  'aurelia-orm',
+  "extends",
+  "get-prop",
+  "typer",
+  {
+    "name": "aurelia-orm",
+    "path": "../node_modules/aurelia-orm/dist/amd",
+    "main": "aurelia-orm"
+  },
+  {
+  "name": "aurelia-validation",
+  "path": "../node_modules/aurelia-validation/dist/amd",
+  "main": "index"
+  },
   // ...
 ],
 ```
@@ -20,6 +29,8 @@ Aurelia-orm makes use of `extends`, `typer` and `get-prop`. So, add following to
 ## Jspm
 
 Run `jspm i aurelia-orm`
+
+Aurelia-orm has submodules. They are imported in it's main file, so no further action is required.
 
 If the installation results in having forks, try resolving them by running:
 
