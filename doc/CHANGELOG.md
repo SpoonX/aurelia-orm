@@ -1,20 +1,29 @@
-<a name"3.0.0-rc4"></a>
-### 3.0.0-rc4 (2016-06-09)
+<a name="3.0.0-rc5"></a>
+## [3.0.0-rc5](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc2...v33.0.0-rc5) (2016-07-22)
 
 
-#### Bug Fixes
+### Bug Fixes
 
-* **depend:** fix paged dependencies, move components docs ([89b5b35a](https://github.com/SpoonX/aurelia-orm/commit/89b5b35a))
+* **aurelia-orm:** export Repository ([c99d4c6](https://github.com/SpoonX/aurelia-orm/commit/c99d4c6))
+* **component:** association select has bindable resource property ([e037efa](https://github.com/SpoonX/aurelia-orm/commit/e037efa))
+* **component:** association select\'s resource bindable  can also reference repo instance ([48ae57a](https://github.com/SpoonX/aurelia-orm/commit/48ae57a))
+* **component:** bindable multiple for association select component ([ad68275](https://github.com/SpoonX/aurelia-orm/commit/ad68275))
+* **decorators:** no return ([2274878](https://github.com/SpoonX/aurelia-orm/commit/2274878))
+* **depend:** fix paged dependencies, move components docs ([89b5b35](https://github.com/SpoonX/aurelia-orm/commit/89b5b35))
+* **entity:** fix reset and test ([51dd588](https://github.com/SpoonX/aurelia-orm/commit/51dd588))
+* **entity:** use getId for collections ([224cade](https://github.com/SpoonX/aurelia-orm/commit/224cade))
 
 
-#### Features
+### Features
 
-* **association-select:** Added resource attribute (no more need for a repository) ([8badedca](https://github.com/SpoonX/aurelia-orm/commit/8badedca))
-* **component:** add paged component ([23df688b](https://github.com/SpoonX/aurelia-orm/commit/23df688b))
-
-
-<a name"3.0.0-rc3"></a>
-### 3.0.0-rc3 (2016-06-02)
+* **association-select:** Added resource attribute (no more need for a repository) ([8badedc](https://github.com/SpoonX/aurelia-orm/commit/8badedc))
+* **component:** add paged component ([23df688](https://github.com/SpoonX/aurelia-orm/commit/23df688))
+* **component:** association select with identifier bindable ([9f67554](https://github.com/SpoonX/aurelia-orm/commit/9f67554))
+* **decorators:** data decorator for generic entity property data ([c7faf9e](https://github.com/SpoonX/aurelia-orm/commit/c7faf9e))
+* **entity:** added entity.reset(shallow) ([b237d67](https://github.com/SpoonX/aurelia-orm/commit/b237d67))
+* **entity:** allow custom id property names. Use [@idProperty](https://github.com/idProperty)() decorator to set a custom id property name ([6d2f9b1](https://github.com/SpoonX/aurelia-orm/commit/6d2f9b1))
+* **entity:** prevent accidental infinite loops ([2cb9527](https://github.com/SpoonX/aurelia-orm/commit/2cb9527))
+* **entity:** setData with optional markClean ([ee01480](https://github.com/SpoonX/aurelia-orm/commit/ee01480))
 
 
 <a name"3.0.0-rc2"></a>

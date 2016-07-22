@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-binding', 'aurelia-templating'], function (exports, _aureliaBinding, _aureliaTemplating) {
+define(['exports', '../aurelia-orm', 'aurelia-binding', 'aurelia-templating'], function (exports, _aureliaOrm, _aureliaBinding, _aureliaTemplating) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -16,11 +16,7 @@ define(['exports', 'aurelia-binding', 'aurelia-templating'], function (exports, 
     });
   }
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  
 
   function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
     var desc = {};
@@ -59,7 +55,7 @@ define(['exports', 'aurelia-binding', 'aurelia-templating'], function (exports, 
 
   var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged'), _dec2 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = (_class2 = function () {
     function Paged() {
-      _classCallCheck(this, Paged);
+      
 
       _initDefineProp(this, 'data', _descriptor, this);
 
@@ -117,7 +113,7 @@ define(['exports', 'aurelia-binding', 'aurelia-templating'], function (exports, 
       this.resource.find(this.criteria, true).then(function (result) {
         _this.data = result;
       }).catch(function (error) {
-        console.error('Something went wrong.', error);
+        _aureliaOrm.logger.error('Something went wrong.', error);
       });
     };
 

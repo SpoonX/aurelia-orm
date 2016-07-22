@@ -10,7 +10,6 @@ var concat = require('gulp-concat');
 var insert = require('gulp-insert');
 var rename = require('gulp-rename');
 var clean = require('gulp-clean');
-var dummy = require('gulp-empty');
 var tools = require('aurelia-tools');
 var ts = require('gulp-typescript');
 var gutil = require('gulp-util');
@@ -27,10 +26,10 @@ function cleanGeneratedCode() {
   });
 }
 
-gulp.task('build-index', ['build-resources'], function() {
+gulp.task('build-index', ['build-resources-index'], function() {
   var importsToAdd = paths.importsToAdd.slice();
 
-  var src = gulp.src(paths.files);
+  var src = gulp.src(paths.mainSource);
 
   if (paths.sort) {
     src = src.pipe(tools.sortFiles());
@@ -42,6 +41,10 @@ gulp.task('build-index', ['build-resources'], function() {
     });
   }
 
+  if (!paths.concat) {
+    return src.pipe(gulp.dest(paths.output));
+  }
+
   return src
     .pipe(through2.obj(function(file, enc, callback) {
       if (!file) return callback();
@@ -49,15 +52,15 @@ gulp.task('build-index', ['build-resources'], function() {
       this.push(file);
       return callback();
     }))
-    .pipe(paths.concat ? concat(jsName) : dummy())
+    .pipe(concat(jsName))
     .pipe(insert.transform(function(contents) {
       return tools.createImportBlock(importsToAdd) + contents;
     }))
     .pipe(gulp.dest(paths.output));
 });
 
-gulp.task('build-resources', ['copy-resources'], function() {
-  var src = gulp.src(paths.jsResources);
+gulp.task('build-resources-index', ['copy-resources'], function() {
+  var src = gulp.src(paths.jsResources, {base: paths.root});
 
   if (paths.ignore) {
     paths.ignore.forEach(function(filename){
@@ -128,7 +131,7 @@ gulp.task('build-dts', function(){
 
 gulp.task('fixup-dts', function(){
   var importsToAdd = [];
-  return gulp.src([paths.output + '**/*.d.ts'])
+  return gulp.src([paths.output + '**/*.d.ts', '!' + paths.output + 'index.d.ts'])
   .pipe(through2.obj(function(file, enc, callback) {
       file.contents = new Buffer(tools.extractImports(file.contents.toString('utf8'), importsToAdd));
       this.push(file);

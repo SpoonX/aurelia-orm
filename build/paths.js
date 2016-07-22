@@ -21,13 +21,16 @@ var paths = {
   ignore: [],
   useTypeScriptForDTS: false,
   importsToAdd: [],
-  importsToIgnoreForDts: ['extend', 'typer', 'get-prop'],
+  importsToIgnoreForDts: ['extend', 'typer', 'get-prop'], // imports that are only used internally. no need to d.ts export them
+  jsResources: [appRoot + 'component/*.js'], // js to transpile, but not be concated and keeping their relative path
+  resources: appRoot + '{**/*.css,**/*.html}',
   sort: true,
-  concat: false,
-  jsResources: [appRoot + '**/*.js', '!' + appRoot + '*.js'],
-  resources: appRoot + '{**/*.css,**/*.html}'
+  concat: true
 };
 
-paths.files = paths.root + '*.js';
+// files to be traspiled (and concated if selected)
+paths.mainSource = [paths.source].concat(paths.jsResources.map(function(resource) {return '!' + resource;}));
+// files to be linted
+paths.lintSource = paths.source;
 
 module.exports = paths;

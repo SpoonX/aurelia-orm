@@ -1,5 +1,6 @@
 import {Entity} from '../../../src/entity';
-import {resource, endpoint} from '../../../src/aurelia-orm';
+import {resource} from '../../../src/decorator/resource';
+import {endpoint} from '../../../src/decorator/endpoint';
 
 @resource()
 @endpoint('sx/alternative')

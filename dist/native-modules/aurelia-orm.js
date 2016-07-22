@@ -1,4 +1,12 @@
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _dec4, _class5, _dec5, _class6;
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
 
 import typer from 'typer';
 import { inject, transient, Container } from 'aurelia-dependency-injection';
@@ -7,70 +15,80 @@ import { metadata } from 'aurelia-metadata';
 import { Validation, ValidationRule, ValidationGroup } from 'aurelia-validation';
 import { getLogger } from 'aurelia-logging';
 
-export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
-  constructor(clientConfig) {
+export var Repository = (_dec = inject(Config), _dec(_class = function () {
+  function Repository(clientConfig) {
+    
+
     this.transport = null;
 
     this.clientConfig = clientConfig;
   }
 
-  getTransport() {
+  Repository.prototype.getTransport = function getTransport() {
     if (this.transport === null) {
       this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
 
       if (!this.transport) {
-        throw new Error(`No transport found for '${ this.getMeta().fetch('endpoint') || 'default' }'.`);
+        throw new Error('No transport found for \'' + (this.getMeta().fetch('endpoint') || 'default') + '\'.');
       }
     }
 
     return this.transport;
-  }
+  };
 
-  setMeta(meta) {
+  Repository.prototype.setMeta = function setMeta(meta) {
     this.meta = meta;
-  }
+  };
 
-  getMeta() {
+  Repository.prototype.getMeta = function getMeta() {
     return this.meta;
-  }
+  };
 
-  setResource(resource) {
+  Repository.prototype.setResource = function setResource(resource) {
     this.resource = resource;
 
     return this;
-  }
+  };
 
-  getResource() {
+  Repository.prototype.getResource = function getResource() {
     return this.resource;
-  }
+  };
 
-  find(criteria, raw) {
+  Repository.prototype.find = function find(criteria, raw) {
     return this.findPath(this.resource, criteria, raw);
-  }
+  };
 
-  findPath(path, criteria, raw) {
-    let findQuery = this.getTransport().find(path, criteria);
+  Repository.prototype.findPath = function findPath(path, criteria, raw) {
+    var _this = this;
+
+    var findQuery = this.getTransport().find(path, criteria);
 
     if (raw) {
       return findQuery;
     }
 
-    return findQuery.then(x => this.populateEntities(x)).then(populated => {
+    return findQuery.then(function (x) {
+      return _this.populateEntities(x);
+    }).then(function (populated) {
       if (!Array.isArray(populated)) {
         return populated.markClean();
       }
 
-      populated.forEach(entity => entity.markClean());
+      populated.forEach(function (entity) {
+        return entity.markClean();
+      });
 
       return populated;
     });
-  }
+  };
 
-  count(criteria) {
+  Repository.prototype.count = function count(criteria) {
     return this.getTransport().find(this.resource + '/count', criteria);
-  }
+  };
 
-  populateEntities(data) {
+  Repository.prototype.populateEntities = function populateEntities(data) {
+    var _this2 = this;
+
     if (!data) {
       return null;
     }
@@ -79,27 +97,27 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
       return this.getPopulatedEntity(data);
     }
 
-    let collection = [];
+    var collection = [];
 
-    data.forEach(source => {
-      collection.push(this.getPopulatedEntity(source));
+    data.forEach(function (source) {
+      collection.push(_this2.getPopulatedEntity(source));
     });
 
     return collection;
-  }
+  };
 
-  getPopulatedEntity(data, entity) {
+  Repository.prototype.getPopulatedEntity = function getPopulatedEntity(data, entity) {
     entity = entity || this.getNewEntity();
-    let entityMetadata = entity.getMeta();
-    let populatedData = {};
-    let key;
+    var entityMetadata = entity.getMeta();
+    var populatedData = {};
+    var key = void 0;
 
     for (key in data) {
       if (!data.hasOwnProperty(key)) {
         continue;
       }
 
-      let value = data[key];
+      var value = data[key];
 
       if (entityMetadata.has('types', key)) {
         populatedData[key] = typer.cast(value, entityMetadata.fetch('types', key));
@@ -107,29 +125,29 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
         continue;
       }
 
-      if (!entityMetadata.has('associations', key) || typeof value !== 'object') {
+      if (!entityMetadata.has('associations', key) || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') {
         populatedData[key] = value;
 
         continue;
       }
 
-      let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
-      populatedData[key] = repository.populateEntities(value);
+      var _repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+      populatedData[key] = _repository.populateEntities(value);
     }
 
     return entity.setData(populatedData);
-  }
+  };
 
-  getNewEntity() {
+  Repository.prototype.getNewEntity = function getNewEntity() {
     return this.entityManager.getEntity(this.resource);
-  }
+  };
 
-  getNewPopulatedEntity() {
-    let entity = this.getNewEntity();
-    let associations = entity.getMeta().fetch('associations');
+  Repository.prototype.getNewPopulatedEntity = function getNewPopulatedEntity() {
+    var entity = this.getNewEntity();
+    var associations = entity.getMeta().fetch('associations');
 
-    for (let property in associations) {
-      let assocMeta = associations[property];
+    for (var property in associations) {
+      var assocMeta = associations[property];
 
       if (assocMeta.type !== 'entity') {
         continue;
@@ -139,19 +157,39 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
     }
 
     return entity;
+  };
+
+  return Repository;
+}()) || _class);
+
+export var DefaultRepository = (_dec2 = transient(), _dec2(_class3 = function (_Repository) {
+  _inherits(DefaultRepository, _Repository);
+
+  function DefaultRepository() {
+    
+
+    return _possibleConstructorReturn(this, _Repository.apply(this, arguments));
   }
-}) || _class);
 
-export let DefaultRepository = (_dec2 = transient(), _dec2(_class3 = class DefaultRepository extends Repository {}) || _class3);
+  return DefaultRepository;
+}(Repository)) || _class3);
 
-export let OrmMetadata = class OrmMetadata {
-  static forTarget(target) {
+export var OrmMetadata = function () {
+  function OrmMetadata() {
+    
+  }
+
+  OrmMetadata.forTarget = function forTarget(target) {
     return metadata.getOrCreateOwn(Metadata.key, Metadata, target, target.name);
-  }
-};
+  };
 
-export let Metadata = (_temp = _class4 = class Metadata {
-  constructor() {
+  return OrmMetadata;
+}();
+
+export var Metadata = (_temp = _class4 = function () {
+  function Metadata() {
+    
+
     this.metadata = {
       repository: DefaultRepository,
       resource: null,
@@ -162,7 +200,7 @@ export let Metadata = (_temp = _class4 = class Metadata {
     };
   }
 
-  addTo(key, value) {
+  Metadata.prototype.addTo = function addTo(key, value) {
     if (typeof this.metadata[key] === 'undefined') {
       this.metadata[key] = [];
     } else if (!Array.isArray(this.metadata[key])) {
@@ -172,33 +210,33 @@ export let Metadata = (_temp = _class4 = class Metadata {
     this.metadata[key].push(value);
 
     return this;
-  }
+  };
 
-  put(key, valueOrNestedKey, valueOrNull) {
+  Metadata.prototype.put = function put(key, valueOrNestedKey, valueOrNull) {
     if (!valueOrNull) {
       this.metadata[key] = valueOrNestedKey;
 
       return this;
     }
 
-    if (typeof this.metadata[key] !== 'object') {
+    if (_typeof(this.metadata[key]) !== 'object') {
       this.metadata[key] = {};
     }
 
     this.metadata[key][valueOrNestedKey] = valueOrNull;
 
     return this;
-  }
+  };
 
-  has(key, nested) {
+  Metadata.prototype.has = function has(key, nested) {
     if (typeof nested === 'undefined') {
       return typeof this.metadata[key] !== 'undefined';
     }
 
     return typeof this.metadata[key] !== 'undefined' && typeof this.metadata[key][nested] !== 'undefined';
-  }
+  };
 
-  fetch(key, nested) {
+  Metadata.prototype.fetch = function fetch(key, nested) {
     if (!nested) {
       return this.has(key) ? this.metadata[key] : null;
     }
@@ -208,11 +246,15 @@ export let Metadata = (_temp = _class4 = class Metadata {
     }
 
     return this.metadata[key][nested];
-  }
-}, _class4.key = 'spoonx:orm:metadata', _temp);
+  };
 
-export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_class5 = _dec4(_class5 = class Entity {
-  constructor(validator) {
+  return Metadata;
+}(), _class4.key = 'spoonx:orm:metadata', _temp);
+
+export var Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_class5 = _dec4(_class5 = function () {
+  function Entity(validator) {
+    
+
     this.define('__meta', OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
 
     if (!this.hasValidation()) {
@@ -222,19 +264,19 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     return this.define('__validator', validator);
   }
 
-  getTransport() {
+  Entity.prototype.getTransport = function getTransport() {
     return this.getRepository().getTransport();
-  }
+  };
 
-  getRepository() {
+  Entity.prototype.getRepository = function getRepository() {
     return this.__repository;
-  }
+  };
 
-  setRepository(repository) {
+  Entity.prototype.setRepository = function setRepository(repository) {
     return this.define('__repository', repository);
-  }
+  };
 
-  define(property, value, writable) {
+  Entity.prototype.define = function define(property, value, writable) {
     Object.defineProperty(this, property, {
       value: value,
       writable: !!writable,
@@ -242,64 +284,88 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     });
 
     return this;
-  }
+  };
 
-  getMeta() {
+  Entity.prototype.getMeta = function getMeta() {
     return this.__meta;
-  }
+  };
 
-  getIdProperty() {
+  Entity.prototype.getIdProperty = function getIdProperty() {
     return this.getMeta().fetch('idProperty');
-  }
+  };
 
-  static getIdProperty() {
-    let idProperty = OrmMetadata.forTarget(this).fetch('idProperty');
+  Entity.getIdProperty = function getIdProperty() {
+    var idProperty = OrmMetadata.forTarget(this).fetch('idProperty');
 
     return idProperty;
-  }
+  };
 
-  getId() {
+  Entity.prototype.getId = function getId() {
     return this[this.getIdProperty()];
-  }
+  };
 
-  setId(id) {
+  Entity.prototype.setId = function setId(id) {
     this[this.getIdProperty()] = id;
 
     return this;
-  }
+  };
 
-  save() {
+  Entity.prototype.save = function save() {
+    var _this4 = this;
+
     if (!this.isNew()) {
       return this.update();
     }
 
-    let response;
-    return this.getTransport().create(this.getResource(), this.asObject(true)).then(created => {
-      this.setId(created[this.getIdProperty()]);
+    var response = void 0;
+    return this.getTransport().create(this.getResource(), this.asObject(true)).then(function (created) {
+      _this4.setId(created[_this4.getIdProperty()]);
       response = created;
-    }).then(() => this.saveCollections()).then(() => this.markClean()).then(() => response);
-  }
+    }).then(function () {
+      return _this4.saveCollections();
+    }).then(function () {
+      return _this4.markClean();
+    }).then(function () {
+      return response;
+    });
+  };
 
-  update() {
+  Entity.prototype.update = function update() {
+    var _this5 = this;
+
     if (this.isNew()) {
       throw new Error('Required value "id" missing on entity.');
     }
 
     if (this.isClean()) {
-      return this.saveCollections().then(() => this.markClean()).then(() => null);
+      return this.saveCollections().then(function () {
+        return _this5.markClean();
+      }).then(function () {
+        return null;
+      });
     }
 
-    let requestBody = this.asObject(true);
-    let response;
+    var requestBody = this.asObject(true);
+    var response = void 0;
 
     delete requestBody[this.getIdProperty()];
 
-    return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(updated => response = updated).then(() => this.saveCollections()).then(() => this.markClean()).then(() => response);
-  }
+    return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(function (updated) {
+      return response = updated;
+    }).then(function () {
+      return _this5.saveCollections();
+    }).then(function () {
+      return _this5.markClean();
+    }).then(function () {
+      return response;
+    });
+  };
 
-  addCollectionAssociation(entity, property) {
+  Entity.prototype.addCollectionAssociation = function addCollectionAssociation(entity, property) {
+    var _this6 = this;
+
     property = property || getPropertyForAssociation(this, entity);
-    let url = [this.getResource(), this.getId(), property];
+    var url = [this.getResource(), this.getId(), property];
 
     if (this.isNew()) {
       throw new Error('Cannot add association to entity that does not have an id.');
@@ -312,36 +378,36 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     }
 
     if (entity.isNew()) {
-      let associationProperty = getPropertyForAssociation(entity, this);
-      let relation = entity.getMeta().fetch('association', associationProperty);
+      var associationProperty = getPropertyForAssociation(entity, this);
+      var relation = entity.getMeta().fetch('association', associationProperty);
 
       if (!relation || relation.type !== 'entity') {
-        return entity.save().then(() => {
+        return entity.save().then(function () {
           if (entity.isNew()) {
             throw new Error('Entity did not return return an id on saving.');
           }
 
-          return this.addCollectionAssociation(entity, property);
+          return _this6.addCollectionAssociation(entity, property);
         });
       }
 
       entity[associationProperty] = this.getId();
 
-      return entity.save().then(() => {
+      return entity.save().then(function () {
         return entity;
       });
     }
 
     url.push(entity.getId());
 
-    return this.getTransport().create(url.join('/')).then(() => {
+    return this.getTransport().create(url.join('/')).then(function () {
       return entity;
     });
-  }
+  };
 
-  removeCollectionAssociation(entity, property) {
+  Entity.prototype.removeCollectionAssociation = function removeCollectionAssociation(entity, property) {
     property = property || getPropertyForAssociation(this, entity);
-    let idToRemove = entity;
+    var idToRemove = entity;
 
     if (entity instanceof Entity) {
       if (!entity.getId()) {
@@ -352,22 +418,24 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     }
 
     return this.getTransport().destroy([this.getResource(), this.getId(), property, idToRemove].join('/'));
-  }
+  };
 
-  saveCollections() {
-    let tasks = [];
-    let currentCollections = getCollectionsCompact(this, true);
-    let cleanCollections = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
+  Entity.prototype.saveCollections = function saveCollections() {
+    var _this7 = this;
 
-    let addTasksForDifferences = (base, candidate, method) => {
+    var tasks = [];
+    var currentCollections = getCollectionsCompact(this, true);
+    var cleanCollections = this.__cleanValues.data ? this.__cleanValues.data.collections : null;
+
+    var addTasksForDifferences = function addTasksForDifferences(base, candidate, method) {
       if (base === null) {
         return;
       }
 
-      Object.getOwnPropertyNames(base).forEach(property => {
-        base[property].forEach(id => {
+      Object.getOwnPropertyNames(base).forEach(function (property) {
+        base[property].forEach(function (id) {
           if (candidate === null || !Array.isArray(candidate[property]) || candidate[property].indexOf(id) === -1) {
-            tasks.push(method.call(this, id, property));
+            tasks.push(method.call(_this7, id, property));
           }
         });
       });
@@ -377,38 +445,42 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
 
     addTasksForDifferences(cleanCollections, currentCollections, this.removeCollectionAssociation);
 
-    return Promise.all(tasks).then(results => this);
-  }
+    return Promise.all(tasks).then(function (results) {
+      return _this7;
+    });
+  };
 
-  markClean() {
-    let cleanValues = getFlat(this);
+  Entity.prototype.markClean = function markClean() {
+    var cleanValues = getFlat(this);
     this.__cleanValues = {
       checksum: JSON.stringify(cleanValues),
       data: cleanValues
     };
 
     return this;
-  }
+  };
 
-  isClean() {
+  Entity.prototype.isClean = function isClean() {
     return getFlat(this, true) === this.__cleanValues.checksum;
-  }
+  };
 
-  isDirty() {
+  Entity.prototype.isDirty = function isDirty() {
     return !this.isClean();
-  }
+  };
 
-  isNew() {
+  Entity.prototype.isNew = function isNew() {
     return typeof this.getId() === 'undefined';
-  }
+  };
 
-  reset(shallow) {
-    let pojo = {};
-    let metadata = this.getMeta();
+  Entity.prototype.reset = function reset(shallow) {
+    var _this8 = this;
 
-    Object.keys(this).forEach(propertyName => {
-      let value = this[propertyName];
-      let association = metadata.fetch('associations', propertyName);
+    var pojo = {};
+    var metadata = this.getMeta();
+
+    Object.keys(this).forEach(function (propertyName) {
+      var value = _this8[propertyName];
+      var association = metadata.fetch('associations', propertyName);
 
       if (!association || !value) {
         pojo[propertyName] = value;
@@ -421,12 +493,12 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
       return this;
     }
 
-    let isNew = this.isNew();
-    let associations = this.getMeta().fetch('associations');
+    var isNew = this.isNew();
+    var associations = this.getMeta().fetch('associations');
 
-    Object.keys(this).forEach(propertyName => {
+    Object.keys(this).forEach(function (propertyName) {
       if (Object.getOwnPropertyNames(associations).indexOf(propertyName) === -1) {
-        delete this[propertyName];
+        delete _this8[propertyName];
       }
     });
 
@@ -440,61 +512,61 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
       return this.markClean();
     }
 
-    let collections = this.__cleanValues.data.collections;
+    var collections = this.__cleanValues.data.collections;
 
-    Object.getOwnPropertyNames(collections).forEach(index => {
-      this[index] = [];
-      collections[index].forEach(entity => {
+    Object.getOwnPropertyNames(collections).forEach(function (index) {
+      _this8[index] = [];
+      collections[index].forEach(function (entity) {
         if (typeof entity === 'number') {
-          this[index].push(entity);
+          _this8[index].push(entity);
         }
       });
     });
 
     return this.markClean();
-  }
+  };
 
-  static getResource() {
+  Entity.getResource = function getResource() {
     return OrmMetadata.forTarget(this).fetch('resource');
-  }
+  };
 
-  getResource() {
+  Entity.prototype.getResource = function getResource() {
     return this.__resource || this.getMeta().fetch('resource');
-  }
+  };
 
-  setResource(resource) {
+  Entity.prototype.setResource = function setResource(resource) {
     return this.define('__resource', resource);
-  }
+  };
 
-  destroy() {
+  Entity.prototype.destroy = function destroy() {
     if (!this.getId()) {
       throw new Error('Required value "id" missing on entity.');
     }
 
     return this.getTransport().destroy(this.getResource(), this.getId());
-  }
+  };
 
-  getName() {
-    let metaName = this.getMeta().fetch('name');
-
-    if (metaName) {
-      return metaName;
-    }
-
-    return this.getResource();
-  }
-
-  static getName() {
-    let metaName = OrmMetadata.forTarget(this).fetch('name');
+  Entity.prototype.getName = function getName() {
+    var metaName = this.getMeta().fetch('name');
 
     if (metaName) {
       return metaName;
     }
 
     return this.getResource();
-  }
+  };
 
-  setData(data, markClean) {
+  Entity.getName = function getName() {
+    var metaName = OrmMetadata.forTarget(this).fetch('name');
+
+    if (metaName) {
+      return metaName;
+    }
+
+    return this.getResource();
+  };
+
+  Entity.prototype.setData = function setData(data, markClean) {
     Object.assign(this, data);
 
     if (markClean) {
@@ -502,9 +574,9 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     }
 
     return this;
-  }
+  };
 
-  enableValidation() {
+  Entity.prototype.enableValidation = function enableValidation() {
     if (!this.hasValidation()) {
       throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
     }
@@ -514,9 +586,9 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     }
 
     return this.define('__validation', this.__validator.on(this));
-  }
+  };
 
-  getValidation() {
+  Entity.prototype.getValidation = function getValidation() {
     if (!this.hasValidation()) {
       return null;
     }
@@ -526,28 +598,30 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     }
 
     return this.__validation;
-  }
+  };
 
-  hasValidation() {
+  Entity.prototype.hasValidation = function hasValidation() {
     return !!this.getMeta().fetch('validation');
-  }
+  };
 
-  asObject(shallow) {
-    return asObject(this, shallow);
-  }
+  Entity.prototype.asObject = function asObject(shallow) {
+    return _asObject(this, shallow);
+  };
 
-  asJson(shallow) {
-    return asJson(this, shallow);
-  }
-}) || _class5) || _class5);
+  Entity.prototype.asJson = function asJson(shallow) {
+    return _asJson(this, shallow);
+  };
 
-function asObject(entity, shallow) {
-  let pojo = {};
-  let metadata = entity.getMeta();
+  return Entity;
+}()) || _class5) || _class5);
 
-  Object.keys(entity).forEach(propertyName => {
-    let value = entity[propertyName];
-    let association = metadata.fetch('associations', propertyName);
+function _asObject(entity, shallow) {
+  var pojo = {};
+  var metadata = entity.getMeta();
+
+  Object.keys(entity).forEach(function (propertyName) {
+    var value = entity[propertyName];
+    var association = metadata.fetch('associations', propertyName);
 
     if (!association || !value) {
       pojo[propertyName] = value;
@@ -572,7 +646,7 @@ function asObject(entity, shallow) {
         return;
       }
 
-      if (['string', 'number', 'boolean'].indexOf(typeof value) > -1 || value.constructor === Object) {
+      if (['string', 'number', 'boolean'].indexOf(typeof value === 'undefined' ? 'undefined' : _typeof(value)) > -1 || value.constructor === Object) {
         pojo[propertyName] = value;
 
         return;
@@ -585,10 +659,10 @@ function asObject(entity, shallow) {
       return;
     }
 
-    let asObjects = [];
+    var asObjects = [];
 
-    value.forEach(childValue => {
-      if (typeof childValue !== 'object') {
+    value.forEach(function (childValue) {
+      if ((typeof childValue === 'undefined' ? 'undefined' : _typeof(childValue)) !== 'object') {
         return;
       }
 
@@ -598,7 +672,7 @@ function asObject(entity, shallow) {
         return;
       }
 
-      if (!shallow || typeof childValue === 'object' && !childValue.getId()) {
+      if (!shallow || (typeof childValue === 'undefined' ? 'undefined' : _typeof(childValue)) === 'object' && !childValue.getId()) {
         asObjects.push(childValue.asObject(shallow));
       }
     });
@@ -611,11 +685,11 @@ function asObject(entity, shallow) {
   return pojo;
 }
 
-function asJson(entity, shallow) {
-  let json;
+function _asJson(entity, shallow) {
+  var json = void 0;
 
   try {
-    json = JSON.stringify(asObject(entity, shallow));
+    json = JSON.stringify(_asObject(entity, shallow));
   } catch (error) {
     json = '';
   }
@@ -624,11 +698,11 @@ function asJson(entity, shallow) {
 }
 
 function getCollectionsCompact(forEntity, includeNew) {
-  let associations = forEntity.getMeta().fetch('associations');
-  let collections = {};
+  var associations = forEntity.getMeta().fetch('associations');
+  var collections = {};
 
-  Object.getOwnPropertyNames(associations).forEach(index => {
-    let association = associations[index];
+  Object.getOwnPropertyNames(associations).forEach(function (index) {
+    var association = associations[index];
 
     if (association.type !== 'collection') {
       return;
@@ -639,7 +713,7 @@ function getCollectionsCompact(forEntity, includeNew) {
       return;
     }
 
-    forEntity[index].forEach(entity => {
+    forEntity[index].forEach(function (entity) {
       if (typeof entity === 'number') {
         collections[index].push(entity);
 
@@ -668,8 +742,8 @@ function getCollectionsCompact(forEntity, includeNew) {
 }
 
 function getFlat(entity, json) {
-  let flat = {
-    entity: asObject(entity, true),
+  var flat = {
+    entity: _asObject(entity, true),
     collections: getCollectionsCompact(entity)
   };
 
@@ -681,9 +755,9 @@ function getFlat(entity, json) {
 }
 
 function getPropertyForAssociation(forEntity, entity) {
-  let associations = forEntity.getMeta().fetch('associations');
+  var associations = forEntity.getMeta().fetch('associations');
 
-  return Object.keys(associations).filter(key => {
+  return Object.keys(associations).filter(function (key) {
     return associations[key].entity === entity.getResource();
   })[0];
 }
@@ -739,16 +813,18 @@ export function validation() {
   };
 }
 
-export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class EntityManager {
-  constructor(container) {
+export var EntityManager = (_dec5 = inject(Container), _dec5(_class6 = function () {
+  function EntityManager(container) {
+    
+
     this.repositories = {};
     this.entities = {};
 
     this.container = container;
   }
 
-  registerEntities(entities) {
-    for (let reference in entities) {
+  EntityManager.prototype.registerEntities = function registerEntities(entities) {
+    for (var reference in entities) {
       if (!entities.hasOwnProperty(reference)) {
         continue;
       }
@@ -757,17 +833,17 @@ export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class Ent
     }
 
     return this;
-  }
+  };
 
-  registerEntity(entity) {
+  EntityManager.prototype.registerEntity = function registerEntity(entity) {
     this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
 
     return this;
-  }
+  };
 
-  getRepository(entity) {
-    let reference = this.resolveEntityReference(entity);
-    let resource = entity;
+  EntityManager.prototype.getRepository = function getRepository(entity) {
+    var reference = this.resolveEntityReference(entity);
+    var resource = entity;
 
     if (typeof reference.getResource === 'function') {
       resource = reference.getResource() || resource;
@@ -781,9 +857,9 @@ export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class Ent
       return this.repositories[resource];
     }
 
-    let metaData = OrmMetadata.forTarget(reference);
-    let repository = metaData.fetch('repository');
-    let instance = this.container.get(repository);
+    var metaData = OrmMetadata.forTarget(reference);
+    var repository = metaData.fetch('repository');
+    var instance = this.container.get(repository);
 
     if (instance.meta && instance.resource && instance.entityManager) {
       return instance;
@@ -798,10 +874,10 @@ export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class Ent
     }
 
     return instance;
-  }
+  };
 
-  resolveEntityReference(resource) {
-    let entityReference = resource;
+  EntityManager.prototype.resolveEntityReference = function resolveEntityReference(resource) {
+    var entityReference = resource;
 
     if (typeof resource === 'string') {
       entityReference = this.entities[resource] || Entity;
@@ -812,12 +888,12 @@ export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class Ent
     }
 
     throw new Error('Unable to resolve to entity reference. Expected string or function.');
-  }
+  };
 
-  getEntity(entity) {
-    let reference = this.resolveEntityReference(entity);
-    let instance = this.container.get(reference);
-    let resource = reference.getResource();
+  EntityManager.prototype.getEntity = function getEntity(entity) {
+    var reference = this.resolveEntityReference(entity);
+    var instance = this.container.get(reference);
+    var resource = reference.getResource();
 
     if (!resource) {
       if (typeof entity !== 'string') {
@@ -828,14 +904,24 @@ export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class Ent
     }
 
     return instance.setResource(resource).setRepository(this.getRepository(resource));
-  }
-}) || _class6);
+  };
 
-export let HasAssociationValidationRule = class HasAssociationValidationRule extends ValidationRule {
-  constructor() {
-    super(null, value => !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number'), null, 'isRequired');
+  return EntityManager;
+}()) || _class6);
+
+export var HasAssociationValidationRule = function (_ValidationRule) {
+  _inherits(HasAssociationValidationRule, _ValidationRule);
+
+  function HasAssociationValidationRule() {
+    
+
+    return _possibleConstructorReturn(this, _ValidationRule.call(this, null, function (value) {
+      return !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number');
+    }, null, 'isRequired'));
   }
-};
+
+  return HasAssociationValidationRule;
+}(ValidationRule);
 
 export function validatedResource(resourceName) {
   return function (target, propertyName) {
@@ -845,7 +931,7 @@ export function validatedResource(resourceName) {
 }
 
 export function configure(aurelia, configCallback) {
-  let entityManagerInstance = aurelia.container.get(EntityManager);
+  var entityManagerInstance = aurelia.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
 
@@ -857,12 +943,12 @@ export function configure(aurelia, configCallback) {
   aurelia.globalResources('./component/paged');
 }
 
-export const logger = getLogger('aurelia-orm');
+export var logger = getLogger('aurelia-orm');
 
 export function data(metaData) {
   return function (target, propertyName) {
-    if (typeof metaData !== 'object') {
-      logger.error('data must be an object, ' + typeof metaData + ' given.');
+    if ((typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) !== 'object') {
+      logger.error('data must be an object, ' + (typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) + ' given.');
     }
 
     OrmMetadata.forTarget(target.constructor).put('data', propertyName, metaData);
