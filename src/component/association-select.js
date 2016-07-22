@@ -28,6 +28,12 @@ export class AssociationSelect {
 
   @bindable multiple = false;
 
+  @bindable hidePlaceholder = false;
+
+  @bindable selectablePlaceholder = false;
+
+  @bindable placeholderText;
+
   ownMeta;
 
   /**
