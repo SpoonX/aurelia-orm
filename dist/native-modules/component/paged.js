@@ -10,6 +10,8 @@ function _initDefineProp(target, property, descriptor, context) {
   });
 }
 
+
+
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
   Object['ke' + 'ys'](descriptor).forEach(function (key) {
@@ -47,8 +49,10 @@ import { logger } from '../aurelia-orm';
 import { bindingMode } from 'aurelia-binding';
 import { bindable, customElement } from 'aurelia-templating';
 
-export let Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = (_class2 = class Paged {
-  constructor() {
+export var Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = (_class2 = function () {
+  function Paged() {
+    
+
     _initDefineProp(this, 'data', _descriptor, this);
 
     _initDefineProp(this, 'page', _descriptor2, this);
@@ -60,7 +64,7 @@ export let Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
     _initDefineProp(this, 'limit', _descriptor5, this);
   }
 
-  attached() {
+  Paged.prototype.attached = function attached() {
     if (!this.page) {
       this.page = 1;
     }
@@ -70,65 +74,69 @@ export let Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
     }
 
     this.reloadData();
-  }
+  };
 
-  reloadData() {
+  Paged.prototype.reloadData = function reloadData() {
     this.getData();
-  }
+  };
 
-  isChanged(newVal, oldVal) {
+  Paged.prototype.isChanged = function isChanged(newVal, oldVal) {
     return !this.resource || !newVal || newVal === oldVal;
-  }
+  };
 
-  pageChanged(newVal, oldVal) {
+  Paged.prototype.pageChanged = function pageChanged(newVal, oldVal) {
     if (this.isChanged(newVal, oldVal)) {
       return;
     }
 
     this.reloadData();
-  }
+  };
 
-  criteriaChanged(newVal, oldVal) {
+  Paged.prototype.criteriaChanged = function criteriaChanged(newVal, oldVal) {
     if (this.isChanged(newVal, oldVal)) {
       return;
     }
 
     this.reloadData();
-  }
+  };
 
-  getData() {
+  Paged.prototype.getData = function getData() {
+    var _this = this;
+
     this.criteria.skip = this.page * this.limit - this.limit;
     this.criteria.limit = this.limit;
 
-    this.resource.find(this.criteria, true).then(result => {
-      this.data = result;
-    }).catch(error => {
+    this.resource.find(this.criteria, true).then(function (result) {
+      _this.data = result;
+    }).catch(function (error) {
       logger.error('Something went wrong.', error);
     });
-  }
-}, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec2], {
+  };
+
+  return Paged;
+}(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec2], {
   enumerable: true,
-  initializer: function () {
+  initializer: function initializer() {
     return [];
   }
 }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec3], {
   enumerable: true,
-  initializer: function () {
+  initializer: function initializer() {
     return 1;
   }
 }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
   enumerable: true,
-  initializer: function () {
+  initializer: function initializer() {
     return {};
   }
 }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [bindable], {
   enumerable: true,
-  initializer: function () {
+  initializer: function initializer() {
     return null;
   }
 }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'limit', [bindable], {
   enumerable: true,
-  initializer: function () {
+  initializer: function initializer() {
     return 30;
   }
 })), _class2)) || _class);

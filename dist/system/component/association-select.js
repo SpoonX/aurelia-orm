@@ -1,7 +1,9 @@
 'use strict';
 
-System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../entity-manager', '../entity', '../orm-metadata', 'extend'], function (_export, _context) {
-  var inject, bindingMode, BindingEngine, bindable, customElement, EntityManager, Entity, OrmMetadata, extend, _typeof, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, AssociationSelect;
+System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../aurelia-orm', 'extend'], function (_export, _context) {
+  "use strict";
+
+  var getProp, inject, bindingMode, BindingEngine, bindable, customElement, EntityManager, Entity, OrmMetadata, logger, extend, _typeof, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, AssociationSelect;
 
   function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -13,11 +15,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
     });
   }
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  
 
   function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
     var desc = {};
@@ -53,7 +51,9 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
   }
 
   return {
-    setters: [function (_aureliaDependencyInjection) {
+    setters: [function (_getProp) {
+      getProp = _getProp.default;
+    }, function (_aureliaDependencyInjection) {
       inject = _aureliaDependencyInjection.inject;
     }, function (_aureliaBinding) {
       bindingMode = _aureliaBinding.bindingMode;
@@ -61,12 +61,11 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
     }, function (_aureliaTemplating) {
       bindable = _aureliaTemplating.bindable;
       customElement = _aureliaTemplating.customElement;
-    }, function (_entityManager) {
-      EntityManager = _entityManager.EntityManager;
-    }, function (_entity) {
-      Entity = _entity.Entity;
-    }, function (_ormMetadata) {
-      OrmMetadata = _ormMetadata.OrmMetadata;
+    }, function (_aureliaOrm) {
+      EntityManager = _aureliaOrm.EntityManager;
+      Entity = _aureliaOrm.Entity;
+      OrmMetadata = _aureliaOrm.OrmMetadata;
+      logger = _aureliaOrm.logger;
     }, function (_extend) {
       extend = _extend.default;
     }],
@@ -79,28 +78,31 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
 
       _export('AssociationSelect', AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
         function AssociationSelect(bindingEngine, entityManager, element) {
-          _classCallCheck(this, AssociationSelect);
+          
 
           _initDefineProp(this, 'criteria', _descriptor, this);
 
           _initDefineProp(this, 'repository', _descriptor2, this);
 
-          _initDefineProp(this, 'property', _descriptor3, this);
+          _initDefineProp(this, 'identifier', _descriptor3, this);
 
-          _initDefineProp(this, 'options', _descriptor4, this);
+          _initDefineProp(this, 'property', _descriptor4, this);
 
-          _initDefineProp(this, 'association', _descriptor5, this);
+          _initDefineProp(this, 'resource', _descriptor5, this);
 
-          _initDefineProp(this, 'manyAssociation', _descriptor6, this);
+          _initDefineProp(this, 'options', _descriptor6, this);
 
-          _initDefineProp(this, 'value', _descriptor7, this);
+          _initDefineProp(this, 'association', _descriptor7, this);
 
-          this.multiple = false;
+          _initDefineProp(this, 'manyAssociation', _descriptor8, this);
+
+          _initDefineProp(this, 'value', _descriptor9, this);
+
+          _initDefineProp(this, 'multiple', _descriptor10, this);
 
           this._subscriptions = [];
           this.bindingEngine = bindingEngine;
           this.entityManager = entityManager;
-          this.multiple = typeof element.getAttribute('multiple') === 'string';
           this.element = element;
         }
 
@@ -121,7 +123,7 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
           }
 
           if (!Array.isArray(value)) {
-            this.value = value;
+            this.value = (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? getProp(value, this.identifier || 'id') : value;
 
             return;
           }
@@ -202,16 +204,22 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
             }
 
             _this3.options = undefined;
+
+            return Promise.resolve();
           }));
 
           return this;
         };
 
-        AssociationSelect.prototype.attached = function attached() {
-          if (!this.repository && this.element.hasAttribute('resource')) {
-            this.repository = this.entityManager.getRepository(this.element.getAttribute('resource'));
+        AssociationSelect.prototype.resourceChanged = function resourceChanged(resource) {
+          if (!resource) {
+            logger.error('resource is ' + (typeof resource === 'undefined' ? 'undefined' : _typeof(resource)) + '. It should be a string or a reference');
           }
 
+          this.repository = this.entityManager.getRepository(resource);
+        };
+
+        AssociationSelect.prototype.attached = function attached() {
           if (!this.association && !this.manyAssociation) {
             this.load(this.value);
 
@@ -256,23 +264,34 @@ System.register(['aurelia-dependency-injection', 'aurelia-binding', 'aurelia-tem
       }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'property', [bindable], {
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'identifier', [bindable], {
+        enumerable: true,
+        initializer: null
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'property', [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return 'name';
         }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'options', [bindable], {
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'association', [bindable], {
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'options', [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'manyAssociation', [bindable], {
+      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'association', [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'value', [_dec3], {
+      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, 'manyAssociation', [bindable], {
         enumerable: true,
         initializer: null
+      }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, 'value', [_dec3], {
+        enumerable: true,
+        initializer: null
+      }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, 'multiple', [bindable], {
+        enumerable: true,
+        initializer: function initializer() {
+          return false;
+        }
       })), _class2)) || _class) || _class));
 
       _export('AssociationSelect', AssociationSelect);
