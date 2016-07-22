@@ -24,7 +24,7 @@ System.config({
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-rc.1.0.1",
       "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-rc.1.0.1",
       "extend": "npm:extend@3.0.0",
-      "qs": "npm:qs@6.2.0"
+      "qs": "npm:qs@6.2.1"
     },
     "npm:aurelia-binding@1.0.0-rc.1.0.3": {
       "aurelia-logging": "npm:aurelia-logging@1.0.0-rc.1.0.1",
