@@ -29,7 +29,7 @@ Get all entries of the view-models 'userRepository' repository property and popu
 
 The same as the basic example above, with:
 
-* hiding the placeholder option (`value=0`):
+* hiding the placeholder option (`value===0`):
 
 ```html
 <association-select
@@ -40,7 +40,7 @@ The same as the basic example above, with:
 ></association-select>
 ```
 
-* displaying the placeholder option (`value=0`), and allow the placeholder to be selectable:
+* displaying the placeholder option (`value===0`), and allow the placeholder to be selectable:
 
 ```html
 <association-select
@@ -51,7 +51,7 @@ The same as the basic example above, with:
 ></association-select>
 ```
 
-* displaying the placeholder option (`value=0`), with custom text:
+* displaying the placeholder option (`value===0`), with custom text:
 
 ```html
 <association-select
@@ -129,13 +129,13 @@ _This attribute does **not** accept arrays, but can be combined with the `associ
 Pass along filter criteria to the element. These will be used to restrict the data returned from the API.
 
 ### hidePlaceholder
-By default, the select-association will include an option with `value=0`, and text "- Select a value -". Adding this attribute will _exclude_ the placeholder (`value=0`) option from the select. **Defaults to `false`**.
+By default, the select-association will include an option with `value===0`, and text "- Select a value -". Adding this attribute will _exclude_ the placeholder (`value===0`) option from the select. **Defaults to `false`**.
 
 ### selectablePlaceholder
-By default, the placeholder (`value=0`) option will be `disabled`, i.e. not selectable. Adding this attribute will allow the placeholder option to be selectable. **Defaults to `false`**.
+By default, the placeholder (`value===0`) option will be `disabled`, i.e. not selectable. Adding this attribute will allow the placeholder option to be selectable. **Defaults to `false`**.
 
 ### placeholderText
-By default, the placeholder (`value=0`) option will have a text value of "_- Select a value -_". Setting this attribute will allow custom text to be added to the placeholder option.
+By default, the placeholder (`value===0`) option will have a text value of "_- Select a value -_". Setting this attribute will allow custom text to be added to the placeholder option.
 
 ## Paged
 Paged component for aurelia. Allows you to display paged information.
