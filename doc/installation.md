@@ -4,12 +4,12 @@
 
 Run `npm i aurelia-orm --save` from your project root.
 
-Aurelia-orm has submodules and makes use of `extends`, `get-prop`, `typer` and `aurelia-validation@0.6.6`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
+Aurelia-orm has submodules and makes use of `extend`, `get-prop`, `typer` and `aurelia-validation@0.6.6`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
 
 ```js
 "dependencies": [
   // ...
-  "extends",
+  "extend",
   "get-prop",
   "typer",
   {
