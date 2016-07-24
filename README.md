@@ -26,18 +26,24 @@ This library plays nice with the [Sails.js framework](http://sailsjs.org).
 
 We've simplified installation and usage! This plugin should now be installed using `jspm i aurelia-orm` or (for webpack) `npm i aurelia-orm --save`. Make sure you update all references to `spoonx/aurelia-orm` and `spoonx/aurelia-api` and remove the `spoonx/` prefix (don't forget your config.js, package.json, imports and bundles).
 
+## Documentation
+
+You can find usage examples and the documentation at [aurelia-orm-doc](http://aurelia-orm.spoonx.org/).
+
+The [changelog](doc/changelog.md) provides you with information about important changes.
+
 ## Installation
 
 ### Aureli-Cli
 
 Run `npm i aurelia-orm --save` from your project root.
 
-Aurelia-orm has submodules and makes use of `extends`, `get-prop`, `typer` and `aurelia-validation@0.6.6`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
+Aurelia-orm has submodules and makes use of `extend`, `get-prop`, `typer` and `aurelia-validation@0.6.6`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
 
 ```js
 "dependencies": [
   // ...
-  "extends",
+  "extend",
   "get-prop",
   "typer",
   {
@@ -102,12 +108,6 @@ or run
 ```sh
 typings i github:spoonx/aurelia-orm
 ```
-
-## Documentation
-
-You can find usage examples and the documentation at [aurelia-orm-doc](http://aurelia-orm.spoonx.org/).
-
-The [changelog](doc/changelog.md) provides you with information about important changes.
 
 ## Example
 
