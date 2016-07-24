@@ -50,6 +50,7 @@ Get all entries of the view-models 'userRepository' repository property and popu
 <!-- With custom selectable placeholder (value===0)                        -->
 <association-select
   value.bind="data.author.id"
+  error.bind="error"
   repository.bind="userRepository"
   property="username"
   association.bind="[data.page, data.group]"
@@ -57,13 +58,21 @@ Get all entries of the view-models 'userRepository' repository property and popu
   criteria.bind='{where:{age:{">":18}}}'
   selectablePlaceholder="true"
   placeholderText="- Any -"
+  if.bind="!error"
 ></association-select>
+
+<div class="alert alert-warning" if.bind="!!error">
+  Server error:${error.statusText}
+</div>
 ```
 
 Following are all attributes, and how they work.
 
 ### value.bind
 This is the selected value of the element. This functions the same as a regular `<select />` would.
+
+### error.bind
+That's where a server response error would be stored.
 
 ### property
 This tells the component which property to use from the data sent back by the resource (using the repository). **Defaults to `name`**.
@@ -162,9 +171,8 @@ Which page to load.
     ${user.id} - ${user.name}
   </div>
 
-  <div if.bind="!!error">
-    Yeah, that didn't work!
-    <p> Error: ${error.statusText}</p>
+  <div class="alert alert-warning" if.bind="!!error">
+    Server error:${error.statusText}
   </div>
 </paged>
 ```

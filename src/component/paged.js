@@ -98,10 +98,6 @@ export class Paged {
 
     this.repository.find(criteria, true).then(result => {
       this.data = result;
-    }).catch(error => {
-      logger.error('Something went wrong.', error);
-
-      this.error = error;
-    });
+    }).catch(error => this.error = error);
   }
 }

@@ -1,3 +1,4 @@
+import {logger} from '../aurelia-orm';
 import getProp from 'get-prop';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
@@ -24,6 +25,8 @@ export class AssociationSelect {
   @bindable manyAssociation;
 
   @bindable({defaultBindingMode: bindingMode.twoWay}) value;
+
+  @bindable({defaultBindingMode: bindingMode.twoWay}) error;
 
   @bindable multiple = false;
 
@@ -134,7 +137,7 @@ export class AssociationSelect {
       });
     }
 
-    return repository.findPath(findPath, criteria);
+    return repository.findPath(findPath, criteria).catch(error => this.error = error);
   }
 
   /**
