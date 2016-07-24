@@ -2,8 +2,7 @@ import getProp from 'get-prop';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
-import {EntityManager, Entity, OrmMetadata, logger} from '../aurelia-orm';
-import extend from 'extend';
+import {EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
 
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
@@ -102,7 +101,7 @@ export class AssociationSelect {
       return {};
     }
 
-    return extend(true, {}, this.criteria);
+    return JSON.parse(JSON.stringify(this.criteria));
   }
 
   /**
@@ -186,6 +185,10 @@ export class AssociationSelect {
     return this;
   }
 
+  /**
+   * Change resource
+   * @param  {string resource New resource value
+   */
   resourceChanged(resource) {
     if (!resource) {
       logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
