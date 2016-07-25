@@ -8,8 +8,10 @@ export class Paged {
   // https://github.com/aurelia/templating/issues/73, you still had to set `data` on .two-way when global
   @bindable({defaultBindingMode: bindingMode.twoWay}) data = [];
   @bindable({defaultBindingMode: bindingMode.twoWay}) page = 1;
-  @bindable criteria                                       = {};
-  @bindable resource                                       = null;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) error;
+  @bindable criteria
+  @bindable repository                                     = null;
+  @bindable resource
   @bindable limit                                          = 30;
 
   /**
@@ -41,8 +43,8 @@ export class Paged {
    * @param  {[string|{}]} oldVal Old value
    * @return {Boolean}     Whenever the value is changed
    */
-  isChanged(newVal, oldVal) {
-    return !this.resource || !newVal || (newVal === oldVal);
+  isChanged(property, newVal, oldVal) {
+    return !this[property] || !newVal || (newVal === oldVal);
   }
 
   /**
@@ -52,12 +54,28 @@ export class Paged {
    * @param  {integer} oldVal Old page value
    */
   pageChanged(newVal, oldVal) {
-    if (this.isChanged(newVal, oldVal)) {
+    if (this.isChanged('resource', newVal, oldVal)
+      || this.isChanged('criteria', newVal, oldVal)) {
       return;
     }
 
     this.reloadData();
   }
+
+  /**
+   * Change resource
+   *
+   * @param  {{}} newVal New resource value
+   * @param  {{}} oldVal Old resource value
+   */
+  resourceChanged(newVal, oldVal) {
+    if (this.isChanged('resource', newVal, oldVal)) {
+      return;
+    }
+
+    this.reloadData();
+  }
+
 
   /**
    * Change criteria
@@ -66,7 +84,7 @@ export class Paged {
    * @param  {{}} oldVal Old criteria value
    */
   criteriaChanged(newVal, oldVal) {
-    if (this.isChanged(newVal, oldVal)) {
+    if (this.isChanged('criteria', newVal, oldVal)) {
       return;
     }
 
@@ -74,16 +92,28 @@ export class Paged {
   }
 
   /**
+   * Change resource
+   * @param  {string resource New resource value
+   */
+  resourceChanged(resource) {
+    if (!resource) {
+      logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
+    }
+
+    this.repository = this.entityManager.getRepository(resource);
+  }
+
+  /**
    * Get data from repository
    */
   getData() {
-    this.criteria.skip  = this.page * this.limit - this.limit;
-    this.criteria.limit = this.limit;
+    let criteria = JSON.parse(JSON.stringify(this.criteria));
+    criteria.skip  = this.page * this.limit - this.limit;
+    criteria.limit = this.limit;
+    this.error     = null;
 
-    this.resource.find(this.criteria, true).then(result => {
+    this.repository.find(criteria, true).then(result => {
       this.data = result;
-    }).catch(error => {
-      logger.error('Something went wrong.', error);
-    });
+    }).catch(error => this.error = error);
   }
 }

@@ -1,14 +1,14 @@
+import {logger} from '../aurelia-orm';
 import getProp from 'get-prop';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
-import {EntityManager, Entity, OrmMetadata, logger} from '../aurelia-orm';
-import extend from 'extend';
+import {EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
 
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
 export class AssociationSelect {
-  @bindable criteria = null;
+  @bindable criteria;
 
   @bindable repository;
 
@@ -24,7 +24,9 @@ export class AssociationSelect {
 
   @bindable manyAssociation;
 
-  @bindable({defaultBindingMode: bindingMode.twoWay}) value;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) value ;
+
+  @bindable({defaultBindingMode: bindingMode.twoWay}) error;
 
   @bindable multiple = false;
 
@@ -102,7 +104,7 @@ export class AssociationSelect {
       return {};
     }
 
-    return extend(true, {}, this.criteria);
+    return JSON.parse(JSON.stringify(this.criteria || {}));
   }
 
   /**
@@ -135,7 +137,7 @@ export class AssociationSelect {
       });
     }
 
-    return repository.findPath(findPath, criteria);
+    return repository.findPath(findPath, criteria).catch(error => this.error = error);
   }
 
   /**
@@ -186,6 +188,23 @@ export class AssociationSelect {
     return this;
   }
 
+  /**
+   * Check if the value is changed
+   *
+   * @param  {string|{}}   newVal New value
+   * @param  {[string|{}]} oldVal Old value
+   * @return {Boolean}     Whenever the value is changed
+   */
+  isChanged(property, newVal, oldVal) {
+    return !this[property] || !newVal || (newVal === oldVal);
+  }
+
+  /**
+ * Change resource
+ *
+ * @param  {{}} newVal New criteria value
+ * @param  {{}} oldVal Old criteria value
+ */
   resourceChanged(resource) {
     if (!resource) {
       logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
@@ -193,6 +212,23 @@ export class AssociationSelect {
 
     this.repository = this.entityManager.getRepository(resource);
   }
+
+    /**
+   * Change criteria
+   *
+   * @param  {{}} newVal New criteria value
+   * @param  {{}} oldVal Old criteria value
+   */
+  criteriaChanged(newVal, oldVal) {
+    if (this.isChanged('criteria', newVal, oldVal)) {
+      return;
+    }
+
+    if (this.value) {
+      this.load(this.value);
+    }
+  }
+
 
   /**
    * When attached to the DOM, initialize the component.
