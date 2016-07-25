@@ -43,8 +43,8 @@ export class Paged {
    * @param  {[string|{}]} oldVal Old value
    * @return {Boolean}     Whenever the value is changed
    */
-  isChanged(newVal, oldVal) {
-    return !this.resource || !newVal || (newVal === oldVal);
+  isChanged(property, newVal, oldVal) {
+    return !this[property] || !newVal || (newVal === oldVal);
   }
 
   /**
@@ -54,12 +54,28 @@ export class Paged {
    * @param  {integer} oldVal Old page value
    */
   pageChanged(newVal, oldVal) {
-    if (this.isChanged(newVal, oldVal)) {
+    if (this.isChanged('resource', newVal, oldVal)
+      || this.isChanged('criteria', newVal, oldVal)) {
       return;
     }
 
     this.reloadData();
   }
+
+  /**
+   * Change resource
+   *
+   * @param  {{}} newVal New resource value
+   * @param  {{}} oldVal Old resource value
+   */
+  resourceChanged(newVal, oldVal) {
+    if (this.isChanged('resource', newVal, oldVal)) {
+      return;
+    }
+
+    this.reloadData();
+  }
+
 
   /**
    * Change criteria
@@ -68,7 +84,7 @@ export class Paged {
    * @param  {{}} oldVal Old criteria value
    */
   criteriaChanged(newVal, oldVal) {
-    if (this.isChanged(newVal, oldVal)) {
+    if (this.isChanged('criteria', newVal, oldVal)) {
       return;
     }
 
