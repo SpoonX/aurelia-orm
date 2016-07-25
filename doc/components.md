@@ -74,6 +74,9 @@ This is the selected value of the element. This functions the same as a regular 
 ### error.bind
 That's where a server response error would be stored.
 
+### identifier
+This tells the component which property to use from the select's value. **Defaults to `id`**.
+
 ### property
 This tells the component which property to use from the data sent back by the resource (using the repository). **Defaults to `name`**.
 
@@ -98,6 +101,9 @@ repository.find({association: association.id});
 Almost exactly the same as the `association` attribute, except for a `many` association. This will look up the data from the association's side.
 
 _This attribute does **not** accept arrays, but can be combined with the `association` attribute_.
+
+### multiple
+This sets the component to a multi-select. **Defaults to `false`**.
 
 ### criteria.bind
 Pass along filter criteria (as JSON or Object) to the element. These will be used to restrict the data returned from the API.
