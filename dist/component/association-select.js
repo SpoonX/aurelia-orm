@@ -1,18 +1,18 @@
+import {logger} from '../aurelia-orm';
 import getProp from 'get-prop';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
-import {EntityManager, Entity, OrmMetadata, logger} from '../aurelia-orm';
-import extend from 'extend';
+import {EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
 
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
 export class AssociationSelect {
-  @bindable criteria = null;
+  @bindable criteria;
 
   @bindable repository;
 
-  @bindable identifier;
+  @bindable identifier = 'id';
 
   @bindable property = 'name';
 
@@ -24,9 +24,17 @@ export class AssociationSelect {
 
   @bindable manyAssociation;
 
-  @bindable({defaultBindingMode: bindingMode.twoWay}) value;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) value ;
+
+  @bindable({defaultBindingMode: bindingMode.twoWay}) error;
 
   @bindable multiple = false;
+
+  @bindable hidePlaceholder = false;
+
+  @bindable selectablePlaceholder = false;
+
+  @bindable placeholderText;
 
   ownMeta;
 
@@ -47,7 +55,7 @@ export class AssociationSelect {
   /**
    * (Re)Load the data for the select.
    *
-   * @param {string|Array} [reservedValue]
+   * @param {string|Array|Object} [reservedValue]
    *
    * @return {Promise}
    */
@@ -64,7 +72,7 @@ export class AssociationSelect {
   /**
    * Set the value for the select.
    *
-   * @param {string|Array} value
+   * @param {string|Array|Object} value
    */
   setValue(value) {
     if (!value) {
@@ -72,7 +80,7 @@ export class AssociationSelect {
     }
 
     if (!Array.isArray(value)) {
-      this.value = (typeof value === 'object') ? getProp(value, this.identifier || 'id') : value;
+      this.value = (typeof value === 'object') ? getProp(value, this.identifier) : value;
 
       return;
     }
@@ -80,7 +88,7 @@ export class AssociationSelect {
     let selectedValues = [];
 
     value.forEach(selected => {
-      selectedValues.push(selected instanceof Entity ? selected.id : selected);
+      selectedValues.push(selected instanceof Entity ? selected.getId() : selected);
     });
 
     this.value = selectedValues;
@@ -96,7 +104,7 @@ export class AssociationSelect {
       return {};
     }
 
-    return extend(true, {}, this.criteria);
+    return JSON.parse(JSON.stringify(this.criteria || {}));
   }
 
   /**
@@ -120,16 +128,16 @@ export class AssociationSelect {
       delete criteria.populate;
 
       let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath     = `${assoc.getResource()}/${assoc.id}/${property}`;
+      findPath     = `${assoc.getResource()}/${assoc.getId()}/${property}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
       associations.forEach(association => {
-        criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.id;
+        criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.getId();
       });
     }
 
-    return repository.findPath(findPath, criteria);
+    return repository.findPath(findPath, criteria).catch(error => this.error = error);
   }
 
   /**
@@ -139,14 +147,14 @@ export class AssociationSelect {
    */
   verifyAssociationValues() {
     if (this.manyAssociation) {
-      return !!this.manyAssociation.id;
+      return !!this.manyAssociation.getId();
     }
 
     if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
       return !associations.some(association => {
-        return !association.id;
+        return !association.getId();
       });
     }
 
@@ -167,7 +175,7 @@ export class AssociationSelect {
       return this;
     }
 
-    this._subscriptions.push(this.bindingEngine.propertyObserver(association, 'id').subscribe(() => {
+    this._subscriptions.push(this.bindingEngine.propertyObserver(association, association.getIdProperty()).subscribe(() => {
       if (this.verifyAssociationValues()) {
         return this.load();
       }
@@ -180,6 +188,23 @@ export class AssociationSelect {
     return this;
   }
 
+  /**
+   * Check if the value is changed
+   *
+   * @param  {string|{}}   newVal New value
+   * @param  {[string|{}]} oldVal Old value
+   * @return {Boolean}     Whenever the value is changed
+   */
+  isChanged(property, newVal, oldVal) {
+    return !this[property] || !newVal || (newVal === oldVal);
+  }
+
+  /**
+ * Change resource
+ *
+ * @param  {{}} newVal New criteria value
+ * @param  {{}} oldVal Old criteria value
+ */
   resourceChanged(resource) {
     if (!resource) {
       logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
@@ -187,6 +212,23 @@ export class AssociationSelect {
 
     this.repository = this.entityManager.getRepository(resource);
   }
+
+    /**
+   * Change criteria
+   *
+   * @param  {{}} newVal New criteria value
+   * @param  {{}} oldVal Old criteria value
+   */
+  criteriaChanged(newVal, oldVal) {
+    if (this.isChanged('criteria', newVal, oldVal)) {
+      return;
+    }
+
+    if (this.value) {
+      this.load(this.value);
+    }
+  }
+
 
   /**
    * When attached to the DOM, initialize the component.

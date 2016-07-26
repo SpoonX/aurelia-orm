@@ -640,7 +640,11 @@ export declare class AssociationSelect {
   association: any;
   manyAssociation: any;
   value: any;
+  error: any;
   multiple: any;
+  hidePlaceholder: any;
+  selectablePlaceholder: any;
+  placeholderText: any;
   ownMeta: any;
   
   /**
@@ -655,7 +659,7 @@ export declare class AssociationSelect {
   /**
      * (Re)Load the data for the select.
      *
-     * @param {string|Array} [reservedValue]
+     * @param {string|Array|Object} [reservedValue]
      *
      * @return {Promise}
      */
@@ -664,7 +668,7 @@ export declare class AssociationSelect {
   /**
      * Set the value for the select.
      *
-     * @param {string|Array} value
+     * @param {string|Array|Object} value
      */
   setValue(value?: any): any;
   
@@ -698,7 +702,31 @@ export declare class AssociationSelect {
      * @return {AssociationSelect}
      */
   observe(association?: any): any;
+  
+  /**
+     * Check if the value is changed
+     *
+     * @param  {string|{}}   newVal New value
+     * @param  {[string|{}]} oldVal Old value
+     * @return {Boolean}     Whenever the value is changed
+     */
+  isChanged(property?: any, newVal?: any, oldVal?: any): any;
+  
+  /**
+   * Change resource
+   *
+   * @param  {{}} newVal New criteria value
+   * @param  {{}} oldVal Old criteria value
+   */
   resourceChanged(resource?: any): any;
+  
+  /**
+     * Change criteria
+     *
+     * @param  {{}} newVal New criteria value
+     * @param  {{}} oldVal Old criteria value
+     */
+  criteriaChanged(newVal?: any, oldVal?: any): any;
   
   /**
      * When attached to the DOM, initialize the component.
@@ -723,7 +751,9 @@ export declare class AssociationSelect {
 export declare class Paged {
   data: any;
   page: any;
+  error: any;
   criteria: any;
+  repository: any;
   resource: any;
   limit: any;
   
@@ -744,7 +774,7 @@ export declare class Paged {
      * @param  {[string|{}]} oldVal Old value
      * @return {Boolean}     Whenever the value is changed
      */
-  isChanged(newVal?: any, oldVal?: any): any;
+  isChanged(property?: any, newVal?: any, oldVal?: any): any;
   
   /**
      * Change page
@@ -755,12 +785,26 @@ export declare class Paged {
   pageChanged(newVal?: any, oldVal?: any): any;
   
   /**
+     * Change resource
+     *
+     * @param  {{}} newVal New resource value
+     * @param  {{}} oldVal Old resource value
+     */
+  resourceChanged(newVal?: any, oldVal?: any): any;
+  
+  /**
      * Change criteria
      *
      * @param  {{}} newVal New criteria value
      * @param  {{}} oldVal Old criteria value
      */
   criteriaChanged(newVal?: any, oldVal?: any): any;
+  
+  /**
+     * Change resource
+     * @param  {string resource New resource value
+     */
+  resourceChanged(resource?: any): any;
   
   /**
      * Get data from repository
