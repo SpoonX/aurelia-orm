@@ -1,3 +1,25 @@
+<a name="3.0.0-rc6"></a>
+## [3.0.0-rc6](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc5...v3.0.0-rc6) (2016-07-26)
+
+
+### Bug Fixes
+
+* **association-select:** use custom id property ([5e4b49d](https://github.com/SpoonX/aurelia-orm/commit/5e4b49d))
+* **components:** update criteria ([37fe2d9](https://github.com/SpoonX/aurelia-orm/commit/37fe2d9))
+* **paged:** change content to slot, allow resource+repository, enable error feedback ([5027799](https://github.com/SpoonX/aurelia-orm/commit/5027799))
+
+
+### Features
+
+* **association-select:** enable error feedback ([d741a0c](https://github.com/SpoonX/aurelia-orm/commit/d741a0c))
+
+
+### BREAKING CHANGES
+
+* paged: resource appropiately renamed to respository
+
+
+
 <a name="3.0.0-rc5"></a>
 ## [3.0.0-rc5](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc2...v33.0.0-rc5) (2016-07-22)
 

@@ -1,4 +1,4 @@
-var _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10;
+var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14;
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -43,14 +43,14 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
+import { logger } from '../aurelia-orm';
 import getProp from 'get-prop';
 import { inject } from 'aurelia-dependency-injection';
 import { bindingMode, BindingEngine } from 'aurelia-binding';
 import { bindable, customElement } from 'aurelia-templating';
-import { EntityManager, Entity, OrmMetadata, logger } from '../aurelia-orm';
-import extend from 'extend';
+import { EntityManager, Entity, OrmMetadata } from '../aurelia-orm';
 
-export let AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = class AssociationSelect {
+export let AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = class AssociationSelect {
   constructor(bindingEngine, entityManager, element) {
     _initDefineProp(this, 'criteria', _descriptor, this);
 
@@ -70,7 +70,15 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
     _initDefineProp(this, 'value', _descriptor9, this);
 
-    _initDefineProp(this, 'multiple', _descriptor10, this);
+    _initDefineProp(this, 'error', _descriptor10, this);
+
+    _initDefineProp(this, 'multiple', _descriptor11, this);
+
+    _initDefineProp(this, 'hidePlaceholder', _descriptor12, this);
+
+    _initDefineProp(this, 'selectablePlaceholder', _descriptor13, this);
+
+    _initDefineProp(this, 'placeholderText', _descriptor14, this);
 
     this._subscriptions = [];
     this.bindingEngine = bindingEngine;
@@ -93,7 +101,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     }
 
     if (!Array.isArray(value)) {
-      this.value = typeof value === 'object' ? getProp(value, this.identifier || 'id') : value;
+      this.value = typeof value === 'object' ? getProp(value, this.identifier) : value;
 
       return;
     }
@@ -101,7 +109,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     let selectedValues = [];
 
     value.forEach(selected => {
-      selectedValues.push(selected instanceof Entity ? selected.id : selected);
+      selectedValues.push(selected instanceof Entity ? selected.getId() : selected);
     });
 
     this.value = selectedValues;
@@ -112,7 +120,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
       return {};
     }
 
-    return extend(true, {}, this.criteria);
+    return JSON.parse(JSON.stringify(this.criteria || {}));
   }
 
   buildFind() {
@@ -127,28 +135,28 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
       delete criteria.populate;
 
       let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath = `${ assoc.getResource() }/${ assoc.id }/${ property }`;
+      findPath = `${ assoc.getResource() }/${ assoc.getId() }/${ property }`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
       associations.forEach(association => {
-        criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.id;
+        criteria[this.propertyForResource(this.ownMeta, association.getResource())] = association.getId();
       });
     }
 
-    return repository.findPath(findPath, criteria);
+    return repository.findPath(findPath, criteria).catch(error => this.error = error);
   }
 
   verifyAssociationValues() {
     if (this.manyAssociation) {
-      return !!this.manyAssociation.id;
+      return !!this.manyAssociation.getId();
     }
 
     if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
       return !associations.some(association => {
-        return !association.id;
+        return !association.getId();
       });
     }
 
@@ -162,7 +170,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
       return this;
     }
 
-    this._subscriptions.push(this.bindingEngine.propertyObserver(association, 'id').subscribe(() => {
+    this._subscriptions.push(this.bindingEngine.propertyObserver(association, association.getIdProperty()).subscribe(() => {
       if (this.verifyAssociationValues()) {
         return this.load();
       }
@@ -175,12 +183,26 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     return this;
   }
 
+  isChanged(property, newVal, oldVal) {
+    return !this[property] || !newVal || newVal === oldVal;
+  }
+
   resourceChanged(resource) {
     if (!resource) {
       logger.error(`resource is ${ typeof resource }. It should be a string or a reference`);
     }
 
     this.repository = this.entityManager.getRepository(resource);
+  }
+
+  criteriaChanged(newVal, oldVal) {
+    if (this.isChanged('criteria', newVal, oldVal)) {
+      return;
+    }
+
+    if (this.value) {
+      this.load(this.value);
+    }
   }
 
   attached() {
@@ -218,15 +240,15 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
   }
 }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
   enumerable: true,
-  initializer: function () {
-    return null;
-  }
+  initializer: null
 }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [bindable], {
   enumerable: true,
   initializer: null
 }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'identifier', [bindable], {
   enumerable: true,
-  initializer: null
+  initializer: function () {
+    return 'id';
+  }
 }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'property', [bindable], {
   enumerable: true,
   initializer: function () {
@@ -247,9 +269,25 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, 'value', [_dec3], {
   enumerable: true,
   initializer: null
-}), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, 'multiple', [bindable], {
+}), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec4], {
+  enumerable: true,
+  initializer: null
+}), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, 'multiple', [bindable], {
   enumerable: true,
   initializer: function () {
     return false;
   }
+}), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, 'hidePlaceholder', [bindable], {
+  enumerable: true,
+  initializer: function () {
+    return false;
+  }
+}), _descriptor13 = _applyDecoratedDescriptor(_class2.prototype, 'selectablePlaceholder', [bindable], {
+  enumerable: true,
+  initializer: function () {
+    return false;
+  }
+}), _descriptor14 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [bindable], {
+  enumerable: true,
+  initializer: null
 })), _class2)) || _class) || _class);
