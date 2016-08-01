@@ -38,7 +38,7 @@ The [changelog](doc/changelog.md) provides you with information about important 
 
 Run `npm i aurelia-orm --save` from your project root.
 
-Aurelia-orm needs an installation of (aurelia-api)[https://www.npmjs.com/package/aurelia-api] and `aurelia-validation@0.6.6`. It also has submodules and makes use of `get-prop` and `typer`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
+Aurelia-orm needs an installation of [aurelia-api](https://www.npmjs.com/package/aurelia-api) and `aurelia-validation@0.6.6`. It also has submodules and makes use of `get-prop` and `typer`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
 
 ```js
 "dependencies": [
@@ -68,7 +68,7 @@ Run `jspm i aurelia-orm`
 
 Add `aurelia-orm` to the `bundles.dist.aurelia.includes` section of `build/bundles.js`.
 
-Aurelia-orm needs an installation of (aurelia-api)[https://www.npmjs.com/package/aurelia-api] na `aurelia-validation@0.6.6`. It also has submodules. They are imported in it's main file, so no further action is required.
+Aurelia-orm needs an installation of [aurelia-api](https://www.npmjs.com/package/aurelia-api) na `aurelia-validation@0.6.6`. It also has submodules. They are imported in it's main file, so no further action is required.
 
 If the installation results in having forks, try resolving them by running:
 
@@ -93,7 +93,7 @@ Run `npm i aurelia-orm --save` from your project root.
 
 Add `'aurelia-orm'` in the `coreBundles.aurelia section` of your `webpack.config.js`.
 
-Aurelia-orm needs an installation of (aurelia-api)[https://www.npmjs.com/package/aurelia-api] and `aurelia-validation@0.6.6`. It also has submodules. They are listed as resources in the package.json. So, no further action is required.
+Aurelia-orm needs an installation of [aurelia-api](https://www.npmjs.com/package/aurelia-api) and `aurelia-validation@0.6.6`. It also has submodules. They are listed as resources in the package.json. So, no further action is required.
 
 ### Typescript
 
