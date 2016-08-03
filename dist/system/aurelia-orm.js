@@ -178,6 +178,119 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
     })[0];
   }
 
+  function association(associationData) {
+    return function (target, propertyName) {
+      if (!associationData) {
+        associationData = { entity: propertyName };
+      } else if (typeof associationData === 'string') {
+        associationData = { entity: associationData };
+      }
+
+      OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
+        type: associationData.entity ? 'entity' : 'collection',
+        entity: associationData.entity || associationData.collection
+      });
+    };
+  }
+
+  _export('association', association);
+
+  function idProperty(propertyName) {
+    return function (target) {
+      OrmMetadata.forTarget(target).put('idProperty', propertyName);
+    };
+  }
+
+  _export('idProperty', idProperty);
+
+  function name(entityName) {
+    return function (target) {
+      OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
+    };
+  }
+
+  _export('name', name);
+
+  function repository(repositoryReference) {
+    return function (target) {
+      OrmMetadata.forTarget(target).put('repository', repositoryReference);
+    };
+  }
+
+  _export('repository', repository);
+
+  function resource(resourceName) {
+    return function (target) {
+      OrmMetadata.forTarget(target).put('resource', resourceName || target.name.toLowerCase());
+    };
+  }
+
+  _export('resource', resource);
+
+  function type(typeValue) {
+    return function (target, propertyName) {
+      OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
+    };
+  }
+
+  _export('type', type);
+
+  function validation() {
+    return function (target) {
+      OrmMetadata.forTarget(target).put('validation', true);
+    };
+  }
+
+  _export('validation', validation);
+
+  function validatedResource(resourceName) {
+    return function (target, propertyName) {
+      resource(resourceName)(target);
+      validation()(target, propertyName);
+    };
+  }
+
+  _export('validatedResource', validatedResource);
+
+  function configure(aurelia, configCallback) {
+    var entityManagerInstance = aurelia.container.get(EntityManager);
+
+    configCallback(entityManagerInstance);
+
+    ValidationGroup.prototype.hasAssociation = function () {
+      return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
+    };
+
+    aurelia.globalResources('./component/association-select');
+    aurelia.globalResources('./component/paged');
+  }
+
+  _export('configure', configure);
+
+  function data(metaData) {
+    return function (target, propertyName) {
+      if ((typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) !== 'object') {
+        logger.error('data must be an object, ' + (typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) + ' given.');
+      }
+
+      OrmMetadata.forTarget(target.constructor).put('data', propertyName, metaData);
+    };
+  }
+
+  _export('data', data);
+
+  function endpoint(entityEndpoint) {
+    return function (target) {
+      if (!OrmMetadata.forTarget(target).fetch('resource')) {
+        logger.warn('Need to set the resource before setting the endpoint!');
+      }
+
+      OrmMetadata.forTarget(target).put('endpoint', entityEndpoint);
+    };
+  }
+
+  _export('endpoint', endpoint);
+
   return {
     setters: [function (_typer) {
       typer = _typer.default;
@@ -813,71 +926,6 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
       _export('Entity', Entity);
 
-      function association(associationData) {
-        return function (target, propertyName) {
-          if (!associationData) {
-            associationData = { entity: propertyName };
-          } else if (typeof associationData === 'string') {
-            associationData = { entity: associationData };
-          }
-
-          OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
-            type: associationData.entity ? 'entity' : 'collection',
-            entity: associationData.entity || associationData.collection
-          });
-        };
-      }
-
-      _export('association', association);
-
-      function idProperty(propertyName) {
-        return function (target) {
-          OrmMetadata.forTarget(target).put('idProperty', propertyName);
-        };
-      }
-
-      _export('idProperty', idProperty);
-
-      function name(entityName) {
-        return function (target) {
-          OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
-        };
-      }
-
-      _export('name', name);
-
-      function repository(repositoryReference) {
-        return function (target) {
-          OrmMetadata.forTarget(target).put('repository', repositoryReference);
-        };
-      }
-
-      _export('repository', repository);
-
-      function resource(resourceName) {
-        return function (target) {
-          OrmMetadata.forTarget(target).put('resource', resourceName || target.name.toLowerCase());
-        };
-      }
-
-      _export('resource', resource);
-
-      function type(typeValue) {
-        return function (target, propertyName) {
-          OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
-        };
-      }
-
-      _export('type', type);
-
-      function validation() {
-        return function (target) {
-          OrmMetadata.forTarget(target).put('validation', true);
-        };
-      }
-
-      _export('validation', validation);
-
       _export('EntityManager', EntityManager = (_dec5 = inject(Container), _dec5(_class6 = function () {
         function EntityManager(container) {
           
@@ -992,57 +1040,9 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
       _export('HasAssociationValidationRule', HasAssociationValidationRule);
 
-      function validatedResource(resourceName) {
-        return function (target, propertyName) {
-          resource(resourceName)(target);
-          validation()(target, propertyName);
-        };
-      }
-
-      _export('validatedResource', validatedResource);
-
-      function configure(aurelia, configCallback) {
-        var entityManagerInstance = aurelia.container.get(EntityManager);
-
-        configCallback(entityManagerInstance);
-
-        ValidationGroup.prototype.hasAssociation = function () {
-          return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
-        };
-
-        aurelia.globalResources('./component/association-select');
-        aurelia.globalResources('./component/paged');
-      }
-
-      _export('configure', configure);
-
       _export('logger', logger = getLogger('aurelia-orm'));
 
       _export('logger', logger);
-
-      function data(metaData) {
-        return function (target, propertyName) {
-          if ((typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) !== 'object') {
-            logger.error('data must be an object, ' + (typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) + ' given.');
-          }
-
-          OrmMetadata.forTarget(target.constructor).put('data', propertyName, metaData);
-        };
-      }
-
-      _export('data', data);
-
-      function endpoint(entityEndpoint) {
-        return function (target) {
-          if (!OrmMetadata.forTarget(target).fetch('resource')) {
-            logger.warn('Need to set the resource before setting the endpoint!');
-          }
-
-          OrmMetadata.forTarget(target).put('endpoint', entityEndpoint);
-        };
-      }
-
-      _export('endpoint', endpoint);
     }
   };
 });
