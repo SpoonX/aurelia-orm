@@ -1,6 +1,6 @@
 {
   "name": "aurelia-orm",
-  "version": "3.0.0-rc6",
+  "version": "3.0.0-rc7",
   "description": "Makes working with entities and calling your Rest API simple.",
   "keywords": [
     "aurelia",
@@ -22,7 +22,7 @@
     "url": "https://github.com/SpoonX/aurelia-authentication"
   },
   "dependencies": {
-    "aurelia-api": "^3.0.0-rc1",
+    "aurelia-api": "^3.0.0-rc5",
     "aurelia-binding": "^1.0.0-rc.1.0.0",
     "aurelia-dependency-injection": "^1.0.0-rc.1.0.0",
     "aurelia-logging": "^1.0.0-rc.1.0.0",
