@@ -123,7 +123,7 @@
     "typescript": "^1.9.0-dev.20160622-1.0",
     "vinyl": "^1.1.1",
     "vinyl-paths": "^2.1.0",
-    "yargs": "^4.8.1"
+    "yargs": "^5.0.0"
   },
   "aurelia": {
     "build": {
