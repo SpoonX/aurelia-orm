@@ -24,7 +24,7 @@ export class AssociationSelect {
 
   @bindable manyAssociation;
 
-  @bindable({defaultBindingMode: bindingMode.twoWay}) value ;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) value;
 
   @bindable({defaultBindingMode: bindingMode.twoWay}) error;
 
@@ -200,11 +200,11 @@ export class AssociationSelect {
   }
 
   /**
- * Change resource
- *
- * @param  {{}} newVal New criteria value
- * @param  {{}} oldVal Old criteria value
- */
+   * Change resource
+   *
+   * @param  {{}} newVal New criteria value
+   * @param  {{}} oldVal Old criteria value
+   */
   resourceChanged(resource) {
     if (!resource) {
       logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
@@ -213,7 +213,7 @@ export class AssociationSelect {
     this.repository = this.entityManager.getRepository(resource);
   }
 
-    /**
+  /**
    * Change criteria
    *
    * @param  {{}} newVal New criteria value
@@ -228,7 +228,6 @@ export class AssociationSelect {
       this.load(this.value);
     }
   }
-
 
   /**
    * When attached to the DOM, initialize the component.
