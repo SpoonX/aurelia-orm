@@ -7,8 +7,12 @@ Aurelia-orm uses [aurelia-api](https://github.com/SpoonX/aurelia-api) to talk to
 Upon configuration you can register your entities. Code speaks louder than words, so here's an example:
 
 ```js
-// Import your entities
+// Bulk import your entities:
 import * as entities from 'config/entities';
+/*  Note:
+ *  This might not work with all module loaders as additional entries can be added to 'entities'.
+ *  In this case, either import your entities by name or filter them using Entity.isPrototypeOf(YourEntity) === true .
+ */
 
 export function configure(aurelia) {
   aurelia.use

@@ -21,35 +21,41 @@ export class EntityManager {
   }
 
   /**
-   * Register an array of entity references.
+   * Register an array of entity classes.
    *
-   * @param {Entity[]|Entity} entities Array or object of entities.
+   * @param {function[]|function} Entity classes array or object of Entity constructors.
    *
    * @return {EntityManager} this
    * @chainable
    */
-  registerEntities(entities) {
-    for (let reference in entities) {
-      if (!entities.hasOwnProperty(reference)) {
+  registerEntities(EntityClasses) {
+    for (let property in EntityClasses) {
+      if (!EntityClasses.hasOwnProperty(property)) {
         continue;
       }
 
-      this.registerEntity(entities[reference]);
+      this.registerEntity(EntityClasses[property]);
     }
 
     return this;
   }
 
   /**
-   * Register an Entity reference.
+   * Register an Entity class.
    *
-   * @param {Entity} entity
+   * @param {function} EntityClass
    *
    * @return {EntityManager} this
    * @chainable
    */
-  registerEntity(entity) {
-    this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+  registerEntity(EntityClass) {
+    if (!Entity.isPrototypeOf(EntityClass)) {
+      throw new Error(`Trying to register non-Entity with aurelia-orm. 
+      Are you using 'import *' to load your entities? 
+      <http://aurelia-orm.spoonx.org/configuration.html> `);
+    }
+
+    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
 
     return this;
   }
