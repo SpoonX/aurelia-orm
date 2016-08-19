@@ -37,6 +37,23 @@ describe('EntityManager', function() {
 
       expect(entityManager.entities).toEqual({'with-resource': WithResource});
     });
+
+    it('Should throw when register with non-Entity', function() {
+      let entityManager = new EntityManager(new Container());
+      class Wrong {}
+
+      let failClass   = () => entityManager.registerEntity(Wrong);
+      let failObject  = () => entityManager.registerEntity({type: 'not an entity'});
+      let failBoolean = () => entityManager.registerEntity(true);
+      let failNumber  = () => entityManager.registerEntity(1);
+      let failString  = () => entityManager.registerEntity('string');
+
+      expect(failClass).toThrow();
+      expect(failObject).toThrow();
+      expect(failBoolean).toThrow();
+      expect(failNumber).toThrow();
+      expect(failString).toThrow();
+    });
   });
 
   describe('.getRepository()', function() {
