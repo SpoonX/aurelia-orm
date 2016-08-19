@@ -327,6 +327,10 @@ describe('Entity', function() {
       expect(entity.isNew()).toBe(true);
       entity.setData({idTag: 667}).markClean();
       expect(entity.isNew()).toBe(false);
+      entity.setData({id: null});
+      expect(entity.isNew()).toBe(true);
+      entity.setData({id: false});
+      expect(entity.isNew()).toBe(true);
     });
   });
 
