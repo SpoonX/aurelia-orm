@@ -30,11 +30,9 @@ export class EntityManager {
    */
   registerEntities(EntityClasses) {
     for (let property in EntityClasses) {
-      if (!EntityClasses.hasOwnProperty(property)) {
-        continue;
+      if (EntityClasses.hasOwnProperty(property)) {
+        this.registerEntity(EntityClasses[property]);
       }
-
-      this.registerEntity(EntityClasses[property]);
     }
 
     return this;
@@ -50,9 +48,11 @@ export class EntityManager {
    */
   registerEntity(EntityClass) {
     if (!Entity.isPrototypeOf(EntityClass)) {
-      throw new Error(`Trying to register non-Entity with aurelia-orm. 
-      Are you using 'import *' to load your entities? 
-      <http://aurelia-orm.spoonx.org/configuration.html> `);
+      throw new Error(`
+        Trying to register non-Entity with aurelia-orm.
+        Are you using 'import *' to load your entities?
+        <http://aurelia-orm.spoonx.org/configuration.html>
+      `);
     }
 
     this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
