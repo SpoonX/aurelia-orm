@@ -1,3 +1,13 @@
+<a name="3.0.0-rc7"></a>
+## [3.0.0-rc7](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc6...v3.0.0-rc7) (2016-08-03)
+
+
+### Features
+
+* **translation:** add optional i18n translation to association-select ([301101d](https://github.com/SpoonX/aurelia-orm/commit/301101d))
+
+
+
 <a name="3.0.0-rc6"></a>
 ## [3.0.0-rc6](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc5...v3.0.0-rc6) (2016-07-26)
 

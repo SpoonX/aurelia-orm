@@ -8,7 +8,7 @@ System.register(['./aurelia-orm'], function (_export, _context) {
       var _exportObj = {};
 
       for (var _key in _aureliaOrm) {
-        if (_key !== "default") _exportObj[_key] = _aureliaOrm[_key];
+        if (_key !== "default" && _key !== "__esModule") _exportObj[_key] = _aureliaOrm[_key];
       }
 
       _export(_exportObj);
