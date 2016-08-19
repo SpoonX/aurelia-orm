@@ -127,8 +127,7 @@ export class AssociationSelect {
       // When disabling populate here, the API won't return any data.
       delete criteria.populate;
 
-      let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath     = `${assoc.getResource()}/${assoc.getId()}/${property}`;
+      findPath = `${assoc.getResource()}/${assoc.getId()}/${findPath}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 

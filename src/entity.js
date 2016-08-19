@@ -342,7 +342,7 @@ export class Entity {
    * @return {boolean}
    */
   isNew() {
-    return typeof this.getId() === 'undefined';
+    return !this.getId();
   }
 
   /**
