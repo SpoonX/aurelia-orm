@@ -43,13 +43,11 @@ export class AssociationSelect {
    *
    * @param {BindingEngine} bindingEngine
    * @param {EntityManager} entityManager
-   * @param {Element}       element
    */
-  constructor(bindingEngine, entityManager, element) {
+  constructor(bindingEngine, entityManager) {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
     this.entityManager  = entityManager;
-    this.element        = element;
   }
 
   /**
