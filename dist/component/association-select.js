@@ -24,7 +24,7 @@ export class AssociationSelect {
 
   @bindable manyAssociation;
 
-  @bindable({defaultBindingMode: bindingMode.twoWay}) value ;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) value;
 
   @bindable({defaultBindingMode: bindingMode.twoWay}) error;
 
@@ -43,13 +43,11 @@ export class AssociationSelect {
    *
    * @param {BindingEngine} bindingEngine
    * @param {EntityManager} entityManager
-   * @param {Element}       element
    */
-  constructor(bindingEngine, entityManager, element) {
+  constructor(bindingEngine, entityManager) {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
     this.entityManager  = entityManager;
-    this.element        = element;
   }
 
   /**
@@ -127,8 +125,7 @@ export class AssociationSelect {
       // When disabling populate here, the API won't return any data.
       delete criteria.populate;
 
-      let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath     = `${assoc.getResource()}/${assoc.getId()}/${property}`;
+      findPath = `${assoc.getResource()}/${assoc.getId()}/${findPath}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -200,11 +197,11 @@ export class AssociationSelect {
   }
 
   /**
- * Change resource
- *
- * @param  {{}} newVal New criteria value
- * @param  {{}} oldVal Old criteria value
- */
+   * Change resource
+   *
+   * @param  {{}} newVal New criteria value
+   * @param  {{}} oldVal Old criteria value
+   */
   resourceChanged(resource) {
     if (!resource) {
       logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
@@ -213,7 +210,7 @@ export class AssociationSelect {
     this.repository = this.entityManager.getRepository(resource);
   }
 
-    /**
+  /**
    * Change criteria
    *
    * @param  {{}} newVal New criteria value
@@ -228,7 +225,6 @@ export class AssociationSelect {
       this.load(this.value);
     }
   }
-
 
   /**
    * When attached to the DOM, initialize the component.
