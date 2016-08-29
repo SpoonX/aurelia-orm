@@ -5,6 +5,9 @@ import {metadata} from 'aurelia-metadata';
 import {Validation,ValidationRule,ValidationGroup} from 'aurelia-validation';
 import {getLogger} from 'aurelia-logging';
 
+import {AssociationSelect} from './component/association-select';
+import {Paged} from './component/paged';
+
 /**
  * The Repository basis class
  */
@@ -689,7 +692,7 @@ export class Entity {
    * @return {boolean}
    */
   isNew() {
-    return typeof this.getId() === 'undefined';
+    return !this.getId();
   }
 
   /**
@@ -1225,35 +1228,41 @@ export class EntityManager {
   }
 
   /**
-   * Register an array of entity references.
+   * Register an array of entity classes.
    *
-   * @param {Entity[]|Entity} entities Array or object of entities.
+   * @param {function[]|function} Entity classes array or object of Entity constructors.
    *
    * @return {EntityManager} this
    * @chainable
    */
-  registerEntities(entities) {
-    for (let reference in entities) {
-      if (!entities.hasOwnProperty(reference)) {
-        continue;
+  registerEntities(EntityClasses) {
+    for (let property in EntityClasses) {
+      if (EntityClasses.hasOwnProperty(property)) {
+        this.registerEntity(EntityClasses[property]);
       }
-
-      this.registerEntity(entities[reference]);
     }
 
     return this;
   }
 
   /**
-   * Register an Entity reference.
+   * Register an Entity class.
    *
-   * @param {Entity} entity
+   * @param {function} EntityClass
    *
    * @return {EntityManager} this
    * @chainable
    */
-  registerEntity(entity) {
-    this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+  registerEntity(EntityClass) {
+    if (!Entity.isPrototypeOf(EntityClass)) {
+      throw new Error(`
+        Trying to register non-Entity with aurelia-orm.
+        Are you using 'import *' to load your entities?
+        <http://aurelia-orm.spoonx.org/configuration.html>
+      `);
+    }
+
+    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
 
     return this;
   }
@@ -1379,6 +1388,7 @@ export function validatedResource(resourceName) {
   };
 }
 
+// added for bundling
 // eslint-disable-line no-unused-vars
 // eslint-disable-line no-unused-vars
 

@@ -1,6 +1,0 @@
-<template>
-  <select class="form-control" value.bind="value" multiple.bind="multiple">
-    <option selected disabled.bind="!hidePlaceholder && !selectablePlaceholder" value="0" show.bind="!hidePlaceholder" t="${placeholderText || '- Select a value -'}">${placeholderText || '- Select a value -'}</option>
-    <option model.bind="option.id" repeat.for="option of options">${option[property]}</option>
-  </select>
-</template>
