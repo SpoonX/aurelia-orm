@@ -27,7 +27,7 @@ function cleanGeneratedCode() {
 }
 
 gulp.task('build-index', ['build-resources-index'], function() {
-  var importsToAdd = []; 
+  var importsToAdd = paths.importsToAdd.slice();
 
   var src = gulp.src(paths.mainSource);
 
@@ -54,7 +54,7 @@ gulp.task('build-index', ['build-resources-index'], function() {
     }))
     .pipe(concat(jsName))
     .pipe(insert.transform(function(contents) {
-      return tools.createImportBlock(importsToAdd) + tools.createImportBlock(paths.importsToAdd.slice()) + contents;
+      return tools.createImportBlock(importsToAdd) + contents;
     }))
     .pipe(gulp.dest(paths.output));
 });

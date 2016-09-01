@@ -1,12 +1,12 @@
 import {logger} from '../aurelia-orm';
 import getProp from 'get-prop';
-import {inject} from 'aurelia-dependency-injection';
+import {inject, Container} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
 import {EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
 
 @customElement('association-select')
-@inject(BindingEngine, EntityManager, Element)
+@inject(BindingEngine, Container)
 export class AssociationSelect {
   @bindable criteria;
 
@@ -41,13 +41,12 @@ export class AssociationSelect {
   /**
    * Create a new select element.
    *
-   * @param {BindingEngine} bindingEngine
-   * @param {EntityManager} entityManager
+   * @param {Container} container
    */
-  constructor(bindingEngine, entityManager) {
+  constructor(bindingEngine, container) {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
-    this.entityManager  = entityManager;
+    this.entityManager  = container.get(EntityManager);
   }
 
   /**
