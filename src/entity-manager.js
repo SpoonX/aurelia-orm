@@ -1,6 +1,7 @@
 import {Entity} from './entity';
 import {DefaultRepository} from './default-repository';
 import {Container, inject} from 'aurelia-dependency-injection';
+import {ValidationControllerFactory} from 'aurelia-validation';
 import {OrmMetadata} from './orm-metadata';
 
 /**
@@ -148,6 +149,10 @@ export class EntityManager {
       }
 
       resource = entity;
+    }
+
+    if (instance.hasValidation()) {
+      instance.setController(this.container.get(ValidationControllerFactory).createForCurrentScope());
     }
 
     return instance.setResource(resource).setRepository(this.getRepository(resource));
