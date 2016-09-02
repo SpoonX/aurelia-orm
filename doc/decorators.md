@@ -2,20 +2,20 @@
 
 Aurelia-orm ships with a couple of decorators that help you configure your entities. These decorators offer functionality and convenience.
 
+IMPORTANT for Babel users:
+Propterty decorators cause dirty-checking when binding. Add the @observable() decorator from  aurelia-binding` to those properties to prevent that  
+
 ## Small example
 
 Here's an example using (almost) all decorators available:
 
 ```js
 import {Entity, resource, repository, validation, association, type} from 'aurelia-orm';
-import {ensure} from 'aurelia-validation';
 import {CustomRepository} from 'repository/custom-repository';
 
 @resource('my-endpoint')
 @repository(CustomRepository)
-@validation()
 export class MyEntity extends Entity {
-  @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   @type('string')
   name = null;
 
@@ -83,11 +83,11 @@ import {CustomRepository} from 'repository/custom-repository';
 export class MyEntity extends Entity {}
 ```
 
-## @validation()
+## @validation() (useless)
 
-Use this decorator if you wish to enable validation on your entity. This makes use of [aurelia-validation](https://github.com/aurelia/validation) and exposes a `.getValidation()` method on the entity.
+Adds a ValidationController instance. This makes use of [aurelia-validation](https://github.com/aurelia/validation).
 
-## @validatedResource()
+## @validatedResource() (useless)
 
 Usually when making a custom entity, it's to add validation. This method simply combines @validation() and @resource() into one simple decorator. It's sugar :)
 
@@ -187,17 +187,4 @@ export class Weather extends Entity {}
 
 ### Bonus: validation
 
-Aurelia-orm extends aurelia-validate, and adds validation for your associations.
-To add validation for associations, simply use the .hasAssociation() rule like so:
-
-```js
-import {ensure} from 'aurelia-validation';
-import {association, validatedResource, Entity} from 'aurelia-orm';
-
-@validatedResource()
-export class SomeEntity extends Entity {
-  @association('manufacturer')
-  @ensure(it => it.hasAssociation())
-  manufacturer = null;
-}
-```
+Aurelia-orm adds a 'hasAssociation' custom rule for the use with `ValidationRules`. 

@@ -24,7 +24,7 @@ It also has submodules and makes use of `get-prop`. So, add following to the `bu
   {
     "name": "aurelia-validation",
     "path": "../node_modules/aurelia-validation/dist/amd",
-    "main": "index"
+    "main": "aurelia-validation"
   },
   // ...
 ],

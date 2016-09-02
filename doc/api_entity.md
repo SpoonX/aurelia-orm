@@ -202,9 +202,9 @@ A JSON string containing the values from the entity.
 
 ---------
 
-## .hasValidation()
+## .hasValidation() (useless)
 
-Check if entity has validation enabled.
+Check if entity has validation enabled. (useless)
 
 ### Parameters
 
@@ -216,9 +216,9 @@ A boolean indicating if validation is enabled or not.
 
 ---------
 
-## .getValidation()
+## .getController() (useless)
 
-When enabled, this method returns the validation instance.
+When enabled, this method returns the validation controller instance. 
 
 ### Parameters
 
@@ -226,7 +226,7 @@ When enabled, this method returns the validation instance.
 
 ### Returns
 
-An instance of [aurelia-validation](https://github.com/aurelia/validation).
+An instance of [ValidationController](https://github.com/aurelia/validation).
 
 ---------
 
