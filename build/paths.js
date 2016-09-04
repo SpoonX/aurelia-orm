@@ -21,8 +21,6 @@ var paths = {
   ignore: [],
   useTypeScriptForDTS: false,
   importsToAdd: [
-    "import {AssociationSelect} from './component/association-select';",
-    "import {Paged} from './component/paged';"
   ], // eg. non-concated local imports in the main file as they will get removed during the build process
   importsToIgnoreForDts: ['typer', 'get-prop'], // imports that are only used internally. no need to d.ts export them
   jsResources: [appRoot + 'component/*.js'], // js to transpile, but not be concated and keeping their relative path
