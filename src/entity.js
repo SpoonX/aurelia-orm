@@ -1,5 +1,6 @@
 import {transient} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
+import {Rules} from 'aurelia-validation';
 
 /**
  * The Entity basis class
@@ -490,7 +491,8 @@ export class Entity {
    * @return {boolean}
    */
   hasValidation() {
-    return !!this.getMeta().fetch('validation');
+    let rules = Rules.get(this);
+    return Array.isArray(rules) && rules.length !== 0;
   }
 
   /**

@@ -5,10 +5,7 @@ import {ValidationRules} from 'aurelia-validation';
 import {Entity} from './entity';
 
 export function configure(aurelia, configCallback) {
-  let entityManagerInstance = aurelia.container.get(EntityManager);
-
-  configCallback(entityManagerInstance);
-
+  // first our configurations
   // add custom rules
   ValidationRules.customRule(
     'hasAssociation',
@@ -34,6 +31,12 @@ export function configure(aurelia, configCallback) {
     `\${$displayName} must be a collection association.`    // eslint-disable-line quotes
   );
 
+  // then user configuration
+  let entityManagerInstance = aurelia.container.get(EntityManager);
+
+  configCallback(entityManagerInstance);
+
+  // then global resouces
   aurelia.globalResources('./component/association-select');
   aurelia.globalResources('./component/paged');
 }

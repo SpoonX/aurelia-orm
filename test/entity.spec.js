@@ -8,6 +8,7 @@ import {WithName} from './resources/entity/with-name';
 import {Entity} from '../src/entity';
 import {Container} from 'aurelia-dependency-injection';
 import {Config, Rest} from 'aurelia-api';
+import {ValidationRules, ValidationParser} from 'aurelia-validation';
 
 function getContainer() {
   let container = new Container();
@@ -628,8 +629,27 @@ describe('Entity', function() {
   });
 
   describe('.hasValidation()', function() {
-    it('Should return entity has validation disabled.', function() {
-      let entity = new WithResource({});
+    it('Should return entity has validation enabled.', function() {
+      let container = new Container; 
+      let entity = container.get(WithResource);
+      let parser = container.get(ValidationParser);
+      ValidationRules.initialize(parser);
+
+      entity.enableValidation = function () {
+          ValidationRules
+            .ensure(a => a.todo).required()
+            .on(this);
+        }
+        entity.enableValidation();
+
+      expect(entity.hasValidation()).toEqual(true);
+    });
+
+    it('Should return entity has validation not set.', function() {
+      let container = new Container; 
+      let entity = container.get(WithResource);
+      let parser = container.get(ValidationParser);
+      ValidationRules.initialize(parser);
 
       expect(entity.hasValidation()).toEqual(false);
     });
