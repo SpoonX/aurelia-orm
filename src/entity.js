@@ -50,28 +50,6 @@ export class Entity {
   }
 
   /**
-   * Get reference to the ValidationController.
-   *
-   * @return {ValidationController}
-   */
-  getController() {
-    return this.__controller;
-  }
-
-  /**
-   * Set reference to the ValidationController.
-   *
-   * @param {Controller} controller
-   *
-   * @return {Entity} this
-   * @chainable
-   */
-  setController(controller) {
-    return this.define('__controller', controller);
-  }
-
-
-  /**
    * Define a non-enumerable property on the entity.
    *
    * @param {string}  property
