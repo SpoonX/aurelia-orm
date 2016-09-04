@@ -3,10 +3,6 @@ import {EntityManager} from './entity-manager';
 import {HasAssociationValidationRule} from './validator/has-association';
 import {ValidationGroup} from 'aurelia-validation';
 
-// added for bundling
-import {AssociationSelect} from './component/association-select'; // eslint-disable-line no-unused-vars
-import {Paged} from './component/paged'; // eslint-disable-line no-unused-vars
-
 export function configure(aurelia, configCallback) {
   let entityManagerInstance = aurelia.container.get(EntityManager);
 
