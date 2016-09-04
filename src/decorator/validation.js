@@ -1,5 +1,3 @@
-import {OrmMetadata} from '../orm-metadata';
-
 /**
  * Set the 'validation' metadata to 'true'
  *

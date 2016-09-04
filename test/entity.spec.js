@@ -630,23 +630,23 @@ describe('Entity', function() {
 
   describe('.hasValidation()', function() {
     it('Should return entity has validation enabled.', function() {
-      let container = new Container; 
+      let container = new Container;
       let entity = container.get(WithResource);
       let parser = container.get(ValidationParser);
       ValidationRules.initialize(parser);
 
-      entity.enableValidation = function () {
-          ValidationRules
-            .ensure(a => a.todo).required()
-            .on(this);
-        }
-        entity.enableValidation();
+      entity.enableValidation = function() {
+        ValidationRules
+          .ensure(a => a.todo).required()
+          .on(this);
+      };
+      entity.enableValidation();
 
       expect(entity.hasValidation()).toEqual(true);
     });
 
     it('Should return entity has validation not set.', function() {
-      let container = new Container; 
+      let container = new Container;
       let entity = container.get(WithResource);
       let parser = container.get(ValidationParser);
       ValidationRules.initialize(parser);
