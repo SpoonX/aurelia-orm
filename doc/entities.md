@@ -52,13 +52,12 @@ There's an easier way to do this, as described in the chapter [Configuration](co
 Here's an example that showcases (almost) all possibilities for your entity:
 
 ```js
-import {ensure} from 'aurelia-validation';
-import {Entity, type, association, validatedResource} from 'aurelia-orm';
+import {Entity, type, association, resource} from 'aurelia-orm';
+import {ValidationRules} from 'aurelia-validation';
 
-@validatedResource('product')
+@resource('product')
 export class Product extends Entity {
   @type('string')
-  @ensure(it => it.isNotEmpty().containsOnlyAlpha().hasLengthBetween(3, 20))
   name = null;
 
   @association('category')
@@ -66,6 +65,12 @@ export class Product extends Entity {
 
   @association({collection: 'media'})
   media = [];
+
+  enableValidation() {
+    ValidationRules
+      .ensure('name').required()
+      .on(this);
+  }
 }
 ```
 

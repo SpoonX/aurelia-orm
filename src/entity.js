@@ -1,34 +1,23 @@
-import {Validation} from 'aurelia-validation';
-import {transient, inject} from 'aurelia-dependency-injection';
+import {transient} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
+import {Rules} from 'aurelia-validation';
 
 /**
  * The Entity basis class
  * @transient
  */
 @transient()
-@inject(Validation)
 export class Entity {
 
   /**
    * Construct a new entity.
    *
-   * @param {Validation} validator
-   *
    * @return {Entity}
    */
-  constructor(validator) {
+  constructor() {
     this
       .define('__meta', OrmMetadata.forTarget(this.constructor))
       .define('__cleanValues', {}, true);
-
-    // No validation? No need to set the validator.
-    if (!this.hasValidation()) {
-      return this;
-    }
-
-    // Set the validator.
-    return this.define('__validator', validator);
   }
 
   /**
@@ -497,48 +486,14 @@ export class Entity {
   }
 
   /**
-   * Enable validation for this entity.
-   *
-   * @return {Entity} this
-   * @throws {Error}
-   * @chainable
-   */
-  enableValidation() {
-    if (!this.hasValidation()) {
-      throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
-    }
-
-    if (this.__validation) {
-      return this;
-    }
-
-    return this.define('__validation', this.__validator.on(this));
-  }
-
-  /**
-   * Get the validation instance.
-   *
-   * @return {Validation}
-   */
-  getValidation() {
-    if (!this.hasValidation()) {
-      return null;
-    }
-
-    if (!this.__validation) {
-      this.enableValidation();
-    }
-
-    return this.__validation;
-  }
-
-  /**
    * Check if entity has validation enabled.
    *
    * @return {boolean}
    */
   hasValidation() {
-    return !!this.getMeta().fetch('validation');
+    let rules = Rules.get(this);
+
+    return Array.isArray(rules) && rules.length !== 0;
   }
 
   /**

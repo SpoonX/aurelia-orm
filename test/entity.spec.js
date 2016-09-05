@@ -1,7 +1,6 @@
 import {EntityManager} from '../src/entity-manager';
 import {Metadata} from '../src/orm-metadata';
 import {WithResource} from './resources/entity/with-resource';
-import {WithValidation} from './resources/entity/with-validation';
 import {Foo} from './resources/entity/foo';
 import {Custom} from './resources/entity/custom';
 import {WithAssociations} from './resources/entity/with-associations';
@@ -9,7 +8,7 @@ import {WithName} from './resources/entity/with-name';
 import {Entity} from '../src/entity';
 import {Container} from 'aurelia-dependency-injection';
 import {Config, Rest} from 'aurelia-api';
-import {Validation} from 'aurelia-validation';
+import {ValidationRules, ValidationParser} from 'aurelia-validation';
 
 function getContainer() {
   let container = new Container();
@@ -32,24 +31,9 @@ function constructEntity(entity) {
 describe('Entity', function() {
   describe('.constructor()', function() {
     it('Should set the meta data.', function() {
-      let validation = new Validation();
-      let entity     = new WithValidation(validation);
+      let entity = new Entity;
 
       expect(entity.__meta).not.toBe(undefined);
-    });
-
-    it('Should set the validator constructor.', function() {
-      let validation = new Validation();
-      let entity     = new WithValidation(validation);
-
-      expect(entity.__validator).toBe(validation);
-    });
-
-    it('Should not set the validator constructor.', function() {
-      let validation = new Validation();
-      let entity     = new WithResource(validation);
-
-      expect(entity.__validator).toBe(undefined);
     });
   });
 
@@ -264,7 +248,7 @@ describe('Entity', function() {
 
   describe('.define()', function() {
     it('Should define a non-enumerable property on the entity.', function() {
-      let entity = new WithResource(new Validation());
+      let entity = new WithResource();
 
       entity.define('__test', 'value');
       entity.define('__testWritable', 'value', true);
@@ -286,7 +270,7 @@ describe('Entity', function() {
 
   describe('.isDirty()', function() {
     it('Should properly return if the entity is dirty.', function() {
-      let entity = new WithResource(new Validation());
+      let entity = new WithResource();
 
       entity.setData({
         id: 667,
@@ -304,7 +288,7 @@ describe('Entity', function() {
 
   describe('.isClean()', function() {
     it('Should properly return if the entity is clean.', function() {
-      let entity = new WithResource(new Validation());
+      let entity = new WithResource();
 
       entity.setData({
         id: 667,
@@ -322,7 +306,7 @@ describe('Entity', function() {
 
   describe('.isNew()', function() {
     it('Should properly return if the entity is new.', function() {
-      let entity = new WithResource(new Validation());
+      let entity = new WithResource();
 
       expect(entity.isNew()).toBe(true);
       entity.setData({idTag: 667}).markClean();
@@ -390,7 +374,7 @@ describe('Entity', function() {
 
   describe('.markClean()', function() {
     it('Should properly mark the entity as clean.', function() {
-      let entity = new WithResource(new Validation());
+      let entity = new WithResource();
 
       entity.setData({
         idTag: 667,
@@ -644,89 +628,30 @@ describe('Entity', function() {
     });
   });
 
-  describe('.enableValidation()', function() {
-    it('Should enable validation on the entity.', function() {
-      let mockValidator = {
-        on: function() {
-          return {};
-        }
-      };
-
-      spyOn(mockValidator, 'on');
-
-      let entity = new WithValidation(mockValidator);
-
-      entity.enableValidation();
-
-      expect(mockValidator.on).toHaveBeenCalled();
-    });
-
-    it('Should throw an error when called with validation disabled', function() {
-      let entity = new WithResource({});
-
-      expect(function() {
-        entity.enableValidation();
-      }).toThrowError(Error, 'Entity not marked as validated. Did you forget the @validation() decorator?');
-    });
-
-    it('Should not enable validation on the entity more than once.', function() {
-      let mockValidatorMultiple = {
-        on: function() {
-          return {};
-        }
-      };
-
-      spyOn(mockValidatorMultiple, 'on').and.callThrough();
-
-      let entity = new WithValidation(mockValidatorMultiple);
-
-      entity.enableValidation();
-
-      expect(mockValidatorMultiple.on).toHaveBeenCalled();
-
-      entity.enableValidation();
-      entity.enableValidation();
-      entity.enableValidation();
-
-      expect(mockValidatorMultiple.on.calls.count()).toBe(1);
-    });
-  });
-
-  describe('.getValidation()', function() {
-    it('Should return null if validation meta is not true.', function() {
-      let entity = new WithResource('space camp');
-
-      expect(entity.getValidation()).toBe(null);
-    });
-
-    it('Should return validation for the entity (and create the instance).', function() {
-      let mockValidator = {
-        on: function() {
-          return 'The validator. But, not really.';
-        }
-      };
-
-      let entity = new WithValidation(mockValidator);
-
-      // Instance
-      expect(entity.getValidation()).toEqual('The validator. But, not really.');
-
-      // Cached
-      expect(entity.getValidation()).toEqual('The validator. But, not really.');
-    });
-  });
-
   describe('.hasValidation()', function() {
-    it('Should return entity has validation disabled.', function() {
-      let entity = new WithResource({});
-
-      expect(entity.hasValidation()).toEqual(false);
-    });
-
     it('Should return entity has validation enabled.', function() {
-      let entity = new WithValidation({});
+      let container = new Container;
+      let entity = container.get(WithResource);
+      let parser = container.get(ValidationParser);
+      ValidationRules.initialize(parser);
+
+      entity.enableValidation = function() {
+        ValidationRules
+          .ensure(a => a.todo).required()
+          .on(this);
+      };
+      entity.enableValidation();
 
       expect(entity.hasValidation()).toEqual(true);
+    });
+
+    it('Should return entity has validation not set.', function() {
+      let container = new Container;
+      let entity = container.get(WithResource);
+      let parser = container.get(ValidationParser);
+      ValidationRules.initialize(parser);
+
+      expect(entity.hasValidation()).toEqual(false);
     });
   });
 

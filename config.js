@@ -8,14 +8,14 @@ System.config({
 
   map: {
     "aurelia-api": "npm:aurelia-api@3.0.0-rc8",
-    "aurelia-binding": "npm:aurelia-binding@1.0.1",
+    "aurelia-binding": "npm:aurelia-binding@1.0.3",
     "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0",
     "aurelia-logging": "npm:aurelia-logging@1.0.0",
     "aurelia-metadata": "npm:aurelia-metadata@1.0.0",
     "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0",
     "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0",
-    "aurelia-templating": "npm:aurelia-templating@1.0.0",
-    "aurelia-validation": "npm:aurelia-validation@0.6.6",
+    "aurelia-templating": "npm:aurelia-templating@1.0.1",
+    "aurelia-validation": "npm:aurelia-validation@0.12.2",
     "fetch": "github:github/fetch@1.0.0",
     "get-prop": "npm:get-prop@0.0.10",
     "typer": "npm:typer@1.1.0",
@@ -25,7 +25,7 @@ System.config({
       "aurelia-path": "npm:aurelia-path@1.0.0",
       "extend": "npm:extend@3.0.0"
     },
-    "npm:aurelia-binding@1.0.1": {
+    "npm:aurelia-binding@1.0.3": {
       "aurelia-logging": "npm:aurelia-logging@1.0.0",
       "aurelia-metadata": "npm:aurelia-metadata@1.0.0",
       "aurelia-pal": "npm:aurelia-pal@1.0.0",
@@ -51,8 +51,8 @@ System.config({
     "npm:aurelia-task-queue@1.0.0": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0"
     },
-    "npm:aurelia-templating@1.0.0": {
-      "aurelia-binding": "npm:aurelia-binding@1.0.1",
+    "npm:aurelia-templating@1.0.1": {
+      "aurelia-binding": "npm:aurelia-binding@1.0.3",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0",
       "aurelia-loader": "npm:aurelia-loader@1.0.0",
       "aurelia-logging": "npm:aurelia-logging@1.0.0",
@@ -61,12 +61,11 @@ System.config({
       "aurelia-path": "npm:aurelia-path@1.0.0",
       "aurelia-task-queue": "npm:aurelia-task-queue@1.0.0"
     },
-    "npm:aurelia-validation@0.6.6": {
-      "aurelia-binding": "npm:aurelia-binding@1.0.1",
+    "npm:aurelia-validation@0.12.2": {
+      "aurelia-binding": "npm:aurelia-binding@1.0.3",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0",
-      "aurelia-logging": "npm:aurelia-logging@1.0.0",
-      "aurelia-metadata": "npm:aurelia-metadata@1.0.0",
-      "aurelia-templating": "npm:aurelia-templating@1.0.0"
+      "aurelia-task-queue": "npm:aurelia-task-queue@1.0.0",
+      "aurelia-templating": "npm:aurelia-templating@1.0.1"
     }
   }
 });

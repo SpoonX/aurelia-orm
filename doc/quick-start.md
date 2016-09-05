@@ -136,15 +136,13 @@ What this does, is tell the `EntityManager` that you have built entities for you
 To give you an idea, here's what the article entity might look like:
 
 ```javascript
-import {Entity, validatedResource, association} from 'aurelia-orm';
+import {Entity, resource, association} from 'aurelia-orm';
 import {ensure} from 'aurelia-validation';
 
-@validatedResource()
+@resource()
 export class Article extends Entity {
-  @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   name = null;
 
-  @ensure(it => it.isNotEmpty())
   body = null;
 
   @association()
@@ -153,6 +151,14 @@ export class Article extends Entity {
   // Specify the name of the resource: property is called `categories`
   @association('category')
   categories = [];
+
+  // enable validation if needed
+  enableValidation() {
+    ValidationRules
+      ensure('name').required.minLength(3).maxLength(20)
+      ensure('body').required()
+      .on(this);
+  }
 }
 ```
 
@@ -162,13 +168,17 @@ We can now get cracking. In any ViewModel, you can now get the desired repositor
 
 ```javascript
 import {EntityManager} from 'aurelia-orm';
-import {inject} from 'aurelia-framework';
+import {inject, NewInstance} from "aurelia-dependency-injection";
+import {ValidationController} from 'aurelia-validation';
 
-@inject(EntityManager)
+@inject(EntityManager, NewInstance.of(ValidationController))
 export class ViewModel {
-  constructor (entityManager) {
+  constructor (entityManager, controller) {
     this.articleRepository = entityManager.getRepository('article');
     this.newArticle        = entityManager.getEntity('article');
+    this.controller        = controller;
+
+    this.newArticle.enanbleValidation();
   }
 
   attached (params) {
@@ -179,12 +189,15 @@ export class ViewModel {
 
   create () {
     // Validate, and persist entity to the server.
-    this.newArticle.getValidation().validate()
-      .then(result => {
+    this.controller.validate({ object: article })
+      .then(validationErrors => {
+        if (validationErrors.length !== 0) {
+          // Validation failed. Display a notification?
+          return;
+        }
         // Validation passed, persist entity.
-        return this.newArticle.save()
-      })
-      .catch(error => {/* Validation failed */});
+        return this.newArticle.save();
+      });
   }
 
   destroy (index) {

@@ -10,7 +10,6 @@ Enter aurelia-orm. This module provides you with some useful and cool features, 
 * Entity definitions
 * Repositories
 * Associations
-* Validation
 * Type casting
 * Self-populating select element
 * And more
