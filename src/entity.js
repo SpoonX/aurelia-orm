@@ -492,6 +492,7 @@ export class Entity {
    */
   hasValidation() {
     let rules = Rules.get(this);
+
     return Array.isArray(rules) && rules.length !== 0;
   }
 

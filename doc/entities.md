@@ -68,7 +68,7 @@ export class Product extends Entity {
 
   enableValidation() {
     ValidationRules
-      .ensure(a => a.name).required()
+      .ensure('name').required()
       .on(this);
   }
 }

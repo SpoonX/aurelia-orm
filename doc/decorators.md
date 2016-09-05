@@ -3,7 +3,7 @@
 Aurelia-orm ships with a couple of decorators that help you configure your entities. These decorators offer functionality and convenience.
 
 IMPORTANT for Babel users:
-Propterty decorators cause dirty-checking when binding. Add the @observable() decorator from  aurelia-binding` to those properties to prevent that  
+The babel implementation of propterty decorators cause Aurelia to dirty-check a bound parameter. Add the `@observable()` decorator from  `aurelia-binding` to those properties to prevent that  
 
 ## Small example
 
@@ -83,13 +83,13 @@ import {CustomRepository} from 'repository/custom-repository';
 export class MyEntity extends Entity {}
 ```
 
-## @validation() (useless)
+## @validation()
 
-Adds a ValidationController instance. This makes use of [aurelia-validation](https://github.com/aurelia/validation).
+Obsolete
 
-## @validatedResource() (useless)
+## @validatedResource()
 
-Usually when making a custom entity, it's to add validation. This method simply combines @validation() and @resource() into one simple decorator. It's sugar :)
+Obsolete
 
 ## @association()
 
