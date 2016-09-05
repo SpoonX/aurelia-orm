@@ -56,8 +56,8 @@ Get all entries of the view-models 'userRepository' repository property and popu
   association.bind="[data.page, data.group]"
   manyAssociation.bind="data.category"
   criteria.bind='{where:{age:{">":18}}}'
-  selectablePlaceholder="true"
-  placeholderText="- Any -"
+  selectableplaceholder="true"
+  placeholdertext="- Any -"
   if.bind="!error"
 ></association-select>
 
@@ -108,7 +108,7 @@ This sets the component to a multi-select. **Defaults to `false`**.
 ### criteria.bind
 Pass along filter criteria (as JSON or Object) to the element. These will be used to restrict the data returned from the API.
 
-### hidePlaceholder
+### hideplaceholder
 By default, the select-association will include an option with `value===0`, and text "- Select a value -". Adding this attribute will _exclude_ the placeholder (`value===0`) option from the select. **Defaults to `false`**.
 
 ```html
@@ -116,11 +116,11 @@ By default, the select-association will include an option with `value===0`, and 
   property="fullName"
   value.bind="data.author"
   repository.bind="userRepository"
-  hidePlaceholder="true"
+  hideplaceholder="true"
 ></association-select>
 ```
 
-### selectablePlaceholder
+### selectableplaceholder
 By default, the placeholder (`value===0`) option will be `disabled`, i.e. not selectable. Adding this attribute will allow the placeholder option to be selectable. **Defaults to `false`**.
 
 ```html
@@ -128,11 +128,11 @@ By default, the placeholder (`value===0`) option will be `disabled`, i.e. not se
   property="fullName"
   value.bind="data.author"
   repository.bind="userRepository"
-  selectablePlaceholder="true"
+  selectableplaceholder="true"
 ></association-select>
 ```
 
-### placeholderText
+### placeholdertext
 By default, the placeholder (`value===0`) option will have a text value of "_- Select a value -_". Setting this attribute will allow custom text to be added to the placeholder option.
 
 ```html
@@ -140,7 +140,7 @@ By default, the placeholder (`value===0`) option will have a text value of "_- S
   property="fullName"
   value.bind="data.author"
   repository.bind="userRepository"
-  placeholderText="- Assign to User -"
+  placeholdertext="- Assign to User -"
 ></association-select>
 ```
 

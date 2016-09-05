@@ -30,11 +30,11 @@ export class AssociationSelect {
 
   @bindable multiple = false;
 
-  @bindable hidePlaceholder = false;
+  @bindable hideplaceholder = false;
 
-  @bindable selectablePlaceholder = false;
+  @bindable selectableplaceholder = false;
 
-  @bindable placeholderText;
+  @bindable placeholdertext;
 
   ownMeta;
 
@@ -112,6 +112,11 @@ export class AssociationSelect {
    * @return {Promise}
    */
   buildFind() {
+    // resolve if called too early
+    if (!this.repository) {
+      return Promise.resolve();
+    }
+
     let repository    = this.repository;
     let criteria      = this.getCriteria();
     let findPath      = repository.getResource();
