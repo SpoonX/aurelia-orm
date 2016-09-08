@@ -187,17 +187,24 @@ export class Weather extends Entity {}
 
 ### Bonus: validation
 
-Aurelia-orm extends aurelia-validate, and adds validation for your associations.
+Aurelia-orm supports aurelia-validation, and adds validation for your associations.
 To add validation for associations, simply use the .hasAssociation() rule like so:
 
 ```js
-import {ensure} from 'aurelia-validation';
+import {ValidationRules} from 'aurelia-validation';
 import {association, validatedResource, Entity} from 'aurelia-orm';
 
 @validatedResource()
 export class SomeEntity extends Entity {
   @association('manufacturer')
-  @ensure(it => it.hasAssociation())
   manufacturer = null;
+
+  constructor() {
+    super();
+
+    ValidationRules
+      .ensure('manufacturer').satisfiesRule('hasAssociation')
+      .on(this);  
+  }
 }
 ```

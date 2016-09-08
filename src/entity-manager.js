@@ -2,6 +2,7 @@ import {Entity} from './entity';
 import {DefaultRepository} from './default-repository';
 import {Container, inject} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
+import {StandardValidator} from 'aurelia-validation';
 
 /**
  * The EntityManager class
@@ -148,6 +149,14 @@ export class EntityManager {
       }
 
       resource = entity;
+    }
+
+     // Set the validator.
+    if (instance.hasValidation() && !(instance.getValidator())) {
+      let validator = this.container.invoke(StandardValidator);
+      this.container.registerInstance(StandardValidator, validator);
+
+      instance.setValidator(validator);
     }
 
     return instance.setResource(resource).setRepository(this.getRepository(resource));

@@ -35,7 +35,7 @@ The [changelog](doc/changelog.md) provides you with information about important 
 ## Uses
 
 * [aurelia-api](https://www.npmjs.com/package/aurelia-api)
-* `aurelia-validation@0.6.6`
+* `aurelia-validation@^0.12.3`
 
 ## Used by
 
@@ -43,7 +43,7 @@ The [changelog](doc/changelog.md) provides you with information about important 
 
 ## Installation
 
-Aurelia-orm needs an installation of [aurelia-api](https://www.npmjs.com/package/aurelia-api) and `aurelia-validation@0.6.6`.
+Aurelia-orm needs an installation of [aurelia-api](https://www.npmjs.com/package/aurelia-api) and `aurelia-validation@^0.12.3`.
 
 ### Aureli-Cli
 
@@ -81,9 +81,9 @@ And add following to the `bundles.dist.aurelia.includes` section of `build/bundl
 
 ```js
   "get-prop",
-  "aurelia-datatable",
-  "[aurelia-datatable/**/*.js]",
-  "aurelia-datatable/**/*.html!text",
+  "aurelia-orm",
+  "[aurelia-orm/**/*.js]",
+  "aurelia-orm/**/*.html!text",
 ```
 
 If the installation results in having forks, try resolving them by running:
@@ -111,18 +111,21 @@ Here's a snippet to give you an idea of what this module does.
 
 ```javascript
 import {Entity, validatedResource} from 'aurelia-orm';
-import {ensure} from 'aurelia-validation';
+import {ValidationRules} from 'aurelia-validation';
 
 @validatedResource('user')
 export class UserEntity extends Entity {
-  @ensure(it => it.isNotEmpty().containsOnlyAlpha().hasLengthBetween(3, 20))
-  username = null;
-
-  @ensure(it => it.isNotEmpty().isStrongPassword())
+  email    = null;
   password = null;
 
-  @ensure(it => it.isNotEmpty().isEmail())
-  email = null;
+  constructor() {
+    super();
+
+    ValidationRules
+      .ensure('email').required().email()
+      .ensure('password').required().minLength(8).maxLength(20)
+      .on(this);  
+  }
 }
 ```
 
@@ -144,14 +147,22 @@ export class Create {
   create () {
     this.requestInFlight = true;
 
-    this.entity.save()
-      .then(result => {
+    this.entity.validate()
+      .then(validationErrors => {
+        if (validationErrors.length !== 0) {
+          console.error(error);
+          throw validationErrors[0];
+        }
+
+        return this.entity.save();
+      }).then(result => {
         this.requestInFlight = false;
 
         console.log('User created successfully');
       })
       .catch(error => {
-        console.error(error);
+        this.requestInFlight = false;
+        // notify of the error?
       });
   }
 }

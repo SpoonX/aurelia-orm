@@ -212,13 +212,13 @@ Check if entity has validation enabled.
 
 ### Returns
 
-A boolean indicating if validation is enabled or not.
+A boolean indicating if validation is enabled or not. This will enable the (Standard)Validator on the entity.
 
 ---------
 
-## .getValidation()
+## .getValidator()
 
-When enabled, this method returns the validation instance.
+When enabled, this method returns the validator instance.
 
 ### Parameters
 
@@ -226,7 +226,41 @@ When enabled, this method returns the validation instance.
 
 ### Returns
 
-An instance of [aurelia-validation](https://github.com/aurelia/validation).
+An instance of the validator. See [aurelia-validation](http://aurelia.io/hub.html#/doc/article/aurelia/validation).
+
+---------
+
+## .setValidator(validator)
+
+Set the validator. Per default the StandardValidator is used if validation is enabled, but you can set a custom validator if needed.
+
+### Parameters
+
+| Parameter | Type            | Description                              |
+| --------- | --------------- | ---------------------------------------- |
+| validator | Validator       | An instance of a Validator implemenation |
+
+### Returns
+
+Itself
+
+---------
+
+## .validate(property?, rules?)
+
+Calls the validator on the entity. Per default all properties and all rules on the entity are tested, but one can optionally select the property and/or pass a rule to be tested.
+If validation is not enabled on the entity, it is considered valid.  
+
+### Parameters
+
+| Parameter | Type            | Description                          |
+| --------- | --------------- | ------------------------------------ |
+| property  | string          | (optional) Tje property to be tested |
+| rules     | ValidationRules | (optional) The rules ro test         | 
+
+### Returns
+
+Promise<[ValidationError]>
 
 ---------
 
