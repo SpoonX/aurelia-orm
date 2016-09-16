@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "aurelia-api": "^3.0.0-rc5",
-    "aurelia-binding": "^1.0.0-rc.1.0.0",
+    "aurelia-binding": "^1.0.3",
     "aurelia-dependency-injection": "^1.0.0-rc.1.0.0",
     "aurelia-logging": "^1.0.0-rc.1.0.0",
     "aurelia-metadata": "^1.0.0-rc.1.0.0",
