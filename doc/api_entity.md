@@ -212,13 +212,13 @@ Check if entity has validation enabled.
 
 ### Returns
 
-A boolean indicating if validation is enabled or not. This will enable the (Standard)Validator on the entity.
+A boolean indicating if validation is enabled or not. This will enable the StandardValidator on the entity.
 
 ---------
 
 ## .getValidator()
 
-When enabled, this method returns the validator instance.
+When validation is enabled, this method returns the used Validator instance.
 
 ### Parameters
 
@@ -232,7 +232,7 @@ An instance of the validator. See [aurelia-validation](http://aurelia.io/hub.htm
 
 ## .setValidator(validator)
 
-Set the validator. Per default the StandardValidator is used if validation is enabled, but you can set a custom validator if needed.
+Set the validator. Per default the StandardValidator is used if validation is enabled, but you can set a different Validator implementation if needed.
 
 ### Parameters
 
@@ -246,17 +246,17 @@ Itself
 
 ---------
 
-## .validate(property?, rules?)
+## .validate(propertyName?, rules?)
 
-Calls the validator on the entity. Per default all properties and all rules on the entity are tested, but one can optionally select the property and/or pass a rule to be tested.
+Calls the validator on the entity. Per default all properties and all rules on the entity are tested, but one can optionally select the propertyName and/or pass the rules to be tested.
 If validation is not enabled on the entity, it is considered valid.  
 
 ### Parameters
 
-| Parameter | Type            | Description                          |
-| --------- | --------------- | ------------------------------------ |
-| property  | string          | (optional) Tje property to be tested |
-| rules     | ValidationRules | (optional) The rules ro test         | 
+| Parameter     | Type            | Description                          |
+| ------------- | --------------- | ------------------------------------ |
+| propertyName  | string          | (optional) The property to be tested |
+| rules         | ValidationRules | (optional) The rules to test         | 
 
 ### Returns
 

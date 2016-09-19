@@ -529,17 +529,20 @@ export class Entity {
   /**
    * Validates the entity
    *
-   * @param {property} [property] optional: the property to validate
-   * @param {rules} [rules] optional: the rules to test
-   * @return {Promise<[ValidationError]>}
+   * @param {string|null} propertyName Optional. The name of the property to validate. If unspecified,
+   * all properties will be validated.
+   * @param {Rule<any, any>[]|null} rules Optional. If unspecified, the rules will be looked up using
+   * the metadata for the object created by ValidationRules....on(class/object)
+   * @return {Promise<ValidationError[]>}
    */
-  validate(property, rules) {
+  validate(propertyName, rules) {
     // entities without validation are to be considered valid
     if (!this.hasValidation()) {
       return Promise.resolve([]);
     }
 
-    return this.getValidator().validate(this, property, rules);
+    return propertyName ? this.getValidator().validateProperty(this, propertyName, rules)
+                        : this.getValidator().validateObject(this, rules);
   }
 
   /**
