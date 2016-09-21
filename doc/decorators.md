@@ -85,11 +85,45 @@ export class MyEntity extends Entity {}
 
 ## @validation()
 
-Use this decorator if you wish to enable validation on your entity. This makes use of [aurelia-validation](https://github.com/aurelia/validation) and exposes a `.getValidation()` method on the entity.
+Use this decorator if you wish to enable validation on your entity. This makes use of the StandardValidator of [aurelia-validation](https://github.com/aurelia/validation) and exposes a `.validate()` method on the entity.
+
+```js
+import {Entity, validation} from 'aurelia-orm';
+
+@validation()
+export class MyEntity extends Entity {}
+```
+
+You can also set your own validator
+
+```js
+import {Entity, validation} from 'aurelia-orm';
+import {CustomValidator} from 'custom-validator';
+
+@validation(CustomValidator)
+export class MyEntity extends Entity {}
+```
 
 ## @validatedResource()
 
 Usually when making a custom entity, it's to add validation. This method simply combines @validation() and @resource() into one simple decorator. It's sugar :)
+
+```js
+import {Entity, validatedResource} from 'aurelia-orm';
+
+@validatedResource()
+export class MyEntity extends Entity {}
+```
+
+You can also set your own resource and/or validator
+
+```js
+import {Entity, validatedResource} from 'aurelia-orm';
+import {CustomValidator} from 'custom-validator';
+
+@validatedResource('i-want-bacon', CustomValidator)
+export class MyEntity extends Entity {}
+```
 
 ## @association()
 
