@@ -510,10 +510,6 @@ export class Entity {
       return null;
     }
 
-    if (!this.__validator) {
-     // this.enableValidator();
-    }
-
     return this.__validator;
   }
 
