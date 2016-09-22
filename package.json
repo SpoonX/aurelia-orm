@@ -120,7 +120,7 @@
     "snyk": "^1.17.1",
     "through2": "^2.0.1",
     "typedoc": "^0.4.4",
-    "typescript": "^1.9.0-dev.20160622-1.0",
+    "typescript": "^2.0.3",
     "vinyl": "^1.1.1",
     "vinyl-paths": "^2.1.0",
     "yargs": "^4.8.1"
