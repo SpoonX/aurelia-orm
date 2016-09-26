@@ -100,6 +100,8 @@ Use this decorator to indicate that a property has a relationship with another e
 * It will make sure that calling .asObject() on the entity recursively converts all children to simple objects.
 * It will make sure that upon calling .update(), all children get converted to IDs.
 
+*Note:* This decorator also makes the property observable.
+
 ### Example
 
 ```js
@@ -123,6 +125,8 @@ export class MyEntity extends Entity {
 ## @type()
 
 This decorator allows you to add types to your properties. These types will be used **when populating an entity**, to cast the values to given type. This can be useful when, for instance, working with `Date` instances.
+
+*Note:* This decorator also makes the property observable.
 
 ### Example
 
