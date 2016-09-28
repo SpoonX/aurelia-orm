@@ -19,6 +19,9 @@ export function configure(aurelia) {
     .standardConfiguration()
     .developmentLogging()
 
+    // Initialize validation first, if you want to use it
+    // .plugin('aurelia-validation')
+      
     // Register the plugin, and register your entities
     .plugin('aurelia-orm', builder => {
       builder.registerEntities(entities);

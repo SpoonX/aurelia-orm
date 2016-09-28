@@ -150,6 +150,13 @@ export class EntityManager {
       resource = entity;
     }
 
+    // Set the validator.
+    if (instance.hasValidation() && !(instance.getValidator())) {
+      let validator = this.container.get(OrmMetadata.forTarget(reference).fetch('validation'));
+
+      instance.setValidator(validator);
+    }
+
     return instance.setResource(resource).setRepository(this.getRepository(resource));
   }
 }
