@@ -1,16 +1,19 @@
 import {getLogger} from 'aurelia-logging';
 import {EntityManager} from './entity-manager';
-import {HasAssociationValidationRule} from './validator/has-association';
-import {ValidationGroup} from 'aurelia-validation';
+import {ValidationRules} from 'aurelia-validation';
+import {Entity} from './entity';
 
 export function configure(aurelia, configCallback) {
+  // add hasAssociation custom validation rule
+  ValidationRules.customRule(
+    'hasAssociation',
+    value => !!((value instanceof Entity && typeof value.id === 'number') || typeof value === 'number'),
+    `\${$displayName} must be an association.`    // eslint-disable-line quotes
+  );
+
   let entityManagerInstance = aurelia.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
-
-  ValidationGroup.prototype.hasAssociation = function() {
-    return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
-  };
 
   aurelia.globalResources('./component/association-select');
   aurelia.globalResources('./component/paged');

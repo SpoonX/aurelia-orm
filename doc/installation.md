@@ -38,9 +38,9 @@ And add following to the `bundles.dist.aurelia.includes` section of `build/bundl
 
 ```js
   "get-prop",
-  "aurelia-datatable",
-  "[aurelia-datatable/**/*.js]",
-  "aurelia-datatable/**/*.html!text",
+  "aurelia-orm",
+  "[aurelia-orm/**/*.js]",
+  "aurelia-orm/**/*.html!text",
 ```
 
 If the installation results in having forks, try resolving them by running:
