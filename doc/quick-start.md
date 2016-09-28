@@ -137,14 +137,13 @@ To give you an idea, here's what the article entity might look like:
 
 ```javascript
 import {Entity, validatedResource, association} from 'aurelia-orm';
-import {ensure} from 'aurelia-validation';
+import {ValidationRules} from 'aurelia-validation';
 
 @validatedResource()
 export class Article extends Entity {
-  @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
+  @type('string')
   name = null;
 
-  @ensure(it => it.isNotEmpty())
   body = null;
 
   @association()
@@ -153,6 +152,16 @@ export class Article extends Entity {
   // Specify the name of the resource: property is called `categories`
   @association('category')
   categories = [];
+
+  constructor() {
+    super();
+
+    ValidationRules
+      .ensure('name').required().minLength(8).maxLength(20)
+      .ensure('body').required()
+      .ensure('user').satisfiesRule('hasAssociation')      
+      .on(this);  
+  }
 }
 ```
 
@@ -179,8 +188,11 @@ export class ViewModel {
 
   create () {
     // Validate, and persist entity to the server.
-    this.newArticle.getValidation().validate()
-      .then(result => {
+    this.newArticle.validate()
+      .then(validationErrors => {
+        if (validationErrors.length !== 0) {
+          throw validationErrors[0];
+        }
         // Validation passed, persist entity.
         return this.newArticle.save()
       })

@@ -85,11 +85,45 @@ export class MyEntity extends Entity {}
 
 ## @validation()
 
-Use this decorator if you wish to enable validation on your entity. This makes use of [aurelia-validation](https://github.com/aurelia/validation) and exposes a `.getValidation()` method on the entity.
+Use this decorator if you wish to enable validation on your entity. This makes use of the StandardValidator of [aurelia-validation](https://github.com/aurelia/validation) and exposes a `.validate()` method on the entity.
+
+```js
+import {Entity, validation} from 'aurelia-orm';
+
+@validation()
+export class MyEntity extends Entity {}
+```
+
+You can also set your own validator
+
+```js
+import {Entity, validation} from 'aurelia-orm';
+import {CustomValidator} from 'custom-validator';
+
+@validation(CustomValidator)
+export class MyEntity extends Entity {}
+```
 
 ## @validatedResource()
 
 Usually when making a custom entity, it's to add validation. This method simply combines @validation() and @resource() into one simple decorator. It's sugar :)
+
+```js
+import {Entity, validatedResource} from 'aurelia-orm';
+
+@validatedResource()
+export class MyEntity extends Entity {}
+```
+
+You can also set your own resource and/or validator
+
+```js
+import {Entity, validatedResource} from 'aurelia-orm';
+import {CustomValidator} from 'custom-validator';
+
+@validatedResource('i-want-bacon', CustomValidator)
+export class MyEntity extends Entity {}
+```
 
 ## @association()
 
@@ -187,17 +221,24 @@ export class Weather extends Entity {}
 
 ### Bonus: validation
 
-Aurelia-orm extends aurelia-validate, and adds validation for your associations.
+Aurelia-orm supports aurelia-validation, and adds validation for your associations.
 To add validation for associations, simply use the .hasAssociation() rule like so:
 
 ```js
-import {ensure} from 'aurelia-validation';
+import {ValidationRules} from 'aurelia-validation';
 import {association, validatedResource, Entity} from 'aurelia-orm';
 
 @validatedResource()
 export class SomeEntity extends Entity {
   @association('manufacturer')
-  @ensure(it => it.hasAssociation())
   manufacturer = null;
+
+  constructor() {
+    super();
+
+    ValidationRules
+      .ensure('manufacturer').satisfiesRule('hasAssociation')
+      .on(this);  
+  }
 }
 ```
