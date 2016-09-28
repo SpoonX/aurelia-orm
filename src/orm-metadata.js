@@ -20,11 +20,11 @@ export class Metadata {
    */
   constructor() {
     this.metadata = {
-      repository: DefaultRepository,
-      resource: null,
-      endpoint: null,
-      name: null,
-      idProperty: 'id',
+      repository  : DefaultRepository,
+      resource    : null,
+      endpoint    : null,
+      name        : null,
+      idProperty  : 'id',
       associations: {}
     };
   }

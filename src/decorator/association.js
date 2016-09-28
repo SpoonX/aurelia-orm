@@ -18,7 +18,7 @@ export function association(associationData) {
     }
 
     OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
-      type: associationData.entity ? 'entity' : 'collection',
+      type  : associationData.entity ? 'entity' : 'collection',
       entity: associationData.entity || associationData.collection
     });
   };

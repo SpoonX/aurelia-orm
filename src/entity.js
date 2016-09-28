@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {transient} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
 
@@ -64,8 +65,8 @@ export class Entity {
    */
   define(property, value, writable) {
     Object.defineProperty(this, property, {
-      value: value,
-      writable: !!writable,
+      value     : value,
+      writable  : !!writable,
       enumerable: false
     });
 
@@ -89,7 +90,6 @@ export class Entity {
   getIdProperty() {
     return this.getMeta().fetch('idProperty');
   }
-
 
   /**
    * Get the id property name of the entity (static).
@@ -135,6 +135,7 @@ export class Entity {
     }
 
     let response;
+
     return this.getTransport()
       .create(this.getResource(), this.asObject(true))
       .then((created) => {
@@ -175,7 +176,7 @@ export class Entity {
 
     return this.getTransport()
       .update(this.getResource(), this.getId(), requestBody)
-      .then((updated) => response = updated)
+      .then(updated => { response = updated; })
       .then(() => this.saveCollections())
       .then(() => this.markClean())
       .then(() => response);
@@ -231,9 +232,9 @@ export class Entity {
     // Entity isn't new, just add id to url.
     url.push(entity.getId());
 
-    return this.getTransport().create(url.join('/')).then(() => {
-      return entity;
-    });
+    return this.getTransport()
+      .create(url.join('/'))
+      .then(() => entity);
   }
 
   /**
@@ -300,9 +301,10 @@ export class Entity {
    */
   markClean() {
     let cleanValues    = getFlat(this);
+
     this.__cleanValues = {
       checksum: JSON.stringify(cleanValues),
-      data: cleanValues
+      data    : cleanValues
     };
 
     return this;
@@ -498,7 +500,6 @@ export class Entity {
 
     return this;
   }
-
 
   /**
    * Get the validator instance.
@@ -730,7 +731,7 @@ function getCollectionsCompact(forEntity, includeNew) {
  */
 function getFlat(entity, json) {
   let flat = {
-    entity: asObject(entity, true),
+    entity     : asObject(entity, true),
     collections: getCollectionsCompact(entity)
   };
 

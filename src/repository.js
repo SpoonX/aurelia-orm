@@ -194,6 +194,7 @@ export class Repository {
       }
 
       let repository     = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+
       populatedData[key] = repository.populateEntities(value);
     }
 
@@ -219,13 +220,15 @@ export class Repository {
     let associations = entity.getMeta().fetch('associations');
 
     for (let property in associations) {
-      let assocMeta = associations[property];
+      if (associations.hasOwnProperty(property)) {
+        let assocMeta = associations[property];
 
-      if (assocMeta.type !== 'entity') {
-        continue;
+        if (assocMeta.type !== 'entity') {
+          continue;
+        }
+
+        entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
       }
-
-      entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
     }
 
     return entity;

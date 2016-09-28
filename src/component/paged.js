@@ -55,7 +55,8 @@ export class Paged {
    */
   pageChanged(newVal, oldVal) {
     if (this.isChanged('resource', newVal, oldVal)
-      || this.isChanged('criteria', newVal, oldVal)) {
+      || this.isChanged('criteria', newVal, oldVal)
+    ) {
       return;
     }
 
@@ -75,7 +76,6 @@ export class Paged {
 
     this.reloadData();
   }
-
 
   /**
    * Change criteria
@@ -108,12 +108,17 @@ export class Paged {
    */
   getData() {
     let criteria = JSON.parse(JSON.stringify(this.criteria));
-    criteria.skip  = this.page * this.limit - this.limit;
+
+    criteria.skip  = (this.page * this.limit) - this.limit;
     criteria.limit = this.limit;
     this.error     = null;
 
-    this.repository.find(criteria, true).then(result => {
-      this.data = result;
-    }).catch(error => this.error = error);
+    this.repository.find(criteria, true)
+      .then(result => {
+        this.data = result;
+      })
+      .catch(error => {
+        this.error = error;
+      });
   }
 }

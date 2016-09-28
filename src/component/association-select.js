@@ -1,9 +1,8 @@
-import {logger} from '../aurelia-orm';
 import getProp from 'get-prop';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
-import {EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
+import {logger, EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
 
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
@@ -61,6 +60,7 @@ export class AssociationSelect {
     return this.buildFind()
       .then(options => {
         let result   = options;
+
         this.options = Array.isArray(result) ? result : [result];
 
         this.setValue(reservedValue);
@@ -115,6 +115,7 @@ export class AssociationSelect {
     let repository    = this.repository;
     let criteria      = this.getCriteria();
     let findPath      = repository.getResource();
+
     criteria.populate = false;
 
     // Check if there are `many` associations. If so, the repository find path changes.
@@ -134,7 +135,8 @@ export class AssociationSelect {
       });
     }
 
-    return repository.findPath(findPath, criteria).catch(error => this.error = error);
+    return repository.findPath(findPath, criteria)
+      .catch(error => { this.error = error; });
   }
 
   /**
