@@ -162,6 +162,16 @@ describe('Repository', function() {
         done();
       });
     });
+
+    it('Should not fail if no data was returned', function(done) {
+      let repository = constructRepository('find-test');
+      repository.getTransport().find = () => Promise.resolve(null);
+
+      repository.find()
+        .then(data => expect(data).toBe(null))
+        .catch(err => expect(true).toBe(false))
+        .then(done);
+    });
   });
 
   describe('.count()', function() {

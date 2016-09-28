@@ -105,8 +105,14 @@ export class Repository {
     }
 
     return findQuery
-      .then(x => this.populateEntities(x))
+      .then(response => {
+        return this.populateEntities(response);
+      })
       .then(populated => {
+        if (!populated) {
+          return null;
+        }
+
         if (!Array.isArray(populated)) {
           return populated.markClean();
         }
