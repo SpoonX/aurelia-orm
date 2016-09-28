@@ -1,10 +1,18 @@
 import {validatedResource} from '../../../src/decorator/validated-resource';
 import {Entity} from '../../../src/entity';
-import {ensure} from 'aurelia-validation';
+import {ValidationRules} from 'aurelia-validation';
 
 @validatedResource()
 export class WithValidation extends Entity {
-
-  @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   foo = null;
+
+  bar = null;
+
+  constructor() {
+    super();
+
+    ValidationRules
+      .ensure('foo').required().minLength(10).maxLength(20)
+      .on(this);
+  }
 }

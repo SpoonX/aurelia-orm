@@ -5,14 +5,15 @@ import {validation} from './validation';
  * Set the 'resource' metadata and enables validation on the entity
  *
  * @param {String} resourceName The name of the resource
+ * @param {[function]} ValidatorClass = Validator
  *
  * @return {Function}
  *
  * @decorator
  */
-export function validatedResource(resourceName) {
+export function validatedResource(resourceName, ValidatorClass) {
   return function(target, propertyName) {
     resource(resourceName)(target);
-    validation()(target, propertyName);
+    validation(ValidatorClass)(target, propertyName);
   };
 }

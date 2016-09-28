@@ -40,7 +40,7 @@
       "aurelia-logging": "^1.0.0-rc.1.0.0",
       "aurelia-metadata": "^1.0.0-rc.1.0.0",
       "aurelia-templating": "^1.0.0-rc.1.0.0",
-      "aurelia-validation": "0.6.6",
+      "aurelia-validation": "^0.12.3",
       "get-prop": "^0.0.10",
       "typer": "^1.1.0"
     },
@@ -51,11 +51,12 @@
       "aurelia-logging": "^1.0.0-rc.1.0.0",
       "aurelia-metadata": "^1.0.0-rc.1.0.0",
       "aurelia-templating": "^1.0.0-rc.1.0.0",
-      "aurelia-validation": "0.6.6",
+      "aurelia-validation": "^0.12.3",
       "get-prop": "^0.0.10",
       "typer": "^1.1.0"
     },
     "devDependencies": {
+      "aurelia-bootstrapper": "^1.0.0",
       "aurelia-pal-browser": "^1.0.0-rc.1.0.0",
       "aurelia-polyfills": "^1.0.0-rc.1.0.0",
       "fetch": "github:github/fetch@^1.0.0"
@@ -68,7 +69,7 @@
     "aurelia-logging": "^1.0.0-rc.1.0.0",
     "aurelia-metadata": "^1.0.0-rc.1.0.0",
     "aurelia-templating": "^1.0.0-rc.1.0.0",
-    "aurelia-validation": "0.6.6",
+    "aurelia-validation": "^0.12.3",
     "get-prop": "^0.0.10",
     "typer": "^1.1.0"
   },
@@ -105,10 +106,10 @@
     "gulp-typescript": "^2.13.6",
     "gulp-util": "^3.0.7",
     "jasmine-core": "^2.4.1",
-    "karma": "^1.1.1",
+    "karma": "^1.2.0",
     "karma-babel-preprocessor": "^6.0.1",
-    "karma-chrome-launcher": "^1.0.1",
-    "karma-coverage": "^1.1.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
     "karma-firefox-launcher": "^1.0.0",
     "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^1.0.2",
@@ -117,13 +118,13 @@
     "object.assign": "^4.0.4",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.2.2",
-    "snyk": "^1.17.1",
+    "snyk": "^1.18.1",
     "through2": "^2.0.1",
-    "typedoc": "^0.4.4",
+    "typedoc": "^0.4.5",
     "typescript": "^1.9.0-dev.20160622-1.0",
-    "vinyl": "^1.1.1",
+    "vinyl": "^1.2.0",
     "vinyl-paths": "^2.1.0",
-    "yargs": "^4.8.1"
+    "yargs": "^5.0.0"
   },
   "aurelia": {
     "build": {

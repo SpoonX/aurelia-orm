@@ -1,5 +1,4 @@
-import {Validation} from 'aurelia-validation';
-import {transient, inject} from 'aurelia-dependency-injection';
+import {transient} from 'aurelia-dependency-injection';
 import {OrmMetadata} from './orm-metadata';
 
 /**
@@ -7,28 +6,19 @@ import {OrmMetadata} from './orm-metadata';
  * @transient
  */
 @transient()
-@inject(Validation)
 export class Entity {
 
   /**
    * Construct a new entity.
    *
-   * @param {Validation} validator
+   * @param {Validator} validator
    *
    * @return {Entity}
    */
-  constructor(validator) {
+  constructor() {
     this
       .define('__meta', OrmMetadata.forTarget(this.constructor))
       .define('__cleanValues', {}, true);
-
-    // No validation? No need to set the validator.
-    if (!this.hasValidation()) {
-      return this;
-    }
-
-    // Set the validator.
-    return this.define('__validator', validator);
   }
 
   /**
@@ -497,39 +487,30 @@ export class Entity {
   }
 
   /**
-   * Enable validation for this entity.
+   * Set the validator instance.
    *
-   * @return {Entity} this
-   * @throws {Error}
+   * @param {Validator} validator
+   * @return {this}
    * @chainable
    */
-  enableValidation() {
-    if (!this.hasValidation()) {
-      throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
-    }
+  setValidator(validator) {
+    this.define('__validator', validator);
 
-    if (this.__validation) {
-      return this;
-    }
-
-    return this.define('__validation', this.__validator.on(this));
+    return this;
   }
 
+
   /**
-   * Get the validation instance.
+   * Get the validator instance.
    *
-   * @return {Validation}
+   * @return {Validator}
    */
-  getValidation() {
+  getValidator() {
     if (!this.hasValidation()) {
       return null;
     }
 
-    if (!this.__validation) {
-      this.enableValidation();
-    }
-
-    return this.__validation;
+    return this.__validator;
   }
 
   /**
@@ -539,6 +520,25 @@ export class Entity {
    */
   hasValidation() {
     return !!this.getMeta().fetch('validation');
+  }
+
+  /**
+   * Validates the entity
+   *
+   * @param {string|null} propertyName Optional. The name of the property to validate. If unspecified,
+   * all properties will be validated.
+   * @param {Rule<any, any>[]|null} rules Optional. If unspecified, the rules will be looked up using
+   * the metadata for the object created by ValidationRules....on(class/object)
+   * @return {Promise<ValidationError[]>}
+   */
+  validate(propertyName, rules) {
+    // entities without validation are to be considered valid
+    if (!this.hasValidation()) {
+      return Promise.resolve([]);
+    }
+
+    return propertyName ? this.getValidator().validateProperty(this, propertyName, rules)
+                        : this.getValidator().validateObject(this, rules);
   }
 
   /**
