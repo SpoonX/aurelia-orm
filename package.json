@@ -122,7 +122,7 @@
     "through2": "^2.0.1",
     "typedoc": "^0.4.5",
     "typescript": "^1.9.0-dev.20160622-1.0",
-    "vinyl": "^1.2.0",
+    "vinyl": "^2.0.0",
     "vinyl-paths": "^2.1.0",
     "yargs": "^5.0.0"
   },
