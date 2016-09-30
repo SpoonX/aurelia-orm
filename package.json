@@ -74,7 +74,7 @@
     "typer": "^1.1.0"
   },
   "devDependencies": {
-    "spoonx-tools": "^0.2.0"
+    "spoonx-tools": "^0.3.0"
   },
   "aurelia": {
     "build": {
