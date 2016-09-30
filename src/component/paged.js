@@ -37,18 +37,20 @@ export class Paged {
   }
 
   /**
-   * Check if the value is changed
+   * Check if the element property has changed
    *
+   * @param  {string}      property New element property
    * @param  {string|{}}   newVal New value
-   * @param  {[string|{}]} oldVal Old value
-   * @return {Boolean}     Whenever the value is changed
+   * @param  {string|{}}   oldVal Old value
+   *
+   * @return {Boolean}
    */
   isChanged(property, newVal, oldVal) {
     return !this[property] || !newVal || (newVal === oldVal);
   }
 
   /**
-   * Change page
+   * Changed page handler
    *
    * @param  {integer} newVal New page value
    * @param  {integer} oldVal Old page value
@@ -64,7 +66,7 @@ export class Paged {
   }
 
   /**
-   * Change resource
+   * Changed resource handler
    *
    * @param  {{}} newVal New resource value
    * @param  {{}} oldVal Old resource value
@@ -78,7 +80,7 @@ export class Paged {
   }
 
   /**
-   * Change criteria
+   * Changed criteria handler
    *
    * @param  {{}} newVal New criteria value
    * @param  {{}} oldVal Old criteria value
@@ -92,8 +94,9 @@ export class Paged {
   }
 
   /**
-   * Change resource
-   * @param  {string resource New resource value
+   * Changed resource handler
+   *
+   * @param  {string} resource New resource value
    */
   resourceChanged(resource) {
     if (!resource) {

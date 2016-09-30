@@ -23,7 +23,7 @@ export class EntityManager {
   /**
    * Register an array of entity classes.
    *
-   * @param {function[]|function} Entity classes array or object of Entity constructors.
+   * @param {function[]|function} EntityClasses Array or object of Entity constructors.
    *
    * @return {EntityManager} this
    * @chainable

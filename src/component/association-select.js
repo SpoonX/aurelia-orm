@@ -188,21 +188,22 @@ export class AssociationSelect {
   }
 
   /**
-   * Check if the value is changed
+   * Check if the element property has changed
    *
+   * @param  {string}      property The element proterty
    * @param  {string|{}}   newVal New value
-   * @param  {[string|{}]} oldVal Old value
-   * @return {Boolean}     Whenever the value is changed
+   * @param  {string|{}}   oldVal Old value
+   *
+   * @return {Boolean}
    */
   isChanged(property, newVal, oldVal) {
     return !this[property] || !newVal || (newVal === oldVal);
   }
 
   /**
-   * Change resource
+   * Changed resource handler
    *
-   * @param  {{}} newVal New criteria value
-   * @param  {{}} oldVal Old criteria value
+   * @param  {string} resource New resource value
    */
   resourceChanged(resource) {
     if (!resource) {
@@ -213,7 +214,7 @@ export class AssociationSelect {
   }
 
   /**
-   * Change criteria
+   * Changed criteria handler
    *
    * @param  {{}} newVal New criteria value
    * @param  {{}} oldVal Old criteria value

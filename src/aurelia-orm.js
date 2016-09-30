@@ -3,7 +3,14 @@ import {EntityManager} from './entity-manager';
 import {ValidationRules} from 'aurelia-validation';
 import {Entity} from './entity';
 
-export function configure(aurelia, configCallback) {
+/**
+ * Plugin configure
+ *
+ * @export
+ * @param {any} frameworkConfig
+ * @param {any} configCallback
+ */
+export function configure(frameworkConfig, configCallback) {
   // add hasAssociation custom validation rule
   ValidationRules.customRule(
     'hasAssociation',
@@ -11,12 +18,12 @@ export function configure(aurelia, configCallback) {
     `\${$displayName} must be an association.`    // eslint-disable-line quotes
   );
 
-  let entityManagerInstance = aurelia.container.get(EntityManager);
+  let entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
 
-  aurelia.globalResources('./component/association-select');
-  aurelia.globalResources('./component/paged');
+  frameworkConfig.globalResources('./component/association-select');
+  frameworkConfig.globalResources('./component/paged');
 }
 
 export const logger = getLogger('aurelia-orm');

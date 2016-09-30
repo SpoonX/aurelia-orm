@@ -14,8 +14,6 @@ export function data(metaData) {
   /**
    * @param {function} target
    * @param {string} propertyName
-   *
-   * @returns {OrmMetadata}
    */
   return function(target, propertyName) {
     if (typeof metaData !== 'object') {

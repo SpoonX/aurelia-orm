@@ -13,8 +13,6 @@ export class Entity {
    * Construct a new entity.
    *
    * @param {Validator} validator
-   *
-   * @return {Entity}
    */
   constructor() {
     this
@@ -76,7 +74,7 @@ export class Entity {
   /**
    * Get the metadata for this entity.
    *
-   * return {Metadata}
+   * @return {Metadata}
    */
   getMeta() {
     return this.__meta;
@@ -85,7 +83,7 @@ export class Entity {
   /**
    * Get the id property name for this entity.
    *
-   * return {String} The id property name
+   * @return {String}
    */
   getIdProperty() {
     return this.getMeta().fetch('idProperty');
@@ -94,7 +92,7 @@ export class Entity {
   /**
    * Get the id property name of the entity (static).
    *
-   * @return {string} The id property name
+   * @return {string}
    */
   static getIdProperty() {
     let idProperty = OrmMetadata.forTarget(this).fetch('idProperty');
@@ -102,10 +100,10 @@ export class Entity {
     return idProperty;
   }
 
-    /**
+  /**
    * Get the Id value for this entity.
    *
-   * return {Number|String} The id
+   * @return {Number|String}
    */
   getId() {
     return this[this.getIdProperty()];
@@ -113,6 +111,8 @@ export class Entity {
 
   /**
    * Set the Id value for this entity.
+   *
+   * @param {Number|String} id
    *
    * @return {Entity}  this
    * @chainable
