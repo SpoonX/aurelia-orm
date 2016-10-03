@@ -136,7 +136,11 @@ export class AssociationSelect {
     }
 
     return repository.findPath(findPath, criteria)
-      .catch(error => { this.error = error; });
+      .catch(error => {
+        this.error = error;
+
+        return error;
+      });
   }
 
   /**
@@ -190,9 +194,9 @@ export class AssociationSelect {
   /**
    * Check if the element property has changed
    *
-   * @param  {string}      property The element proterty
-   * @param  {string|{}}   newVal New value
-   * @param  {string|{}}   oldVal Old value
+   * @param  {string}      property
+   * @param  {string|{}}   newVal
+   * @param  {string|{}}   oldVal
    *
    * @return {Boolean}
    */
@@ -203,7 +207,7 @@ export class AssociationSelect {
   /**
    * Changed resource handler
    *
-   * @param  {string} resource New resource value
+   * @param  {string} resource
    */
   resourceChanged(resource) {
     if (!resource) {
@@ -216,8 +220,8 @@ export class AssociationSelect {
   /**
    * Changed criteria handler
    *
-   * @param  {{}} newVal New criteria value
-   * @param  {{}} oldVal Old criteria value
+   * @param  {{}} newVal
+   * @param  {{}} oldVal
    */
   criteriaChanged(newVal, oldVal) {
     if (this.isChanged('criteria', newVal, oldVal)) {

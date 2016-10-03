@@ -7,7 +7,7 @@ import {OrmMetadata} from '../orm-metadata';
  * @param {string} propertyName
  * @returns {function}
  *
- * @deocator
+ * @decorator
  */
 export function idProperty(propertyName) {
   return function(target) {

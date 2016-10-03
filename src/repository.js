@@ -193,7 +193,7 @@ export class Repository {
         continue;
       }
 
-      let repository     = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+      let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
 
       populatedData[key] = repository.populateEntities(value);
     }

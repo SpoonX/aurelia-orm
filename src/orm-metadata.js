@@ -35,7 +35,7 @@ export class Metadata {
    * @param {string} key
    * @param {*} value
    *
-   * @return {Metadata} this
+   * @return {Metadata} itself
    * @chainable
 */
   addTo(key, value) {
@@ -57,7 +57,7 @@ export class Metadata {
    * @param {string|*} valueOrNestedKey
    * @param {null|*} [valueOrNull]
    *
-   * @return {Metadata} this
+   * @return {Metadata} itself
    * @chainable
    */
   put(key, valueOrNestedKey, valueOrNull) {

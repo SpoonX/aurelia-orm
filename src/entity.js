@@ -138,7 +138,7 @@ export class Entity {
 
     return this.getTransport()
       .create(this.getResource(), this.asObject(true))
-      .then((created) => {
+      .then(created => {
         this.setId(created[this.getIdProperty()]);
         response = created;
       })
@@ -212,21 +212,21 @@ export class Entity {
 
       if (!relation || relation.type !== 'entity') {
         // Many relation, create and then link.
-        return entity.save().then(() => {
-          if (entity.isNew()) {
-            throw new Error('Entity did not return return an id on saving.');
-          }
+        return entity.save()
+          .then(() => {
+            if (entity.isNew()) {
+              throw new Error('Entity did not return return an id on saving.');
+            }
 
-          return this.addCollectionAssociation(entity, property);
-        });
+            return this.addCollectionAssociation(entity, property);
+          });
       }
 
       // toOne relation, pass in ID to prevent extra request. Something something performance.
       entity[associationProperty] = this.getId();
 
-      return entity.save().then(() => {
-        return entity;
-      });
+      return entity.save()
+        .then(() => entity);
     }
 
     // Entity isn't new, just add id to url.
@@ -263,7 +263,7 @@ export class Entity {
   /**
    * Persist the collections on the entity.
    *
-   * @return {Promise}
+   * @return {Promise} itself
    */
   saveCollections() {
     let tasks              = [];
@@ -296,7 +296,7 @@ export class Entity {
   /**
    * Mark this entity as clean, in its current state.
    *
-   * @return {Entity} this
+   * @return {Entity} itself
    * @chainable
    */
   markClean() {
@@ -342,7 +342,7 @@ export class Entity {
    *
    * @param {boolean} [shallow]
    *
-   * @return {Entity}
+   * @return {Entity} itself
    */
   reset(shallow) {
     let pojo     = {};
@@ -420,7 +420,7 @@ export class Entity {
    *
    * @param {string} resource
    *
-   * @return {Entity} this
+   * @return {Entity} itself
    * @chainable
    */
   setResource(resource) {
@@ -475,7 +475,7 @@ export class Entity {
    *
    * @param {{}} data
    * @param {boolean} markClean
-   * @return {Entity} this
+   * @return {Entity} itself
    * @chainable
    */
   setData(data, markClean) {
@@ -492,7 +492,7 @@ export class Entity {
    * Set the validator instance.
    *
    * @param {Validator} validator
-   * @return {this}
+   * @return {Entity} itself
    * @chainable
    */
   setValidator(validator) {
@@ -727,7 +727,7 @@ function getCollectionsCompact(forEntity, includeNew) {
  * @param {Entity}  entity
  * @param {boolean} [json]
  *
- * @return {{entity, collections}}
+ * @return {{}} {entity, collections}
  */
 function getFlat(entity, json) {
   let flat = {
