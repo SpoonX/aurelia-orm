@@ -3,9 +3,9 @@ import {OrmMetadata} from '../orm-metadata';
 /**
  * Associate a property with an entity (toOne) or a collection (toMany)
  *
- * @param {undefined|String|{}} associationData undefined={entity:propertyName}, String={entity:String}, Object={entity: String, collection: String}
+ * @param {undefined|string|{}} associationData undefined={entity:propertyName}, string={entity:string}, Object={entity: string, collection: string}
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */

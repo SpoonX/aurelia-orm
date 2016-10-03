@@ -83,7 +83,7 @@ export class Entity {
   /**
    * Get the id property name for this entity.
    *
-   * @return {String}
+   * @return {string}
    */
   getIdProperty() {
     return this.getMeta().fetch('idProperty');
@@ -103,7 +103,7 @@ export class Entity {
   /**
    * Get the Id value for this entity.
    *
-   * @return {Number|String}
+   * @return {number|string}
    */
   getId() {
     return this[this.getIdProperty()];
@@ -112,7 +112,7 @@ export class Entity {
   /**
    * Set the Id value for this entity.
    *
-   * @param {Number|String} id
+   * @param {number|string} id
    *
    * @return {Entity}  this
    * @chainable
@@ -528,7 +528,7 @@ export class Entity {
    *
    * @param {string|null} propertyName Optional. The name of the property to validate. If unspecified,
    * all properties will be validated.
-   * @param {Rule<any, any>[]|null} rules Optional. If unspecified, the rules will be looked up using
+   * @param {Rule<*, *>[]|null} rules Optional. If unspecified, the rules will be looked up using
    * the metadata for the object created by ValidationRules....on(class/object)
    * @return {Promise<ValidationError[]>}
    */

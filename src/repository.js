@@ -40,7 +40,7 @@ export class Repository {
   /**
    * Set the associated entity's meta data
    *
-   * @param {Object} meta
+   * @param {{}} meta
    */
   setMeta(meta) {
     this.meta = meta;
@@ -48,7 +48,7 @@ export class Repository {
 
   /**
    * Get the associated entity's meta data.
-   * @return {Object}
+   * @return {{}}
    */
   getMeta() {
     return this.meta;
@@ -79,7 +79,7 @@ export class Repository {
   /**
    * Perform a find query and populate entities with the retrieved data.
    *
-   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
    * @return {Promise<Entity|[Entity]>}
@@ -92,7 +92,7 @@ export class Repository {
    * Perform a find query for `path` and populate entities with the retrieved data.
    *
    * @param {string}           path
-   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
    * @return {Promise<Entity|[Entity]>}
@@ -128,7 +128,7 @@ export class Repository {
    *
    * @param {null|{}} criteria
    *
-   * @return {Promise<Number>}
+   * @return {Promise<number>}
    */
   count(criteria) {
     return this.getTransport().find(this.resource + '/count', criteria);

@@ -43,7 +43,7 @@ export class Paged {
    * @param  {string|{}}   newVal New value
    * @param  {string|{}}   oldVal Old value
    *
-   * @return {Boolean}
+   * @return {boolean}
    */
   isChanged(property, newVal, oldVal) {
     return !this[property] || !newVal || (newVal === oldVal);

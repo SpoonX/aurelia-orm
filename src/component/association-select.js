@@ -52,7 +52,7 @@ export class AssociationSelect {
   /**
    * (Re)Load the data for the select.
    *
-   * @param {string|Array|Object} [reservedValue]
+   * @param {string|Array|{}} [reservedValue]
    *
    * @return {Promise}
    */
@@ -70,7 +70,7 @@ export class AssociationSelect {
   /**
    * Set the value for the select.
    *
-   * @param {string|Array|Object} value
+   * @param {string|Array|{}} value
    */
   setValue(value) {
     if (!value) {
@@ -198,7 +198,7 @@ export class AssociationSelect {
    * @param  {string|{}}   newVal
    * @param  {string|{}}   oldVal
    *
-   * @return {Boolean}
+   * @return {boolean}
    */
   isChanged(property, newVal, oldVal) {
     return !this[property] || !newVal || (newVal === oldVal);

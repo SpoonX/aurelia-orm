@@ -3,9 +3,9 @@ import {OrmMetadata} from '../orm-metadata';
 /**
  * Set the 'resourceName' metadata on the entity
  *
- * @param {String} resourceName The name of the resource
+ * @param {string} resourceName The name of the resource
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */

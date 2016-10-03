@@ -7,8 +7,8 @@ import {Entity} from './entity';
  * Plugin configure
  *
  * @export
- * @param {any} frameworkConfig
- * @param {any} configCallback
+ * @param {*} frameworkConfig
+ * @param {*} configCallback
  */
 export function configure(frameworkConfig, configCallback) {
   // add hasAssociation custom validation rule
