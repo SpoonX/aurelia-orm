@@ -1,4 +1,5 @@
 import {OrmMetadata} from '../orm-metadata';
+import {ensurePropertyIsConfigurable} from './utils';
 
 /**
  * Set the 'types' metadata on the entity
@@ -10,7 +11,9 @@ import {OrmMetadata} from '../orm-metadata';
  * @decorator
  */
 export function type(typeValue) {
-  return function(target, propertyName) {
+  return function(target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
     OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
   };
 }

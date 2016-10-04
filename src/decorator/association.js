@@ -1,4 +1,5 @@
 import {OrmMetadata} from '../orm-metadata';
+import {ensurePropertyIsConfigurable} from './utils';
 
 /**
  * Associate a property with an entity (toOne) or a collection (toMany)
@@ -10,7 +11,9 @@ import {OrmMetadata} from '../orm-metadata';
  * @decorator
  */
 export function association(associationData) {
-  return function(target, propertyName) {
+  return function(target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
     if (!associationData) {
       associationData = {entity: propertyName};
     } else if (typeof associationData === 'string') {
