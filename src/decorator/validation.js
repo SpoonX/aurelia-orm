@@ -6,7 +6,7 @@ import {Validator} from 'aurelia-validation';
  *
  * @param {[function]} ValidatorClass = Validator
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */

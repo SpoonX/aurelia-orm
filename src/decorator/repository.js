@@ -3,9 +3,9 @@ import {OrmMetadata} from '../orm-metadata';
 /**
  * Set the repositoryReference metadata on the entity
  *
- * @param {String} repositoryReference The repository reference to use
+ * @param {string} repositoryReference The repository reference to use
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
