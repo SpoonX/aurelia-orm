@@ -40,7 +40,7 @@ export class Repository {
   /**
    * Set the associated entity's meta data
    *
-   * @param {Object} meta
+   * @param {{}} meta
    */
   setMeta(meta) {
     this.meta = meta;
@@ -48,7 +48,7 @@ export class Repository {
 
   /**
    * Get the associated entity's meta data.
-   * @return {Object}
+   * @return {{}}
    */
   getMeta() {
     return this.meta;
@@ -79,7 +79,7 @@ export class Repository {
   /**
    * Perform a find query and populate entities with the retrieved data.
    *
-   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
    * @return {Promise<Entity|[Entity]>}
@@ -92,7 +92,7 @@ export class Repository {
    * Perform a find query for `path` and populate entities with the retrieved data.
    *
    * @param {string}           path
-   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
    * @return {Promise<Entity|[Entity]>}
@@ -105,8 +105,14 @@ export class Repository {
     }
 
     return findQuery
-      .then(x => this.populateEntities(x))
+      .then(response => {
+        return this.populateEntities(response);
+      })
       .then(populated => {
+        if (!populated) {
+          return null;
+        }
+
         if (!Array.isArray(populated)) {
           return populated.markClean();
         }
@@ -122,7 +128,7 @@ export class Repository {
    *
    * @param {null|{}} criteria
    *
-   * @return {Promise<Number>}
+   * @return {Promise<number>}
    */
   count(criteria) {
     return this.getTransport().find(this.resource + '/count', criteria);
@@ -187,7 +193,8 @@ export class Repository {
         continue;
       }
 
-      let repository     = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+      let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+
       populatedData[key] = repository.populateEntities(value);
     }
 
@@ -213,13 +220,15 @@ export class Repository {
     let associations = entity.getMeta().fetch('associations');
 
     for (let property in associations) {
-      let assocMeta = associations[property];
+      if (associations.hasOwnProperty(property)) {
+        let assocMeta = associations[property];
 
-      if (assocMeta.type !== 'entity') {
-        continue;
+        if (assocMeta.type !== 'entity') {
+          continue;
+        }
+
+        entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
       }
-
-      entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
     }
 
     return entity;
