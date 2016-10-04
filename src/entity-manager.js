@@ -47,14 +47,6 @@ export class EntityManager {
    * @chainable
    */
   registerEntity(EntityClass) {
-    if (!Entity.isPrototypeOf(EntityClass)) {
-      throw new Error(`
-        Trying to register non-Entity with aurelia-orm.
-        Are you using 'import *' to load your entities?
-        <http://aurelia-orm.spoonx.org/configuration.html>
-      `);
-    }
-
     this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
 
     return this;
