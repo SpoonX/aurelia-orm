@@ -2,9 +2,9 @@ import {logger} from '../aurelia-orm';
 import {OrmMetadata} from '../orm-metadata';
 
 /**
-* Set genenric 'data' metadata.
+* Set generic 'data' metadata.
 *
- * @param {object} metaData The data to set
+ * @param {{}} metaData The data to set
  *
  * @returns {function}
  *
@@ -14,8 +14,6 @@ export function data(metaData) {
   /**
    * @param {function} target
    * @param {string} propertyName
-   *
-   * @returns {OrmMetadata}
    */
   return function(target, propertyName) {
     if (typeof metaData !== 'object') {

@@ -14,7 +14,7 @@ export class EntityManager {
   /**
    * Construct a new EntityManager.
    *
-   * @param {Container} container aurelia-dependency-injection container
+   * @param {Container} container
    */
   constructor(container) {
     this.container = container;
@@ -23,9 +23,9 @@ export class EntityManager {
   /**
    * Register an array of entity classes.
    *
-   * @param {function[]|function} Entity classes array or object of Entity constructors.
+   * @param {function[]|function} EntityClasses Array or object of Entity constructors.
    *
-   * @return {EntityManager} this
+   * @return {EntityManager} itself
    * @chainable
    */
   registerEntities(EntityClasses) {
@@ -43,7 +43,7 @@ export class EntityManager {
    *
    * @param {function} EntityClass
    *
-   * @return {EntityManager} this
+   * @return {EntityManager} itself
    * @chainable
    */
   registerEntity(EntityClass) {
