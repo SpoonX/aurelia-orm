@@ -14,18 +14,18 @@ import {CustomRepository} from 'repository/custom-repository';
 @resource('my-endpoint')
 @repository(CustomRepository)
 @validation()
-export class MyEntity extends Entity {
+export class Order extends Entity {
   @ensure(it => it.isNotEmpty().hasLengthBetween(3, 20))
   @type('string')
   name = null;
 
-  // Will use string 'onetoone' as resource name.
+  // Will use string 'contact' as resource name. One-to-one.
   @association()
-  oneToOne = null
+  contact = null
 
-  // Will use 'multiple' as resource name.
-  @association('multiple')
-  oneManyToMany = null
+  // Will use 'lineItem' as resource name. One-to-Many
+  @association('lineItem')
+  lineItems = null
 }
 ```
 
