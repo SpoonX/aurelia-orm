@@ -134,6 +134,7 @@ define(['exports', '../aurelia-orm', 'aurelia-binding', 'aurelia-templating'], f
       var _this = this;
 
       var criteria = JSON.parse(JSON.stringify(this.criteria));
+
       criteria.skip = this.page * this.limit - this.limit;
       criteria.limit = this.limit;
       this.error = null;
@@ -141,7 +142,7 @@ define(['exports', '../aurelia-orm', 'aurelia-binding', 'aurelia-templating'], f
       this.repository.find(criteria, true).then(function (result) {
         _this.data = result;
       }).catch(function (error) {
-        return _this.error = error;
+        _this.error = error;
       });
     };
 

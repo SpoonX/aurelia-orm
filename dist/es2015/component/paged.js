@@ -118,13 +118,16 @@ export let Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
 
   getData() {
     let criteria = JSON.parse(JSON.stringify(this.criteria));
+
     criteria.skip = this.page * this.limit - this.limit;
     criteria.limit = this.limit;
     this.error = null;
 
     this.repository.find(criteria, true).then(result => {
       this.data = result;
-    }).catch(error => this.error = error);
+    }).catch(error => {
+      this.error = error;
+    });
   }
 }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec2], {
   enumerable: true,

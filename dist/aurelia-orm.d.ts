@@ -1,7 +1,7 @@
 import {inject,transient,Container} from 'aurelia-dependency-injection';
 import {Config} from 'aurelia-api';
 import {metadata} from 'aurelia-metadata';
-import {Validation,ValidationRule,ValidationGroup} from 'aurelia-validation';
+import {Validator,ValidationRules} from 'aurelia-validation';
 import {getLogger} from 'aurelia-logging';
 import {bindingMode,BindingEngine} from 'aurelia-binding';
 import {bindable,customElement} from 'aurelia-templating';
@@ -31,13 +31,13 @@ export declare class Repository {
   /**
      * Set the associated entity's meta data
      *
-     * @param {Object} meta
+     * @param {{}} meta
      */
   setMeta(meta?: any): any;
   
   /**
      * Get the associated entity's meta data.
-     * @return {Object}
+     * @return {{}}
      */
   getMeta(): any;
   
@@ -60,7 +60,7 @@ export declare class Repository {
   /**
      * Perform a find query and populate entities with the retrieved data.
      *
-     * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+     * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
      * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
      *
      * @return {Promise<Entity|[Entity]>}
@@ -71,7 +71,7 @@ export declare class Repository {
      * Perform a find query for `path` and populate entities with the retrieved data.
      *
      * @param {string}           path
-     * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+     * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
      * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
      *
      * @return {Promise<Entity|[Entity]>}
@@ -83,7 +83,7 @@ export declare class Repository {
      *
      * @param {null|{}} criteria
      *
-     * @return {Promise<Number>}
+     * @return {Promise<number>}
      */
   count(criteria?: any): any;
   
@@ -152,7 +152,7 @@ export declare class Metadata {
      * @param {string} key
      * @param {*} value
      *
-     * @return {Metadata} this
+     * @return {Metadata} itself
      * @chainable
   */
   addTo(key?: any, value?: any): any;
@@ -164,7 +164,7 @@ export declare class Metadata {
      * @param {string|*} valueOrNestedKey
      * @param {null|*} [valueOrNull]
      *
-     * @return {Metadata} this
+     * @return {Metadata} itself
      * @chainable
      */
   put(key?: any, valueOrNestedKey?: any, valueOrNull?: any): any;
@@ -190,6 +190,7 @@ export declare class Metadata {
   fetch(key?: any, nested?: any): any;
 }
 
+/* eslint-disable max-lines */
 /**
  * The Entity basis class
  * @transient
@@ -199,11 +200,9 @@ export declare class Entity {
   /**
      * Construct a new entity.
      *
-     * @param {Validation} validator
-     *
-     * @return {Entity}
+     * @param {Validator} validator
      */
-  constructor(validator?: any);
+  constructor();
   
   /**
      * Get the transport for the resource this repository represents.
@@ -245,33 +244,35 @@ export declare class Entity {
   /**
      * Get the metadata for this entity.
      *
-     * return {Metadata}
+     * @return {Metadata}
      */
   getMeta(): any;
   
   /**
      * Get the id property name for this entity.
      *
-     * return {String} The id property name
+     * @return {string}
      */
   getIdProperty(): any;
   
   /**
      * Get the id property name of the entity (static).
      *
-     * @return {string} The id property name
+     * @return {string}
      */
   static getIdProperty(): any;
   
   /**
      * Get the Id value for this entity.
      *
-     * return {Number|String} The id
+     * @return {number|string}
      */
   getId(): any;
   
   /**
      * Set the Id value for this entity.
+     *
+     * @param {number|string} id
      *
      * @return {Entity}  this
      * @chainable
@@ -322,14 +323,14 @@ export declare class Entity {
   /**
      * Persist the collections on the entity.
      *
-     * @return {Promise}
+     * @return {Promise} itself
      */
   saveCollections(): any;
   
   /**
      * Mark this entity as clean, in its current state.
      *
-     * @return {Entity} this
+     * @return {Entity} itself
      * @chainable
      */
   markClean(): any;
@@ -360,7 +361,7 @@ export declare class Entity {
      *
      * @param {boolean} [shallow]
      *
-     * @return {Entity}
+     * @return {Entity} itself
      */
   reset(shallow?: any): any;
   
@@ -383,7 +384,7 @@ export declare class Entity {
      *
      * @param {string} resource
      *
-     * @return {Entity} this
+     * @return {Entity} itself
      * @chainable
      */
   setResource(resource?: any): any;
@@ -414,26 +415,26 @@ export declare class Entity {
      *
      * @param {{}} data
      * @param {boolean} markClean
-     * @return {Entity} this
+     * @return {Entity} itself
      * @chainable
      */
   setData(data?: any, markClean?: any): any;
   
   /**
-     * Enable validation for this entity.
+     * Set the validator instance.
      *
-     * @return {Entity} this
-     * @throws {Error}
+     * @param {Validator} validator
+     * @return {Entity} itself
      * @chainable
      */
-  enableValidation(): any;
+  setValidator(validator?: any): any;
   
   /**
-     * Get the validation instance.
+     * Get the validator instance.
      *
-     * @return {Validation}
+     * @return {Validator}
      */
-  getValidation(): any;
+  getValidator(): any;
   
   /**
      * Check if entity has validation enabled.
@@ -441,6 +442,17 @@ export declare class Entity {
      * @return {boolean}
      */
   hasValidation(): any;
+  
+  /**
+     * Validates the entity
+     *
+     * @param {string|null} propertyName Optional. The name of the property to validate. If unspecified,
+     * all properties will be validated.
+     * @param {Rule<*, *>[]|null} rules Optional. If unspecified, the rules will be looked up using
+     * the metadata for the object created by ValidationRules....on(class/object)
+     * @return {Promise<ValidationError[]>}
+     */
+  validate(propertyName?: any, rules?: any): any;
   
   /**
      * Get the data in this entity as a POJO.
@@ -462,23 +474,22 @@ export declare class Entity {
 }
 
 /**
- * Associate a property with an entity (toOne) or a collection (toMany)
+ * Set the id property for en entity
  *
- * @param {undefined|String|Object} associationData undefined={entity:propertyName}, String={entity:String}, Object={entity: String, collection: String}
- *
- * @return {Function}
+ * @export
+ * @param {string} propertyName
+ * @returns {function}
  *
  * @decorator
  */
-export declare function association(associationData?: any): any;
 export declare function idProperty(propertyName?: any): any;
 
 /**
  * Set the 'name' metadata on the entity
  *
- * @param {String} entityName=target.name.toLowerCase The (custom) name to use
+ * @param {string} entityName=target.name.toLowerCase The (custom) name to use
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
@@ -487,9 +498,9 @@ export declare function name(entityName?: any): any;
 /**
  * Set the repositoryReference metadata on the entity
  *
- * @param {String} repositoryReference The repository reference to use
+ * @param {string} repositoryReference The repository reference to use
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
@@ -498,33 +509,24 @@ export declare function repository(repositoryReference?: any): any;
 /**
  * Set the 'resourceName' metadata on the entity
  *
- * @param {String} resourceName The name of the resource
+ * @param {string} resourceName The name of the resource
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
 export declare function resource(resourceName?: any): any;
 
 /**
- * Set the 'types' metadata on the entity
- *
- * @param {String} typeValue The type(text,string,date,datetime,integer,int,number,float,boolean,bool,smart,autodetect (based on value)) to use for this property using typer
- *
- * @return {Function}
- *
- * @decorator
- */
-export declare function type(typeValue?: any): any;
-
-/**
  * Set the 'validation' metadata to 'true'
  *
- * @return {Function}
+ * @param {[function]} ValidatorClass = Validator
+ *
+ * @return {function}
  *
  * @decorator
  */
-export declare function validation(): any;
+export declare function validation(ValidatorClass?: any): any;
 
 /**
  * The EntityManager class
@@ -536,29 +538,29 @@ export declare class EntityManager {
   /**
      * Construct a new EntityManager.
      *
-     * @param {Container} container aurelia-dependency-injection container
+     * @param {Container} container
      */
   constructor(container?: any);
   
   /**
-     * Register an array of entity references.
+     * Register an array of entity classes.
      *
-     * @param {Entity[]|Entity} entities Array or object of entities.
+     * @param {function[]|function} EntityClasses Array or object of Entity constructors.
      *
-     * @return {EntityManager} this
+     * @return {EntityManager} itself
      * @chainable
      */
-  registerEntities(entities?: any): any;
+  registerEntities(EntityClasses?: any): any;
   
   /**
-     * Register an Entity reference.
+     * Register an Entity class.
      *
-     * @param {Entity} entity
+     * @param {function} EntityClass
      *
-     * @return {EntityManager} this
+     * @return {EntityManager} itself
      * @chainable
      */
-  registerEntity(entity?: any): any;
+  registerEntity(EntityClass?: any): any;
   
   /**
      * Get a repository instance.
@@ -589,30 +591,33 @@ export declare class EntityManager {
      */
   getEntity(entity?: any): any;
 }
-export declare class HasAssociationValidationRule extends ValidationRule {
-  constructor();
-}
 
 /**
  * Set the 'resource' metadata and enables validation on the entity
  *
- * @param {String} resourceName The name of the resource
+ * @param {string} resourceName The name of the resource
+ * @param {[function]} ValidatorClass = Validator
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
-export declare function validatedResource(resourceName?: any): any;
+export declare function validatedResource(resourceName?: any, ValidatorClass?: any): any;
 
-// eslint-disable-line no-unused-vars
-// eslint-disable-line no-unused-vars
-export declare function configure(aurelia?: any, configCallback?: any): any;
+/**
+ * Plugin configure
+ *
+ * @export
+ * @param {*} frameworkConfig
+ * @param {*} configCallback
+ */
+export declare function configure(frameworkConfig?: any, configCallback?: any): any;
 export declare const logger: any;
 
 /**
-* Set genenric 'data' metadata.
+* Set generic 'data' metadata.
 *
- * @param {object} metaData The data to set
+ * @param {{}} metaData The data to set
  *
  * @returns {function}
  *
@@ -623,13 +628,38 @@ export declare function data(metaData?: any): any;
 /**
  * Set the 'endpoint' metadta of an entity. Needs a set resource
  *
- * @param {String} entityEndpoint The endpoint name to use
+ * @param {string} entityEndpoint The endpoint name to use
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
 export declare function endpoint(entityEndpoint?: any): any;
+
+// fix for babels property decorator
+export declare function ensurePropertyIsConfigurable(target?: any, propertyName?: any, descriptor?: any): any;
+
+/**
+ * Associate a property with an entity (toOne) or a collection (toMany)
+ *
+ * @param {undefined|string|{}} associationData undefined={entity:propertyName}, string={entity:string}, Object={entity: string, collection: string}
+ *
+ * @return {function}
+ *
+ * @decorator
+ */
+export declare function association(associationData?: any): any;
+
+/**
+ * Set the 'types' metadata on the entity
+ *
+ * @param {string} typeValue The type(text,string,date,datetime,integer,int,number,float,boolean,bool,smart,autodetect (based on value)) to use for this property using typer
+ *
+ * @return {function}
+ *
+ * @decorator
+ */
+export declare function type(typeValue?: any): any;
 export declare class AssociationSelect {
   criteria: any;
   repository: any;
@@ -652,14 +682,13 @@ export declare class AssociationSelect {
      *
      * @param {BindingEngine} bindingEngine
      * @param {EntityManager} entityManager
-     * @param {Element}       element
      */
-  constructor(bindingEngine?: any, entityManager?: any, element?: any);
+  constructor(bindingEngine?: any, entityManager?: any);
   
   /**
      * (Re)Load the data for the select.
      *
-     * @param {string|Array|Object} [reservedValue]
+     * @param {string|Array|{}} [reservedValue]
      *
      * @return {Promise}
      */
@@ -668,7 +697,7 @@ export declare class AssociationSelect {
   /**
      * Set the value for the select.
      *
-     * @param {string|Array|Object} value
+     * @param {string|Array|{}} value
      */
   setValue(value?: any): any;
   
@@ -704,27 +733,28 @@ export declare class AssociationSelect {
   observe(association?: any): any;
   
   /**
-     * Check if the value is changed
+     * Check if the element property has changed
      *
-     * @param  {string|{}}   newVal New value
-     * @param  {[string|{}]} oldVal Old value
-     * @return {Boolean}     Whenever the value is changed
+     * @param  {string}      property
+     * @param  {string|{}}   newVal
+     * @param  {string|{}}   oldVal
+     *
+     * @return {boolean}
      */
   isChanged(property?: any, newVal?: any, oldVal?: any): any;
   
   /**
-   * Change resource
-   *
-   * @param  {{}} newVal New criteria value
-   * @param  {{}} oldVal Old criteria value
-   */
+     * Changed resource handler
+     *
+     * @param  {string} resource
+     */
   resourceChanged(resource?: any): any;
   
   /**
-     * Change criteria
+     * Changed criteria handler
      *
-     * @param  {{}} newVal New criteria value
-     * @param  {{}} oldVal Old criteria value
+     * @param  {{}} newVal
+     * @param  {{}} oldVal
      */
   criteriaChanged(newVal?: any, oldVal?: any): any;
   
@@ -768,16 +798,18 @@ export declare class Paged {
   reloadData(): any;
   
   /**
-     * Check if the value is changed
+     * Check if the element property has changed
      *
+     * @param  {string}      property New element property
      * @param  {string|{}}   newVal New value
-     * @param  {[string|{}]} oldVal Old value
-     * @return {Boolean}     Whenever the value is changed
+     * @param  {string|{}}   oldVal Old value
+     *
+     * @return {boolean}
      */
   isChanged(property?: any, newVal?: any, oldVal?: any): any;
   
   /**
-     * Change page
+     * Changed page handler
      *
      * @param  {integer} newVal New page value
      * @param  {integer} oldVal Old page value
@@ -785,7 +817,7 @@ export declare class Paged {
   pageChanged(newVal?: any, oldVal?: any): any;
   
   /**
-     * Change resource
+     * Changed resource handler
      *
      * @param  {{}} newVal New resource value
      * @param  {{}} oldVal Old resource value
@@ -793,7 +825,7 @@ export declare class Paged {
   resourceChanged(newVal?: any, oldVal?: any): any;
   
   /**
-     * Change criteria
+     * Changed criteria handler
      *
      * @param  {{}} newVal New criteria value
      * @param  {{}} oldVal Old criteria value
@@ -801,8 +833,9 @@ export declare class Paged {
   criteriaChanged(newVal?: any, oldVal?: any): any;
   
   /**
-     * Change resource
-     * @param  {string resource New resource value
+     * Changed resource handler
+     *
+     * @param  {string} resource New resource value
      */
   resourceChanged(resource?: any): any;
   

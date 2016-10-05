@@ -3,7 +3,7 @@
 System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging'], function (_export, _context) {
   "use strict";
 
-  var typer, inject, transient, Container, Config, metadata, Validation, ValidationRule, ValidationGroup, getLogger, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _dec4, _class5, _dec5, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, HasAssociationValidationRule, logger;
+  var typer, inject, transient, Container, Config, metadata, Validator, ValidationRules, getLogger, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, logger;
 
   function _possibleConstructorReturn(self, call) {
     if (!self) {
@@ -178,23 +178,6 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
     })[0];
   }
 
-  function association(associationData) {
-    return function (target, propertyName) {
-      if (!associationData) {
-        associationData = { entity: propertyName };
-      } else if (typeof associationData === 'string') {
-        associationData = { entity: associationData };
-      }
-
-      OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
-        type: associationData.entity ? 'entity' : 'collection',
-        entity: associationData.entity || associationData.collection
-      });
-    };
-  }
-
-  _export('association', association);
-
   function idProperty(propertyName) {
     return function (target) {
       OrmMetadata.forTarget(target).put('idProperty', propertyName);
@@ -227,42 +210,36 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
   _export('resource', resource);
 
-  function type(typeValue) {
-    return function (target, propertyName) {
-      OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
-    };
-  }
-
-  _export('type', type);
-
   function validation() {
+    var ValidatorClass = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Validator;
+
     return function (target) {
-      OrmMetadata.forTarget(target).put('validation', true);
+      OrmMetadata.forTarget(target).put('validation', ValidatorClass);
     };
   }
 
   _export('validation', validation);
 
-  function validatedResource(resourceName) {
+  function validatedResource(resourceName, ValidatorClass) {
     return function (target, propertyName) {
       resource(resourceName)(target);
-      validation()(target, propertyName);
+      validation(ValidatorClass)(target, propertyName);
     };
   }
 
   _export('validatedResource', validatedResource);
 
-  function configure(aurelia, configCallback) {
-    var entityManagerInstance = aurelia.container.get(EntityManager);
+  function configure(frameworkConfig, configCallback) {
+    ValidationRules.customRule('hasAssociation', function (value) {
+      return !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number');
+    }, '${$displayName} must be an association.');
+
+    var entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
     configCallback(entityManagerInstance);
 
-    ValidationGroup.prototype.hasAssociation = function () {
-      return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
-    };
-
-    aurelia.globalResources('./component/association-select');
-    aurelia.globalResources('./component/paged');
+    frameworkConfig.globalResources('./component/association-select');
+    frameworkConfig.globalResources('./component/paged');
   }
 
   _export('configure', configure);
@@ -291,6 +268,47 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
   _export('endpoint', endpoint);
 
+  function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
+    if (descriptor && descriptor.configurable === false) {
+      descriptor.configurable = true;
+
+      if (!Reflect.defineProperty(target, propertyName, descriptor)) {
+        logger.warn('Cannot make configurable property \'' + propertyName + '\' of object', target);
+      }
+    }
+  }
+
+  _export('ensurePropertyIsConfigurable', ensurePropertyIsConfigurable);
+
+  function association(associationData) {
+    return function (target, propertyName, descriptor) {
+      ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+      if (!associationData) {
+        associationData = { entity: propertyName };
+      } else if (typeof associationData === 'string') {
+        associationData = { entity: associationData };
+      }
+
+      OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
+        type: associationData.entity ? 'entity' : 'collection',
+        entity: associationData.entity || associationData.collection
+      });
+    };
+  }
+
+  _export('association', association);
+
+  function type(typeValue) {
+    return function (target, propertyName, descriptor) {
+      ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+      OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
+    };
+  }
+
+  _export('type', type);
+
   return {
     setters: [function (_typer) {
       typer = _typer.default;
@@ -303,9 +321,8 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
     }, function (_aureliaMetadata) {
       metadata = _aureliaMetadata.metadata;
     }, function (_aureliaValidation) {
-      Validation = _aureliaValidation.Validation;
-      ValidationRule = _aureliaValidation.ValidationRule;
-      ValidationGroup = _aureliaValidation.ValidationGroup;
+      Validator = _aureliaValidation.Validator;
+      ValidationRules = _aureliaValidation.ValidationRules;
     }, function (_aureliaLogging) {
       getLogger = _aureliaLogging.getLogger;
     }],
@@ -368,9 +385,13 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
             return findQuery;
           }
 
-          return findQuery.then(function (x) {
-            return _this.populateEntities(x);
+          return findQuery.then(function (response) {
+            return _this.populateEntities(response);
           }).then(function (populated) {
+            if (!populated) {
+              return null;
+            }
+
             if (!Array.isArray(populated)) {
               return populated.markClean();
             }
@@ -433,6 +454,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
             }
 
             var _repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+
             populatedData[key] = _repository.populateEntities(value);
           }
 
@@ -448,13 +470,15 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           var associations = entity.getMeta().fetch('associations');
 
           for (var property in associations) {
-            var assocMeta = associations[property];
+            if (associations.hasOwnProperty(property)) {
+              var assocMeta = associations[property];
 
-            if (assocMeta.type !== 'entity') {
-              continue;
+              if (assocMeta.type !== 'entity') {
+                continue;
+              }
+
+              entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
             }
-
-            entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
           }
 
           return entity;
@@ -560,17 +584,11 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
       _export('Metadata', Metadata);
 
-      _export('Entity', Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_class5 = _dec4(_class5 = function () {
-        function Entity(validator) {
+      _export('Entity', Entity = (_dec3 = transient(), _dec3(_class5 = function () {
+        function Entity() {
           
 
           this.define('__meta', OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
-
-          if (!this.hasValidation()) {
-            return this;
-          }
-
-          return this.define('__validator', validator);
         }
 
         Entity.prototype.getTransport = function getTransport() {
@@ -627,6 +645,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           }
 
           var response = void 0;
+
           return this.getTransport().create(this.getResource(), this.asObject(true)).then(function (created) {
             _this4.setId(created[_this4.getIdProperty()]);
             response = created;
@@ -660,7 +679,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           delete requestBody[this.getIdProperty()];
 
           return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(function (updated) {
-            return response = updated;
+            response = updated;
           }).then(function () {
             return _this5.saveCollections();
           }).then(function () {
@@ -761,6 +780,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
         Entity.prototype.markClean = function markClean() {
           var cleanValues = getFlat(this);
+
           this.__cleanValues = {
             checksum: JSON.stringify(cleanValues),
             data: cleanValues
@@ -778,7 +798,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
         };
 
         Entity.prototype.isNew = function isNew() {
-          return typeof this.getId() === 'undefined';
+          return !this.getId();
         };
 
         Entity.prototype.reset = function reset(shallow) {
@@ -885,32 +905,30 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           return this;
         };
 
-        Entity.prototype.enableValidation = function enableValidation() {
-          if (!this.hasValidation()) {
-            throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
-          }
+        Entity.prototype.setValidator = function setValidator(validator) {
+          this.define('__validator', validator);
 
-          if (this.__validation) {
-            return this;
-          }
-
-          return this.define('__validation', this.__validator.on(this));
+          return this;
         };
 
-        Entity.prototype.getValidation = function getValidation() {
+        Entity.prototype.getValidator = function getValidator() {
           if (!this.hasValidation()) {
             return null;
           }
 
-          if (!this.__validation) {
-            this.enableValidation();
-          }
-
-          return this.__validation;
+          return this.__validator;
         };
 
         Entity.prototype.hasValidation = function hasValidation() {
           return !!this.getMeta().fetch('validation');
+        };
+
+        Entity.prototype.validate = function validate(propertyName, rules) {
+          if (!this.hasValidation()) {
+            return Promise.resolve([]);
+          }
+
+          return propertyName ? this.getValidator().validateProperty(this, propertyName, rules) : this.getValidator().validateObject(this, rules);
         };
 
         Entity.prototype.asObject = function asObject(shallow) {
@@ -922,11 +940,11 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
         };
 
         return Entity;
-      }()) || _class5) || _class5));
+      }()) || _class5));
 
       _export('Entity', Entity);
 
-      _export('EntityManager', EntityManager = (_dec5 = inject(Container), _dec5(_class6 = function () {
+      _export('EntityManager', EntityManager = (_dec4 = inject(Container), _dec4(_class6 = function () {
         function EntityManager(container) {
           
 
@@ -936,20 +954,18 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           this.container = container;
         }
 
-        EntityManager.prototype.registerEntities = function registerEntities(entities) {
-          for (var reference in entities) {
-            if (!entities.hasOwnProperty(reference)) {
-              continue;
+        EntityManager.prototype.registerEntities = function registerEntities(EntityClasses) {
+          for (var property in EntityClasses) {
+            if (EntityClasses.hasOwnProperty(property)) {
+              this.registerEntity(EntityClasses[property]);
             }
-
-            this.registerEntity(entities[reference]);
           }
 
           return this;
         };
 
-        EntityManager.prototype.registerEntity = function registerEntity(entity) {
-          this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+        EntityManager.prototype.registerEntity = function registerEntity(EntityClass) {
+          this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
 
           return this;
         };
@@ -1016,6 +1032,12 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
             resource = entity;
           }
 
+          if (instance.hasValidation() && !instance.getValidator()) {
+            var validator = this.container.get(OrmMetadata.forTarget(reference).fetch('validation'));
+
+            instance.setValidator(validator);
+          }
+
           return instance.setResource(resource).setRepository(this.getRepository(resource));
         };
 
@@ -1023,22 +1045,6 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
       }()) || _class6));
 
       _export('EntityManager', EntityManager);
-
-      _export('HasAssociationValidationRule', HasAssociationValidationRule = function (_ValidationRule) {
-        _inherits(HasAssociationValidationRule, _ValidationRule);
-
-        function HasAssociationValidationRule() {
-          
-
-          return _possibleConstructorReturn(this, _ValidationRule.call(this, null, function (value) {
-            return !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number');
-          }, null, 'isRequired'));
-        }
-
-        return HasAssociationValidationRule;
-      }(ValidationRule));
-
-      _export('HasAssociationValidationRule', HasAssociationValidationRule);
 
       _export('logger', logger = getLogger('aurelia-orm'));
 
