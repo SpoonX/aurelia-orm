@@ -1,3 +1,29 @@
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc7...v3.0.0) (2016-10-05)
+
+
+### Bug Fixes
+
+* **association-select:** use resource instead of property, check for all falsy values in isNew instead only undefined ([8063c11](https://github.com/SpoonX/aurelia-orm/commit/8063c11))
+* **bundle:** re-add imports for bundling ([07b4544](https://github.com/SpoonX/aurelia-orm/commit/07b4544))
+* **entitiy.manager:** throw when trying to register non-entity ([46c6bdb](https://github.com/SpoonX/aurelia-orm/commit/46c6bdb))
+* **entity-manager:** revert entity prototype test. gives false positives in ts ([b44de7f](https://github.com/SpoonX/aurelia-orm/commit/b44de7f))
+* **repository:** findPath now returns null when the server doesn't return data ([63044a0](https://github.com/SpoonX/aurelia-orm/commit/63044a0))
+
+
+### Features
+
+* **property-decorators:** make properties configurable if needed ([aa6e94e](https://github.com/SpoonX/aurelia-orm/commit/aa6e94e))
+* **validation:** move to aurelia-validation 0.12+ ([e211ffb](https://github.com/SpoonX/aurelia-orm/commit/e211ffb))
+* **validation:** optionally set Validator class ([76328ac](https://github.com/SpoonX/aurelia-orm/commit/76328ac))
+
+
+### BREAKING CHANGES
+
+* validation: Update to aurelia-validation@^0.12.3 See the changed documenation on validation of usage
+
+
+
 <a name="3.0.0-rc7"></a>
 ## [3.0.0-rc7](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc6...v3.0.0-rc7) (2016-08-03)
 
