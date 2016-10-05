@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating'], function (_export, _context) {
+System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../aurelia-orm'], function (_export, _context) {
   "use strict";
 
-  var logger, getProp, inject, bindingMode, BindingEngine, bindable, customElement, EntityManager, Entity, OrmMetadata, _typeof, _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, AssociationSelect;
+  var getProp, inject, bindingMode, BindingEngine, bindable, customElement, logger, EntityManager, Entity, OrmMetadata, _typeof, _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, AssociationSelect;
 
   function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -51,12 +51,7 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
   }
 
   return {
-    setters: [function (_aureliaOrm) {
-      logger = _aureliaOrm.logger;
-      EntityManager = _aureliaOrm.EntityManager;
-      Entity = _aureliaOrm.Entity;
-      OrmMetadata = _aureliaOrm.OrmMetadata;
-    }, function (_getProp) {
+    setters: [function (_getProp) {
       getProp = _getProp.default;
     }, function (_aureliaDependencyInjection) {
       inject = _aureliaDependencyInjection.inject;
@@ -66,6 +61,11 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
     }, function (_aureliaTemplating) {
       bindable = _aureliaTemplating.bindable;
       customElement = _aureliaTemplating.customElement;
+    }, function (_aureliaOrm) {
+      logger = _aureliaOrm.logger;
+      EntityManager = _aureliaOrm.EntityManager;
+      Entity = _aureliaOrm.Entity;
+      OrmMetadata = _aureliaOrm.OrmMetadata;
     }],
     execute: function () {
       _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -75,7 +75,7 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
       };
 
       _export('AssociationSelect', AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
-        function AssociationSelect(bindingEngine, entityManager, element) {
+        function AssociationSelect(bindingEngine, entityManager) {
           
 
           _initDefineProp(this, 'criteria', _descriptor, this);
@@ -109,7 +109,6 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
           this._subscriptions = [];
           this.bindingEngine = bindingEngine;
           this.entityManager = entityManager;
-          this.element = element;
         }
 
         AssociationSelect.prototype.load = function load(reservedValue) {
@@ -117,6 +116,7 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
 
           return this.buildFind().then(function (options) {
             var result = options;
+
             _this.options = Array.isArray(result) ? result : [result];
 
             _this.setValue(reservedValue);
@@ -157,6 +157,7 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
           var repository = this.repository;
           var criteria = this.getCriteria();
           var findPath = repository.getResource();
+
           criteria.populate = false;
 
           if (this.manyAssociation) {
@@ -164,8 +165,7 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
 
             delete criteria.populate;
 
-            var property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-            findPath = assoc.getResource() + '/' + assoc.getId() + '/' + property;
+            findPath = assoc.getResource() + '/' + assoc.getId() + '/' + findPath;
           } else if (this.association) {
             var associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -175,7 +175,9 @@ System.register(['../aurelia-orm', 'get-prop', 'aurelia-dependency-injection', '
           }
 
           return repository.findPath(findPath, criteria).catch(function (error) {
-            return _this2.error = error;
+            _this2.error = error;
+
+            return error;
           });
         };
 

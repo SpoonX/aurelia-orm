@@ -1,9 +1,8 @@
-import {logger} from '../aurelia-orm';
 import getProp from 'get-prop';
 import {inject} from 'aurelia-dependency-injection';
 import {bindingMode, BindingEngine} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
-import {EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
+import {logger, EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
 
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
@@ -24,7 +23,7 @@ export class AssociationSelect {
 
   @bindable manyAssociation;
 
-  @bindable({defaultBindingMode: bindingMode.twoWay}) value ;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) value;
 
   @bindable({defaultBindingMode: bindingMode.twoWay}) error;
 
@@ -43,19 +42,17 @@ export class AssociationSelect {
    *
    * @param {BindingEngine} bindingEngine
    * @param {EntityManager} entityManager
-   * @param {Element}       element
    */
-  constructor(bindingEngine, entityManager, element) {
+  constructor(bindingEngine, entityManager) {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
     this.entityManager  = entityManager;
-    this.element        = element;
   }
 
   /**
    * (Re)Load the data for the select.
    *
-   * @param {string|Array|Object} [reservedValue]
+   * @param {string|Array|{}} [reservedValue]
    *
    * @return {Promise}
    */
@@ -63,6 +60,7 @@ export class AssociationSelect {
     return this.buildFind()
       .then(options => {
         let result   = options;
+
         this.options = Array.isArray(result) ? result : [result];
 
         this.setValue(reservedValue);
@@ -72,7 +70,7 @@ export class AssociationSelect {
   /**
    * Set the value for the select.
    *
-   * @param {string|Array|Object} value
+   * @param {string|Array|{}} value
    */
   setValue(value) {
     if (!value) {
@@ -117,6 +115,7 @@ export class AssociationSelect {
     let repository    = this.repository;
     let criteria      = this.getCriteria();
     let findPath      = repository.getResource();
+
     criteria.populate = false;
 
     // Check if there are `many` associations. If so, the repository find path changes.
@@ -127,8 +126,7 @@ export class AssociationSelect {
       // When disabling populate here, the API won't return any data.
       delete criteria.populate;
 
-      let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath     = `${assoc.getResource()}/${assoc.getId()}/${property}`;
+      findPath = `${assoc.getResource()}/${assoc.getId()}/${findPath}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -137,7 +135,12 @@ export class AssociationSelect {
       });
     }
 
-    return repository.findPath(findPath, criteria).catch(error => this.error = error);
+    return repository.findPath(findPath, criteria)
+      .catch(error => {
+        this.error = error;
+
+        return error;
+      });
   }
 
   /**
@@ -189,22 +192,23 @@ export class AssociationSelect {
   }
 
   /**
-   * Check if the value is changed
+   * Check if the element property has changed
    *
-   * @param  {string|{}}   newVal New value
-   * @param  {[string|{}]} oldVal Old value
-   * @return {Boolean}     Whenever the value is changed
+   * @param  {string}      property
+   * @param  {string|{}}   newVal
+   * @param  {string|{}}   oldVal
+   *
+   * @return {boolean}
    */
   isChanged(property, newVal, oldVal) {
     return !this[property] || !newVal || (newVal === oldVal);
   }
 
   /**
- * Change resource
- *
- * @param  {{}} newVal New criteria value
- * @param  {{}} oldVal Old criteria value
- */
+   * Changed resource handler
+   *
+   * @param  {string} resource
+   */
   resourceChanged(resource) {
     if (!resource) {
       logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
@@ -213,11 +217,11 @@ export class AssociationSelect {
     this.repository = this.entityManager.getRepository(resource);
   }
 
-    /**
-   * Change criteria
+  /**
+   * Changed criteria handler
    *
-   * @param  {{}} newVal New criteria value
-   * @param  {{}} oldVal Old criteria value
+   * @param  {{}} newVal
+   * @param  {{}} oldVal
    */
   criteriaChanged(newVal, oldVal) {
     if (this.isChanged('criteria', newVal, oldVal)) {
@@ -228,7 +232,6 @@ export class AssociationSelect {
       this.load(this.value);
     }
   }
-
 
   /**
    * When attached to the DOM, initialize the component.

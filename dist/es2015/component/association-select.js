@@ -43,15 +43,14 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-import { logger } from '../aurelia-orm';
 import getProp from 'get-prop';
 import { inject } from 'aurelia-dependency-injection';
 import { bindingMode, BindingEngine } from 'aurelia-binding';
 import { bindable, customElement } from 'aurelia-templating';
-import { EntityManager, Entity, OrmMetadata } from '../aurelia-orm';
+import { logger, EntityManager, Entity, OrmMetadata } from '../aurelia-orm';
 
 export let AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = class AssociationSelect {
-  constructor(bindingEngine, entityManager, element) {
+  constructor(bindingEngine, entityManager) {
     _initDefineProp(this, 'criteria', _descriptor, this);
 
     _initDefineProp(this, 'repository', _descriptor2, this);
@@ -83,12 +82,12 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     this._subscriptions = [];
     this.bindingEngine = bindingEngine;
     this.entityManager = entityManager;
-    this.element = element;
   }
 
   load(reservedValue) {
     return this.buildFind().then(options => {
       let result = options;
+
       this.options = Array.isArray(result) ? result : [result];
 
       this.setValue(reservedValue);
@@ -127,6 +126,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     let repository = this.repository;
     let criteria = this.getCriteria();
     let findPath = repository.getResource();
+
     criteria.populate = false;
 
     if (this.manyAssociation) {
@@ -134,8 +134,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
       delete criteria.populate;
 
-      let property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath = `${ assoc.getResource() }/${ assoc.getId() }/${ property }`;
+      findPath = `${ assoc.getResource() }/${ assoc.getId() }/${ findPath }`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -144,7 +143,11 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
       });
     }
 
-    return repository.findPath(findPath, criteria).catch(error => this.error = error);
+    return repository.findPath(findPath, criteria).catch(error => {
+      this.error = error;
+
+      return error;
+    });
   }
 
   verifyAssociationValues() {

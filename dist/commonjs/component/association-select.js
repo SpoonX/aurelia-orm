@@ -9,8 +9,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14;
 
-var _aureliaOrm = require('../aurelia-orm');
-
 var _getProp = require('get-prop');
 
 var _getProp2 = _interopRequireDefault(_getProp);
@@ -20,6 +18,8 @@ var _aureliaDependencyInjection = require('aurelia-dependency-injection');
 var _aureliaBinding = require('aurelia-binding');
 
 var _aureliaTemplating = require('aurelia-templating');
+
+var _aureliaOrm = require('../aurelia-orm');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -69,7 +69,7 @@ function _initializerWarningHelper(descriptor, context) {
 }
 
 var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplating.customElement)('association-select'), _dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.BindingEngine, _aureliaOrm.EntityManager, Element), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
-  function AssociationSelect(bindingEngine, entityManager, element) {
+  function AssociationSelect(bindingEngine, entityManager) {
     
 
     _initDefineProp(this, 'criteria', _descriptor, this);
@@ -103,7 +103,6 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
     this._subscriptions = [];
     this.bindingEngine = bindingEngine;
     this.entityManager = entityManager;
-    this.element = element;
   }
 
   AssociationSelect.prototype.load = function load(reservedValue) {
@@ -111,6 +110,7 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
 
     return this.buildFind().then(function (options) {
       var result = options;
+
       _this.options = Array.isArray(result) ? result : [result];
 
       _this.setValue(reservedValue);
@@ -151,6 +151,7 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
     var repository = this.repository;
     var criteria = this.getCriteria();
     var findPath = repository.getResource();
+
     criteria.populate = false;
 
     if (this.manyAssociation) {
@@ -158,8 +159,7 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
 
       delete criteria.populate;
 
-      var property = this.propertyForResource(assoc.getMeta(), repository.getResource());
-      findPath = assoc.getResource() + '/' + assoc.getId() + '/' + property;
+      findPath = assoc.getResource() + '/' + assoc.getId() + '/' + findPath;
     } else if (this.association) {
       var associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -169,7 +169,9 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
     }
 
     return repository.findPath(findPath, criteria).catch(function (error) {
-      return _this2.error = error;
+      _this2.error = error;
+
+      return error;
     });
   };
 

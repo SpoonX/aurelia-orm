@@ -2,7 +2,7 @@ import typer from 'typer';
 import {inject,transient,Container} from 'aurelia-dependency-injection';
 import {Config} from 'aurelia-api';
 import {metadata} from 'aurelia-metadata';
-import {Validation,ValidationRule,ValidationGroup} from 'aurelia-validation';
+import {Validator,ValidationRules} from 'aurelia-validation';
 import {getLogger} from 'aurelia-logging';
 
 /**
@@ -43,7 +43,7 @@ export class Repository {
   /**
    * Set the associated entity's meta data
    *
-   * @param {Object} meta
+   * @param {{}} meta
    */
   setMeta(meta) {
     this.meta = meta;
@@ -51,7 +51,7 @@ export class Repository {
 
   /**
    * Get the associated entity's meta data.
-   * @return {Object}
+   * @return {{}}
    */
   getMeta() {
     return this.meta;
@@ -82,7 +82,7 @@ export class Repository {
   /**
    * Perform a find query and populate entities with the retrieved data.
    *
-   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
    * @return {Promise<Entity|[Entity]>}
@@ -95,7 +95,7 @@ export class Repository {
    * Perform a find query for `path` and populate entities with the retrieved data.
    *
    * @param {string}           path
-   * @param {{}|Number|String} criteria Criteria to add to the query. A plain String or Number will be used as relative path.
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
    * @return {Promise<Entity|[Entity]>}
@@ -108,8 +108,14 @@ export class Repository {
     }
 
     return findQuery
-      .then(x => this.populateEntities(x))
+      .then(response => {
+        return this.populateEntities(response);
+      })
       .then(populated => {
+        if (!populated) {
+          return null;
+        }
+
         if (!Array.isArray(populated)) {
           return populated.markClean();
         }
@@ -125,7 +131,7 @@ export class Repository {
    *
    * @param {null|{}} criteria
    *
-   * @return {Promise<Number>}
+   * @return {Promise<number>}
    */
   count(criteria) {
     return this.getTransport().find(this.resource + '/count', criteria);
@@ -190,7 +196,8 @@ export class Repository {
         continue;
       }
 
-      let repository     = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+      let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+
       populatedData[key] = repository.populateEntities(value);
     }
 
@@ -216,13 +223,15 @@ export class Repository {
     let associations = entity.getMeta().fetch('associations');
 
     for (let property in associations) {
-      let assocMeta = associations[property];
+      if (associations.hasOwnProperty(property)) {
+        let assocMeta = associations[property];
 
-      if (assocMeta.type !== 'entity') {
-        continue;
+        if (assocMeta.type !== 'entity') {
+          continue;
+        }
+
+        entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
       }
-
-      entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
     }
 
     return entity;
@@ -256,11 +265,11 @@ export class Metadata {
    */
   constructor() {
     this.metadata = {
-      repository: DefaultRepository,
-      resource: null,
-      endpoint: null,
-      name: null,
-      idProperty: 'id',
+      repository  : DefaultRepository,
+      resource    : null,
+      endpoint    : null,
+      name        : null,
+      idProperty  : 'id',
       associations: {}
     };
   }
@@ -271,7 +280,7 @@ export class Metadata {
    * @param {string} key
    * @param {*} value
    *
-   * @return {Metadata} this
+   * @return {Metadata} itself
    * @chainable
 */
   addTo(key, value) {
@@ -293,7 +302,7 @@ export class Metadata {
    * @param {string|*} valueOrNestedKey
    * @param {null|*} [valueOrNull]
    *
-   * @return {Metadata} this
+   * @return {Metadata} itself
    * @chainable
    */
   put(key, valueOrNestedKey, valueOrNull) {
@@ -349,33 +358,23 @@ export class Metadata {
   }
 }
 
+/* eslint-disable max-lines */
 /**
  * The Entity basis class
  * @transient
  */
 @transient()
-@inject(Validation)
 export class Entity {
 
   /**
    * Construct a new entity.
    *
-   * @param {Validation} validator
-   *
-   * @return {Entity}
+   * @param {Validator} validator
    */
-  constructor(validator) {
+  constructor() {
     this
       .define('__meta', OrmMetadata.forTarget(this.constructor))
       .define('__cleanValues', {}, true);
-
-    // No validation? No need to set the validator.
-    if (!this.hasValidation()) {
-      return this;
-    }
-
-    // Set the validator.
-    return this.define('__validator', validator);
   }
 
   /**
@@ -421,8 +420,8 @@ export class Entity {
    */
   define(property, value, writable) {
     Object.defineProperty(this, property, {
-      value: value,
-      writable: !!writable,
+      value     : value,
+      writable  : !!writable,
       enumerable: false
     });
 
@@ -432,7 +431,7 @@ export class Entity {
   /**
    * Get the metadata for this entity.
    *
-   * return {Metadata}
+   * @return {Metadata}
    */
   getMeta() {
     return this.__meta;
@@ -441,17 +440,16 @@ export class Entity {
   /**
    * Get the id property name for this entity.
    *
-   * return {String} The id property name
+   * @return {string}
    */
   getIdProperty() {
     return this.getMeta().fetch('idProperty');
   }
 
-
   /**
    * Get the id property name of the entity (static).
    *
-   * @return {string} The id property name
+   * @return {string}
    */
   static getIdProperty() {
     let idProperty = OrmMetadata.forTarget(this).fetch('idProperty');
@@ -459,10 +457,10 @@ export class Entity {
     return idProperty;
   }
 
-    /**
+  /**
    * Get the Id value for this entity.
    *
-   * return {Number|String} The id
+   * @return {number|string}
    */
   getId() {
     return this[this.getIdProperty()];
@@ -470,6 +468,8 @@ export class Entity {
 
   /**
    * Set the Id value for this entity.
+   *
+   * @param {number|string} id
    *
    * @return {Entity}  this
    * @chainable
@@ -492,9 +492,10 @@ export class Entity {
     }
 
     let response;
+
     return this.getTransport()
       .create(this.getResource(), this.asObject(true))
-      .then((created) => {
+      .then(created => {
         this.setId(created[this.getIdProperty()]);
         response = created;
       })
@@ -532,7 +533,7 @@ export class Entity {
 
     return this.getTransport()
       .update(this.getResource(), this.getId(), requestBody)
-      .then((updated) => response = updated)
+      .then(updated => { response = updated; })
       .then(() => this.saveCollections())
       .then(() => this.markClean())
       .then(() => response);
@@ -568,29 +569,29 @@ export class Entity {
 
       if (!relation || relation.type !== 'entity') {
         // Many relation, create and then link.
-        return entity.save().then(() => {
-          if (entity.isNew()) {
-            throw new Error('Entity did not return return an id on saving.');
-          }
+        return entity.save()
+          .then(() => {
+            if (entity.isNew()) {
+              throw new Error('Entity did not return return an id on saving.');
+            }
 
-          return this.addCollectionAssociation(entity, property);
-        });
+            return this.addCollectionAssociation(entity, property);
+          });
       }
 
       // toOne relation, pass in ID to prevent extra request. Something something performance.
       entity[associationProperty] = this.getId();
 
-      return entity.save().then(() => {
-        return entity;
-      });
+      return entity.save()
+        .then(() => entity);
     }
 
     // Entity isn't new, just add id to url.
     url.push(entity.getId());
 
-    return this.getTransport().create(url.join('/')).then(() => {
-      return entity;
-    });
+    return this.getTransport()
+      .create(url.join('/'))
+      .then(() => entity);
   }
 
   /**
@@ -619,7 +620,7 @@ export class Entity {
   /**
    * Persist the collections on the entity.
    *
-   * @return {Promise}
+   * @return {Promise} itself
    */
   saveCollections() {
     let tasks              = [];
@@ -652,14 +653,15 @@ export class Entity {
   /**
    * Mark this entity as clean, in its current state.
    *
-   * @return {Entity} this
+   * @return {Entity} itself
    * @chainable
    */
   markClean() {
     let cleanValues    = getFlat(this);
+
     this.__cleanValues = {
       checksum: JSON.stringify(cleanValues),
-      data: cleanValues
+      data    : cleanValues
     };
 
     return this;
@@ -689,7 +691,7 @@ export class Entity {
    * @return {boolean}
    */
   isNew() {
-    return typeof this.getId() === 'undefined';
+    return !this.getId();
   }
 
   /**
@@ -697,7 +699,7 @@ export class Entity {
    *
    * @param {boolean} [shallow]
    *
-   * @return {Entity}
+   * @return {Entity} itself
    */
   reset(shallow) {
     let pojo     = {};
@@ -775,7 +777,7 @@ export class Entity {
    *
    * @param {string} resource
    *
-   * @return {Entity} this
+   * @return {Entity} itself
    * @chainable
    */
   setResource(resource) {
@@ -830,7 +832,7 @@ export class Entity {
    *
    * @param {{}} data
    * @param {boolean} markClean
-   * @return {Entity} this
+   * @return {Entity} itself
    * @chainable
    */
   setData(data, markClean) {
@@ -844,39 +846,29 @@ export class Entity {
   }
 
   /**
-   * Enable validation for this entity.
+   * Set the validator instance.
    *
-   * @return {Entity} this
-   * @throws {Error}
+   * @param {Validator} validator
+   * @return {Entity} itself
    * @chainable
    */
-  enableValidation() {
-    if (!this.hasValidation()) {
-      throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
-    }
+  setValidator(validator) {
+    this.define('__validator', validator);
 
-    if (this.__validation) {
-      return this;
-    }
-
-    return this.define('__validation', this.__validator.on(this));
+    return this;
   }
 
   /**
-   * Get the validation instance.
+   * Get the validator instance.
    *
-   * @return {Validation}
+   * @return {Validator}
    */
-  getValidation() {
+  getValidator() {
     if (!this.hasValidation()) {
       return null;
     }
 
-    if (!this.__validation) {
-      this.enableValidation();
-    }
-
-    return this.__validation;
+    return this.__validator;
   }
 
   /**
@@ -886,6 +878,25 @@ export class Entity {
    */
   hasValidation() {
     return !!this.getMeta().fetch('validation');
+  }
+
+  /**
+   * Validates the entity
+   *
+   * @param {string|null} propertyName Optional. The name of the property to validate. If unspecified,
+   * all properties will be validated.
+   * @param {Rule<*, *>[]|null} rules Optional. If unspecified, the rules will be looked up using
+   * the metadata for the object created by ValidationRules....on(class/object)
+   * @return {Promise<ValidationError[]>}
+   */
+  validate(propertyName, rules) {
+    // entities without validation are to be considered valid
+    if (!this.hasValidation()) {
+      return Promise.resolve([]);
+    }
+
+    return propertyName ? this.getValidator().validateProperty(this, propertyName, rules)
+                        : this.getValidator().validateObject(this, rules);
   }
 
   /**
@@ -1073,11 +1084,11 @@ function getCollectionsCompact(forEntity, includeNew) {
  * @param {Entity}  entity
  * @param {boolean} [json]
  *
- * @return {{entity, collections}}
+ * @return {{}} {entity, collections}
  */
 function getFlat(entity, json) {
   let flat = {
-    entity: asObject(entity, true),
+    entity     : asObject(entity, true),
     collections: getCollectionsCompact(entity)
   };
 
@@ -1105,29 +1116,14 @@ function getPropertyForAssociation(forEntity, entity) {
 }
 
 /**
- * Associate a property with an entity (toOne) or a collection (toMany)
+ * Set the id property for en entity
  *
- * @param {undefined|String|Object} associationData undefined={entity:propertyName}, String={entity:String}, Object={entity: String, collection: String}
- *
- * @return {Function}
+ * @export
+ * @param {string} propertyName
+ * @returns {function}
  *
  * @decorator
  */
-export function association(associationData) {
-  return function(target, propertyName) {
-    if (!associationData) {
-      associationData = {entity: propertyName};
-    } else if (typeof associationData === 'string') {
-      associationData = {entity: associationData};
-    }
-
-    OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
-      type: associationData.entity ? 'entity' : 'collection',
-      entity: associationData.entity || associationData.collection
-    });
-  };
-}
-
 export function idProperty(propertyName) {
   return function(target) {
     OrmMetadata.forTarget(target).put('idProperty', propertyName);
@@ -1137,9 +1133,9 @@ export function idProperty(propertyName) {
 /**
  * Set the 'name' metadata on the entity
  *
- * @param {String} entityName=target.name.toLowerCase The (custom) name to use
+ * @param {string} entityName=target.name.toLowerCase The (custom) name to use
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
@@ -1152,9 +1148,9 @@ export function name(entityName) {
 /**
  * Set the repositoryReference metadata on the entity
  *
- * @param {String} repositoryReference The repository reference to use
+ * @param {string} repositoryReference The repository reference to use
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
@@ -1167,9 +1163,9 @@ export function repository(repositoryReference) {
 /**
  * Set the 'resourceName' metadata on the entity
  *
- * @param {String} resourceName The name of the resource
+ * @param {string} resourceName The name of the resource
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
@@ -1180,30 +1176,17 @@ export function resource(resourceName) {
 }
 
 /**
- * Set the 'types' metadata on the entity
- *
- * @param {String} typeValue The type(text,string,date,datetime,integer,int,number,float,boolean,bool,smart,autodetect (based on value)) to use for this property using typer
- *
- * @return {Function}
- *
- * @decorator
- */
-export function type(typeValue) {
-  return function(target, propertyName) {
-    OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
-  };
-}
-
-/**
  * Set the 'validation' metadata to 'true'
  *
- * @return {Function}
+ * @param {[function]} ValidatorClass = Validator
+ *
+ * @return {function}
  *
  * @decorator
  */
-export function validation() {
+export function validation(ValidatorClass = Validator) {
   return function(target) {
-    OrmMetadata.forTarget(target).put('validation', true);
+    OrmMetadata.forTarget(target).put('validation', ValidatorClass);
   };
 }
 
@@ -1218,42 +1201,40 @@ export class EntityManager {
   /**
    * Construct a new EntityManager.
    *
-   * @param {Container} container aurelia-dependency-injection container
+   * @param {Container} container
    */
   constructor(container) {
     this.container = container;
   }
 
   /**
-   * Register an array of entity references.
+   * Register an array of entity classes.
    *
-   * @param {Entity[]|Entity} entities Array or object of entities.
+   * @param {function[]|function} EntityClasses Array or object of Entity constructors.
    *
-   * @return {EntityManager} this
+   * @return {EntityManager} itself
    * @chainable
    */
-  registerEntities(entities) {
-    for (let reference in entities) {
-      if (!entities.hasOwnProperty(reference)) {
-        continue;
+  registerEntities(EntityClasses) {
+    for (let property in EntityClasses) {
+      if (EntityClasses.hasOwnProperty(property)) {
+        this.registerEntity(EntityClasses[property]);
       }
-
-      this.registerEntity(entities[reference]);
     }
 
     return this;
   }
 
   /**
-   * Register an Entity reference.
+   * Register an Entity class.
    *
-   * @param {Entity} entity
+   * @param {function} EntityClass
    *
-   * @return {EntityManager} this
+   * @return {EntityManager} itself
    * @chainable
    */
-  registerEntity(entity) {
-    this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+  registerEntity(EntityClass) {
+    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
 
     return this;
   }
@@ -1348,59 +1329,63 @@ export class EntityManager {
       resource = entity;
     }
 
-    return instance.setResource(resource).setRepository(this.getRepository(resource));
-  }
-}
+    // Set the validator.
+    if (instance.hasValidation() && !(instance.getValidator())) {
+      let validator = this.container.get(OrmMetadata.forTarget(reference).fetch('validation'));
 
-export class HasAssociationValidationRule extends ValidationRule {
-  constructor() {
-    super(
-      null,
-      value => !!((value instanceof Entity && typeof value.id === 'number') || typeof value === 'number'),
-      null,
-      'isRequired'
-    );
+      instance.setValidator(validator);
+    }
+
+    return instance.setResource(resource).setRepository(this.getRepository(resource));
   }
 }
 
 /**
  * Set the 'resource' metadata and enables validation on the entity
  *
- * @param {String} resourceName The name of the resource
+ * @param {string} resourceName The name of the resource
+ * @param {[function]} ValidatorClass = Validator
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
-export function validatedResource(resourceName) {
+export function validatedResource(resourceName, ValidatorClass) {
   return function(target, propertyName) {
     resource(resourceName)(target);
-    validation()(target, propertyName);
+    validation(ValidatorClass)(target, propertyName);
   };
 }
 
-// eslint-disable-line no-unused-vars
-// eslint-disable-line no-unused-vars
+/**
+ * Plugin configure
+ *
+ * @export
+ * @param {*} frameworkConfig
+ * @param {*} configCallback
+ */
+export function configure(frameworkConfig, configCallback) {
+  // add hasAssociation custom validation rule
+  ValidationRules.customRule(
+    'hasAssociation',
+    value => !!((value instanceof Entity && typeof value.id === 'number') || typeof value === 'number'),
+    `\${$displayName} must be an association.`    // eslint-disable-line quotes
+  );
 
-export function configure(aurelia, configCallback) {
-  let entityManagerInstance = aurelia.container.get(EntityManager);
+  let entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
 
-  ValidationGroup.prototype.hasAssociation = function() {
-    return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
-  };
-
-  aurelia.globalResources('./component/association-select');
-  aurelia.globalResources('./component/paged');
+  frameworkConfig.globalResources('./component/association-select');
+  frameworkConfig.globalResources('./component/paged');
 }
 
 export const logger = getLogger('aurelia-orm');
 
 /**
-* Set genenric 'data' metadata.
+* Set generic 'data' metadata.
 *
- * @param {object} metaData The data to set
+ * @param {{}} metaData The data to set
  *
  * @returns {function}
  *
@@ -1410,8 +1395,6 @@ export function data(metaData) {
   /**
    * @param {function} target
    * @param {string} propertyName
-   *
-   * @returns {OrmMetadata}
    */
   return function(target, propertyName) {
     if (typeof metaData !== 'object') {
@@ -1425,9 +1408,9 @@ export function data(metaData) {
 /**
  * Set the 'endpoint' metadta of an entity. Needs a set resource
  *
- * @param {String} entityEndpoint The endpoint name to use
+ * @param {string} entityEndpoint The endpoint name to use
  *
- * @return {Function}
+ * @return {function}
  *
  * @decorator
  */
@@ -1438,5 +1421,59 @@ export function endpoint(entityEndpoint) {
     }
 
     OrmMetadata.forTarget(target).put('endpoint', entityEndpoint);
+  };
+}
+
+// fix for babels property decorator
+export function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
+  if (descriptor && descriptor.configurable === false) {
+    descriptor.configurable = true;
+
+    if (!Reflect.defineProperty(target, propertyName, descriptor)) {
+      logger.warn(`Cannot make configurable property '${propertyName}' of object`, target);
+    }
+  }
+}
+
+/**
+ * Associate a property with an entity (toOne) or a collection (toMany)
+ *
+ * @param {undefined|string|{}} associationData undefined={entity:propertyName}, string={entity:string}, Object={entity: string, collection: string}
+ *
+ * @return {function}
+ *
+ * @decorator
+ */
+export function association(associationData) {
+  return function(target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+    if (!associationData) {
+      associationData = {entity: propertyName};
+    } else if (typeof associationData === 'string') {
+      associationData = {entity: associationData};
+    }
+
+    OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
+      type  : associationData.entity ? 'entity' : 'collection',
+      entity: associationData.entity || associationData.collection
+    });
+  };
+}
+
+/**
+ * Set the 'types' metadata on the entity
+ *
+ * @param {string} typeValue The type(text,string,date,datetime,integer,int,number,float,boolean,bool,smart,autodetect (based on value)) to use for this property using typer
+ *
+ * @return {function}
+ *
+ * @decorator
+ */
+export function type(typeValue) {
+  return function(target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+    OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
   };
 }

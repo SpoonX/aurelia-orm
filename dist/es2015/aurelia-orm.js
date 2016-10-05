@@ -1,10 +1,10 @@
-var _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _dec4, _class5, _dec5, _class6;
+var _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6;
 
 import typer from 'typer';
 import { inject, transient, Container } from 'aurelia-dependency-injection';
 import { Config } from 'aurelia-api';
 import { metadata } from 'aurelia-metadata';
-import { Validation, ValidationRule, ValidationGroup } from 'aurelia-validation';
+import { Validator, ValidationRules } from 'aurelia-validation';
 import { getLogger } from 'aurelia-logging';
 
 export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
@@ -55,7 +55,13 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
       return findQuery;
     }
 
-    return findQuery.then(x => this.populateEntities(x)).then(populated => {
+    return findQuery.then(response => {
+      return this.populateEntities(response);
+    }).then(populated => {
+      if (!populated) {
+        return null;
+      }
+
       if (!Array.isArray(populated)) {
         return populated.markClean();
       }
@@ -114,6 +120,7 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
       }
 
       let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
+
       populatedData[key] = repository.populateEntities(value);
     }
 
@@ -129,13 +136,15 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
     let associations = entity.getMeta().fetch('associations');
 
     for (let property in associations) {
-      let assocMeta = associations[property];
+      if (associations.hasOwnProperty(property)) {
+        let assocMeta = associations[property];
 
-      if (assocMeta.type !== 'entity') {
-        continue;
+        if (assocMeta.type !== 'entity') {
+          continue;
+        }
+
+        entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
       }
-
-      entity[property] = this.entityManager.getRepository(assocMeta.entity).getNewEntity();
     }
 
     return entity;
@@ -211,15 +220,9 @@ export let Metadata = (_temp = _class4 = class Metadata {
   }
 }, _class4.key = 'spoonx:orm:metadata', _temp);
 
-export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_class5 = _dec4(_class5 = class Entity {
-  constructor(validator) {
+export let Entity = (_dec3 = transient(), _dec3(_class5 = class Entity {
+  constructor() {
     this.define('__meta', OrmMetadata.forTarget(this.constructor)).define('__cleanValues', {}, true);
-
-    if (!this.hasValidation()) {
-      return this;
-    }
-
-    return this.define('__validator', validator);
   }
 
   getTransport() {
@@ -274,6 +277,7 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     }
 
     let response;
+
     return this.getTransport().create(this.getResource(), this.asObject(true)).then(created => {
       this.setId(created[this.getIdProperty()]);
       response = created;
@@ -294,7 +298,9 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
 
     delete requestBody[this.getIdProperty()];
 
-    return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(updated => response = updated).then(() => this.saveCollections()).then(() => this.markClean()).then(() => response);
+    return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(updated => {
+      response = updated;
+    }).then(() => this.saveCollections()).then(() => this.markClean()).then(() => response);
   }
 
   addCollectionAssociation(entity, property) {
@@ -327,16 +333,12 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
 
       entity[associationProperty] = this.getId();
 
-      return entity.save().then(() => {
-        return entity;
-      });
+      return entity.save().then(() => entity);
     }
 
     url.push(entity.getId());
 
-    return this.getTransport().create(url.join('/')).then(() => {
-      return entity;
-    });
+    return this.getTransport().create(url.join('/')).then(() => entity);
   }
 
   removeCollectionAssociation(entity, property) {
@@ -382,6 +384,7 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
 
   markClean() {
     let cleanValues = getFlat(this);
+
     this.__cleanValues = {
       checksum: JSON.stringify(cleanValues),
       data: cleanValues
@@ -399,7 +402,7 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
   }
 
   isNew() {
-    return typeof this.getId() === 'undefined';
+    return !this.getId();
   }
 
   reset(shallow) {
@@ -504,32 +507,30 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
     return this;
   }
 
-  enableValidation() {
-    if (!this.hasValidation()) {
-      throw new Error('Entity not marked as validated. Did you forget the @validation() decorator?');
-    }
+  setValidator(validator) {
+    this.define('__validator', validator);
 
-    if (this.__validation) {
-      return this;
-    }
-
-    return this.define('__validation', this.__validator.on(this));
+    return this;
   }
 
-  getValidation() {
+  getValidator() {
     if (!this.hasValidation()) {
       return null;
     }
 
-    if (!this.__validation) {
-      this.enableValidation();
-    }
-
-    return this.__validation;
+    return this.__validator;
   }
 
   hasValidation() {
     return !!this.getMeta().fetch('validation');
+  }
+
+  validate(propertyName, rules) {
+    if (!this.hasValidation()) {
+      return Promise.resolve([]);
+    }
+
+    return propertyName ? this.getValidator().validateProperty(this, propertyName, rules) : this.getValidator().validateObject(this, rules);
   }
 
   asObject(shallow) {
@@ -539,7 +540,7 @@ export let Entity = (_dec3 = transient(), _dec4 = inject(Validation), _dec3(_cla
   asJson(shallow) {
     return asJson(this, shallow);
   }
-}) || _class5) || _class5);
+}) || _class5);
 
 function asObject(entity, shallow) {
   let pojo = {};
@@ -688,21 +689,6 @@ function getPropertyForAssociation(forEntity, entity) {
   })[0];
 }
 
-export function association(associationData) {
-  return function (target, propertyName) {
-    if (!associationData) {
-      associationData = { entity: propertyName };
-    } else if (typeof associationData === 'string') {
-      associationData = { entity: associationData };
-    }
-
-    OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
-      type: associationData.entity ? 'entity' : 'collection',
-      entity: associationData.entity || associationData.collection
-    });
-  };
-}
-
 export function idProperty(propertyName) {
   return function (target) {
     OrmMetadata.forTarget(target).put('idProperty', propertyName);
@@ -727,19 +713,13 @@ export function resource(resourceName) {
   };
 }
 
-export function type(typeValue) {
-  return function (target, propertyName) {
-    OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
-  };
-}
-
-export function validation() {
+export function validation(ValidatorClass = Validator) {
   return function (target) {
-    OrmMetadata.forTarget(target).put('validation', true);
+    OrmMetadata.forTarget(target).put('validation', ValidatorClass);
   };
 }
 
-export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class EntityManager {
+export let EntityManager = (_dec4 = inject(Container), _dec4(_class6 = class EntityManager {
   constructor(container) {
     this.repositories = {};
     this.entities = {};
@@ -747,20 +727,18 @@ export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class Ent
     this.container = container;
   }
 
-  registerEntities(entities) {
-    for (let reference in entities) {
-      if (!entities.hasOwnProperty(reference)) {
-        continue;
+  registerEntities(EntityClasses) {
+    for (let property in EntityClasses) {
+      if (EntityClasses.hasOwnProperty(property)) {
+        this.registerEntity(EntityClasses[property]);
       }
-
-      this.registerEntity(entities[reference]);
     }
 
     return this;
   }
 
-  registerEntity(entity) {
-    this.entities[OrmMetadata.forTarget(entity).fetch('resource')] = entity;
+  registerEntity(EntityClass) {
+    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
 
     return this;
   }
@@ -827,34 +805,32 @@ export let EntityManager = (_dec5 = inject(Container), _dec5(_class6 = class Ent
       resource = entity;
     }
 
+    if (instance.hasValidation() && !instance.getValidator()) {
+      let validator = this.container.get(OrmMetadata.forTarget(reference).fetch('validation'));
+
+      instance.setValidator(validator);
+    }
+
     return instance.setResource(resource).setRepository(this.getRepository(resource));
   }
 }) || _class6);
 
-export let HasAssociationValidationRule = class HasAssociationValidationRule extends ValidationRule {
-  constructor() {
-    super(null, value => !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number'), null, 'isRequired');
-  }
-};
-
-export function validatedResource(resourceName) {
+export function validatedResource(resourceName, ValidatorClass) {
   return function (target, propertyName) {
     resource(resourceName)(target);
-    validation()(target, propertyName);
+    validation(ValidatorClass)(target, propertyName);
   };
 }
 
-export function configure(aurelia, configCallback) {
-  let entityManagerInstance = aurelia.container.get(EntityManager);
+export function configure(frameworkConfig, configCallback) {
+  ValidationRules.customRule('hasAssociation', value => !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number'), `\${$displayName} must be an association.`);
+
+  let entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
 
-  ValidationGroup.prototype.hasAssociation = function () {
-    return this.isNotEmpty().passesRule(new HasAssociationValidationRule());
-  };
-
-  aurelia.globalResources('./component/association-select');
-  aurelia.globalResources('./component/paged');
+  frameworkConfig.globalResources('./component/association-select');
+  frameworkConfig.globalResources('./component/paged');
 }
 
 export const logger = getLogger('aurelia-orm');
@@ -876,5 +852,40 @@ export function endpoint(entityEndpoint) {
     }
 
     OrmMetadata.forTarget(target).put('endpoint', entityEndpoint);
+  };
+}
+
+export function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
+  if (descriptor && descriptor.configurable === false) {
+    descriptor.configurable = true;
+
+    if (!Reflect.defineProperty(target, propertyName, descriptor)) {
+      logger.warn(`Cannot make configurable property '${ propertyName }' of object`, target);
+    }
+  }
+}
+
+export function association(associationData) {
+  return function (target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+    if (!associationData) {
+      associationData = { entity: propertyName };
+    } else if (typeof associationData === 'string') {
+      associationData = { entity: associationData };
+    }
+
+    OrmMetadata.forTarget(target.constructor).put('associations', propertyName, {
+      type: associationData.entity ? 'entity' : 'collection',
+      entity: associationData.entity || associationData.collection
+    });
+  };
+}
+
+export function type(typeValue) {
+  return function (target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+    OrmMetadata.forTarget(target.constructor).put('types', propertyName, typeValue);
   };
 }

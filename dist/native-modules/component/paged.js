@@ -126,6 +126,7 @@ export var Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
     var _this = this;
 
     var criteria = JSON.parse(JSON.stringify(this.criteria));
+
     criteria.skip = this.page * this.limit - this.limit;
     criteria.limit = this.limit;
     this.error = null;
@@ -133,7 +134,7 @@ export var Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
     this.repository.find(criteria, true).then(function (result) {
       _this.data = result;
     }).catch(function (error) {
-      return _this.error = error;
+      _this.error = error;
     });
   };
 

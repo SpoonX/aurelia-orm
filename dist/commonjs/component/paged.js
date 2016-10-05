@@ -135,6 +135,7 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
     var _this = this;
 
     var criteria = JSON.parse(JSON.stringify(this.criteria));
+
     criteria.skip = this.page * this.limit - this.limit;
     criteria.limit = this.limit;
     this.error = null;
@@ -142,7 +143,7 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
     this.repository.find(criteria, true).then(function (result) {
       _this.data = result;
     }).catch(function (error) {
-      return _this.error = error;
+      _this.error = error;
     });
   };
 
