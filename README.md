@@ -180,3 +180,8 @@ For instance, `@resource()` would use the module's name to set the resource.
 
 So keep in mind: When using aurelia-orm in a bundled application, you must specify a value for your decorators.
 For instance, `@decorator('category')`.
+
+
+## Known hacks
+
+- The association-select always parses the `placeholderText` as html (`t="[html]${placeholderText}"`) due a [aurelia-i18n binding issue](https://github.com/aurelia/i18n/issues/147).
