@@ -1,3 +1,13 @@
+<a name="3.0.1"></a>
+## [3.0.1](https://github.com/SpoonX/aurelia-orm/compare/3.0.0...v3.0.1) (2016-11-01)
+
+
+### Bug Fixes
+
+* **component:** always parse association-select placeholder as html ([fcbee42](https://github.com/SpoonX/aurelia-orm/commit/fcbee42))
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/SpoonX/aurelia-orm/compare/3.0.0-rc7...v3.0.0) (2016-10-05)
 
