@@ -181,7 +181,9 @@ export class Repository {
       let value = data[key];
 
       if (entityMetadata.has('types', key)) {
-        populatedData[key] = typer.cast(value, entityMetadata.fetch('types', key));
+        let type = entityMetadata.fetch('types', key);
+
+        populatedData[key] = type !== 'json' ? typer.cast(value, type) : value;
 
         continue;
       }
