@@ -16,6 +16,9 @@
   },
   "license": "MIT",
   "author": "RWOverdijk <wesley@spoonx.nl> (http://spoonx.nl/)",
+  "contributors": [
+    "Dirk Eisinger <doktordirk@outlook.de>"
+  ],
   "main": "dist/commonjs/aurelia-orm.js",
   "typings": "dist/aurelia-orm.d.ts",
   "repository": {
@@ -23,7 +26,11 @@
     "url": "https://github.com/SpoonX/aurelia-orm"
   },
   "scripts": {
-    "test": "./node_modules/.bin/gulp test"
+    "test": "gulp test",
+    "build": "gulp build",
+    "preversion": "npm test",
+    "version": "npm run build && gulp prepare-package && git add -A dist doc/CHANGELOG.md bower.json",
+    "postpublish": "git push upstream master && git push upstream --tags"
   },
   "jspm": {
     "registry": "npm",
@@ -74,7 +81,7 @@
     "typer": "^1.1.0"
   },
   "devDependencies": {
-    "spoonx-tools": "^0.3.0"
+    "spoonx-tools": "^1.0.0-0"
   },
   "aurelia": {
     "build": {
