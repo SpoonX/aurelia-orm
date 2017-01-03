@@ -1,6 +1,44 @@
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+'use strict';
+
+exports.__esModule = true;
+exports.logger = exports.EntityManager = exports.Entity = exports.Metadata = exports.OrmMetadata = exports.DefaultRepository = exports.Repository = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6;
+
+exports.idProperty = idProperty;
+exports.name = name;
+exports.repository = repository;
+exports.resource = resource;
+exports.validation = validation;
+exports.validatedResource = validatedResource;
+exports.configure = configure;
+exports.data = data;
+exports.endpoint = endpoint;
+exports.ensurePropertyIsConfigurable = ensurePropertyIsConfigurable;
+exports.association = association;
+exports.type = type;
+
+var _typer = require('typer');
+
+var _typer2 = _interopRequireDefault(_typer);
+
+var _aureliaDependencyInjection = require('aurelia-dependency-injection');
+
+var _aureliaApi = require('aurelia-api');
+
+var _aureliaMetadata = require('aurelia-metadata');
+
+var _aureliaValidation = require('aurelia-validation');
+
+var _aureliaLogging = require('aurelia-logging');
+
+var _associationSelect = require('./component/association-select');
+
+var _paged = require('./component/paged');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -8,14 +46,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-import typer from 'typer';
-import { inject, transient, Container } from 'aurelia-dependency-injection';
-import { Config } from 'aurelia-api';
-import { metadata } from 'aurelia-metadata';
-import { Validator, ValidationRules } from 'aurelia-validation';
-import { getLogger } from 'aurelia-logging';
-
-export var Repository = (_dec = inject(Config), _dec(_class = function () {
+var Repository = exports.Repository = (_dec = (0, _aureliaDependencyInjection.inject)(_aureliaApi.Config), _dec(_class = function () {
   function Repository(clientConfig) {
     
 
@@ -124,7 +155,7 @@ export var Repository = (_dec = inject(Config), _dec(_class = function () {
       var value = data[key];
 
       if (entityMetadata.has('types', key)) {
-        populatedData[key] = typer.cast(value, entityMetadata.fetch('types', key));
+        populatedData[key] = _typer2.default.cast(value, entityMetadata.fetch('types', key));
 
         continue;
       }
@@ -168,8 +199,7 @@ export var Repository = (_dec = inject(Config), _dec(_class = function () {
 
   return Repository;
 }()) || _class);
-
-export var DefaultRepository = (_dec2 = transient(), _dec2(_class3 = function (_Repository) {
+var DefaultRepository = exports.DefaultRepository = (_dec2 = (0, _aureliaDependencyInjection.transient)(), _dec2(_class3 = function (_Repository) {
   _inherits(DefaultRepository, _Repository);
 
   function DefaultRepository() {
@@ -181,19 +211,19 @@ export var DefaultRepository = (_dec2 = transient(), _dec2(_class3 = function (_
   return DefaultRepository;
 }(Repository)) || _class3);
 
-export var OrmMetadata = function () {
+var OrmMetadata = exports.OrmMetadata = function () {
   function OrmMetadata() {
     
   }
 
   OrmMetadata.forTarget = function forTarget(target) {
-    return metadata.getOrCreateOwn(Metadata.key, Metadata, target, target.name);
+    return _aureliaMetadata.metadata.getOrCreateOwn(Metadata.key, Metadata, target, target.name);
   };
 
   return OrmMetadata;
 }();
 
-export var Metadata = (_temp = _class4 = function () {
+var Metadata = exports.Metadata = (_temp = _class4 = function () {
   function Metadata() {
     
 
@@ -257,8 +287,7 @@ export var Metadata = (_temp = _class4 = function () {
 
   return Metadata;
 }(), _class4.key = 'spoonx:orm:metadata', _temp);
-
-export var Entity = (_dec3 = transient(), _dec3(_class5 = function () {
+var Entity = exports.Entity = (_dec3 = (0, _aureliaDependencyInjection.transient)(), _dec3(_class5 = function () {
   function Entity() {
     
 
@@ -763,39 +792,39 @@ function getPropertyForAssociation(forEntity, entity) {
   })[0];
 }
 
-export function idProperty(propertyName) {
+function idProperty(propertyName) {
   return function (target) {
     OrmMetadata.forTarget(target).put('idProperty', propertyName);
   };
 }
 
-export function name(entityName) {
+function name(entityName) {
   return function (target) {
     OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
   };
 }
 
-export function repository(repositoryReference) {
+function repository(repositoryReference) {
   return function (target) {
     OrmMetadata.forTarget(target).put('repository', repositoryReference);
   };
 }
 
-export function resource(resourceName) {
+function resource(resourceName) {
   return function (target) {
     OrmMetadata.forTarget(target).put('resource', resourceName || target.name.toLowerCase());
   };
 }
 
-export function validation() {
-  var ValidatorClass = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Validator;
+function validation() {
+  var ValidatorClass = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _aureliaValidation.Validator;
 
   return function (target) {
     OrmMetadata.forTarget(target).put('validation', ValidatorClass);
   };
 }
 
-export var EntityManager = (_dec4 = inject(Container), _dec4(_class6 = function () {
+var EntityManager = exports.EntityManager = (_dec4 = (0, _aureliaDependencyInjection.inject)(_aureliaDependencyInjection.Container), _dec4(_class6 = function () {
   function EntityManager(container) {
     
 
@@ -894,16 +923,15 @@ export var EntityManager = (_dec4 = inject(Container), _dec4(_class6 = function 
 
   return EntityManager;
 }()) || _class6);
-
-export function validatedResource(resourceName, ValidatorClass) {
+function validatedResource(resourceName, ValidatorClass) {
   return function (target, propertyName) {
     resource(resourceName)(target);
     validation(ValidatorClass)(target, propertyName);
   };
 }
 
-export function configure(frameworkConfig, configCallback) {
-  ValidationRules.customRule('hasAssociation', function (value) {
+function configure(frameworkConfig, configCallback) {
+  _aureliaValidation.ValidationRules.customRule('hasAssociation', function (value) {
     return !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number');
   }, '${$displayName} must be an association.');
 
@@ -915,9 +943,9 @@ export function configure(frameworkConfig, configCallback) {
   frameworkConfig.globalResources('./component/paged');
 }
 
-export var logger = getLogger('aurelia-orm');
+var logger = exports.logger = (0, _aureliaLogging.getLogger)('aurelia-orm');
 
-export function data(metaData) {
+function data(metaData) {
   return function (target, propertyName) {
     if ((typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) !== 'object') {
       logger.error('data must be an object, ' + (typeof metaData === 'undefined' ? 'undefined' : _typeof(metaData)) + ' given.');
@@ -927,7 +955,7 @@ export function data(metaData) {
   };
 }
 
-export function endpoint(entityEndpoint) {
+function endpoint(entityEndpoint) {
   return function (target) {
     if (!OrmMetadata.forTarget(target).fetch('resource')) {
       logger.warn('Need to set the resource before setting the endpoint!');
@@ -937,7 +965,7 @@ export function endpoint(entityEndpoint) {
   };
 }
 
-export function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
+function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
   if (descriptor && descriptor.configurable === false) {
     descriptor.configurable = true;
 
@@ -947,7 +975,7 @@ export function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
   }
 }
 
-export function association(associationData) {
+function association(associationData) {
   return function (target, propertyName, descriptor) {
     ensurePropertyIsConfigurable(target, propertyName, descriptor);
 
@@ -964,7 +992,7 @@ export function association(associationData) {
   };
 }
 
-export function type(typeValue) {
+function type(typeValue) {
   return function (target, propertyName, descriptor) {
     ensurePropertyIsConfigurable(target, propertyName, descriptor);
 

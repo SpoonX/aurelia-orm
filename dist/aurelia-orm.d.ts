@@ -604,6 +604,9 @@ export declare class EntityManager {
  */
 export declare function validatedResource(resourceName?: any, ValidatorClass?: any): any;
 
+// added for bundling
+// eslint-disable-line no-unused-vars
+// eslint-disable-line no-unused-vars
 /**
  * Plugin configure
  *

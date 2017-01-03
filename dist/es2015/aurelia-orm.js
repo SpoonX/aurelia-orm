@@ -7,6 +7,9 @@ import { metadata } from 'aurelia-metadata';
 import { Validator, ValidationRules } from 'aurelia-validation';
 import { getLogger } from 'aurelia-logging';
 
+import { AssociationSelect } from './component/association-select';
+import { Paged } from './component/paged';
+
 export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
   constructor(clientConfig) {
     this.transport = null;
