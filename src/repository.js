@@ -1,5 +1,6 @@
 import {inject} from 'aurelia-dependency-injection';
 import {Config} from 'aurelia-api';
+import {logger} from './aurelia-orm';
 import typer from 'typer';
 
 /**
@@ -86,6 +87,33 @@ export class Repository {
    */
   find(criteria, raw) {
     return this.findPath(this.resource, criteria, raw);
+  }
+
+  /**
+   * Performs a find. It tries to return a promise that resolves to an entity.
+   * Not a list of entities.
+   *
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
+   * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
+   *
+   * @return {Promise<Entity>}
+   */
+  findOne(...args) {
+    return this.find(...args).then(records => {
+      if (!Array.isArray(records) && typeof records === 'object' && records !== null) {
+        return records;
+      }
+
+      if (records.length > 1) {
+        logger.warn(`${this.getResource}.findOne returned ${records.length} items`);
+      }
+
+      if (records.length > 0) {
+        return records[0];
+      }
+
+      return null;
+    });
   }
 
   /**
