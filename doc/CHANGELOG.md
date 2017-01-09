@@ -1,3 +1,13 @@
+<a name="3.1.0"></a>
+# [3.1.0](https://github.com/SpoonX/aurelia-orm/compare/v3.1.0-0...v3.1.0) (2017-01-09)
+
+
+### Features
+
+* **association:** make placeholder value configurable ([bc63a23](https://github.com/SpoonX/aurelia-orm/commit/bc63a23))
+
+
+
 <a name="3.1.0-0"></a>
 # [3.1.0-0](https://github.com/SpoonX/aurelia-orm/compare/v3.0.1...v3.1.0-0) (2017-01-03)
 
