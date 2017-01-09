@@ -1,6 +1,17 @@
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+'use strict';
+
+exports.__esModule = true;
+exports.Paged = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+
+var _aureliaOrm = require('../aurelia-orm');
+
+var _aureliaBinding = require('aurelia-binding');
+
+var _aureliaTemplating = require('aurelia-templating');
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -47,11 +58,7 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-import { logger } from '../aurelia-orm';
-import { bindingMode } from 'aurelia-binding';
-import { bindable, customElement } from 'aurelia-templating';
-
-export var Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = (_class2 = function () {
+var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged'), _dec2 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = (_class2 = function () {
   function Paged() {
     
 
@@ -116,7 +123,7 @@ export var Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
 
   Paged.prototype.resourceChanged = function resourceChanged(resource) {
     if (!resource) {
-      logger.error('resource is ' + (typeof resource === 'undefined' ? 'undefined' : _typeof(resource)) + '. It should be a string or a reference');
+      _aureliaOrm.logger.error('resource is ' + (typeof resource === 'undefined' ? 'undefined' : _typeof(resource)) + '. It should be a string or a reference');
     }
 
     this.repository = this.entityManager.getRepository(resource);
@@ -152,18 +159,18 @@ export var Paged = (_dec = customElement('paged'), _dec2 = bindable({ defaultBin
 }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec4], {
   enumerable: true,
   initializer: null
-}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [_aureliaTemplating.bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [bindable], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [_aureliaTemplating.bindable], {
   enumerable: true,
   initializer: function initializer() {
     return null;
   }
-}), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [bindable], {
+}), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [_aureliaTemplating.bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'limit', [bindable], {
+}), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'limit', [_aureliaTemplating.bindable], {
   enumerable: true,
   initializer: function initializer() {
     return 30;

@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging'], function (_export, _context) {
+System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging', './component/association-select', './component/paged'], function (_export, _context) {
   "use strict";
 
-  var typer, inject, transient, Container, Config, metadata, Validator, ValidationRules, getLogger, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, logger;
+  var typer, inject, transient, Container, Config, metadata, Validator, ValidationRules, getLogger, AssociationSelect, Paged, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, logger;
 
   function _possibleConstructorReturn(self, call) {
     if (!self) {
@@ -325,12 +325,16 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
       ValidationRules = _aureliaValidation.ValidationRules;
     }, function (_aureliaLogging) {
       getLogger = _aureliaLogging.getLogger;
+    }, function (_componentAssociationSelect) {
+      AssociationSelect = _componentAssociationSelect.AssociationSelect;
+    }, function (_componentPaged) {
+      Paged = _componentPaged.Paged;
     }],
     execute: function () {
       _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
         return typeof obj;
       } : function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
       };
 
       _export('Repository', Repository = (_dec = inject(Config), _dec(_class = function () {
