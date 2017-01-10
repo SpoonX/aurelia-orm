@@ -1,4 +1,4 @@
-var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14;
+var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15;
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -77,7 +77,9 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
     _initDefineProp(this, 'selectablePlaceholder', _descriptor13, this);
 
-    _initDefineProp(this, 'placeholderText', _descriptor14, this);
+    _initDefineProp(this, 'placeholderValue', _descriptor14, this);
+
+    _initDefineProp(this, 'placeholderText', _descriptor15, this);
 
     this._subscriptions = [];
     this.bindingEngine = bindingEngine;
@@ -290,7 +292,12 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
   initializer: function () {
     return false;
   }
-}), _descriptor14 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [bindable], {
+}), _descriptor14 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderValue', [bindable], {
+  enumerable: true,
+  initializer: function () {
+    return 0;
+  }
+}), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [bindable], {
   enumerable: true,
   initializer: null
 })), _class2)) || _class) || _class);
