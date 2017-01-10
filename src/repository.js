@@ -98,8 +98,10 @@ export class Repository {
    *
    * @return {Promise<Entity>}
    */
-  findOne(...args) {
-    return this.find(...args).then(records => {
+  findOne(criteria, raw) {
+    criteria = Object.assign({limit: 1}, criteria);
+
+    return this.find(criteria, raw).then(records => {
       if (!Array.isArray(records) && typeof records === 'object' && records !== null) {
         return records;
       }
