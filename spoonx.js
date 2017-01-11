@@ -27,10 +27,7 @@ module.exports = {
      *
      * importsToAdd: ["import {AssociationSelect} from './association-select';"],
      */
-    importsToAdd: [
-      "import {AssociationSelect} from './component/association-select';",
-      "import {Paged} from './component/paged';"
-    ],
+    importsToAdd: [],
 
     /* js to be transpiled, but not be concated
      * (ValueConverters, CustomElements)
