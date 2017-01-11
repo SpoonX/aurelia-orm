@@ -4,8 +4,8 @@ import {ValidationRules} from 'aurelia-validation';
 import {Entity} from './entity';
 
 // added for bundling
-import {AssociationSelect} from './component/association-select'; // eslint-disable-line no-unused-vars
-import {Paged} from './component/paged'; // eslint-disable-line no-unused-vars
+export {AssociationSelect} from './component/association-select';
+export {Paged} from './component/paged';
 
 /**
  * Plugin configure
