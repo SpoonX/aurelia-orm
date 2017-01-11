@@ -92,6 +92,16 @@ describe('Repository', function() {
     });
   });
 
+  describe('.findOne', function() {
+    it('performs a find and resolves to a single item', function() {
+      let repository = constructRepository('find-one-test');
+
+      repository.findOne().then(response => {
+        expect(response.method).toEqual('GET')
+      });
+    });
+  });
+
   describe('.find()', function() {
     it('Should perform a regular findAll. (Default repository)', function(done) {
       let repository = constructRepository('find-test');
