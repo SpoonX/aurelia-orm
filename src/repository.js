@@ -106,6 +106,7 @@ export class Repository {
    * @param {string}           path
    * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
+   * @param {boolean}          [single] Whether or not this is a findOne.
    *
    * @return {Promise<Entity|[Entity]>}
    */
