@@ -3,9 +3,8 @@ import {EntityManager} from './entity-manager';
 import {ValidationRules} from 'aurelia-validation';
 import {Entity} from './entity';
 
-// added for bundling
-export {AssociationSelect} from './component/association-select';
-export {Paged} from './component/paged';
+import {AssociationSelect} from './component/association-select'; // eslint-disable-line no-unused-vars
+import {Paged} from './component/paged'; // eslint-disable-line no-unused-vars
 
 /**
  * Plugin configure
