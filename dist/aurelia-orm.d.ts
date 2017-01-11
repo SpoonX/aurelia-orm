@@ -615,14 +615,8 @@ export declare class EntityManager {
  */
 export declare function validatedResource(resourceName?: any, ValidatorClass?: any): any;
 
-// added for bundling
-export declare {
-  AssociationSelect
-} from 'aurelia-orm/component/association-select';
-export declare {
-  Paged
-} from 'aurelia-orm/component/paged';
-
+// eslint-disable-line no-unused-vars
+// eslint-disable-line no-unused-vars
 /**
  * Plugin configure
  *

@@ -1382,9 +1382,8 @@ export function validatedResource(resourceName, ValidatorClass) {
   };
 }
 
-// added for bundling
-export {AssociationSelect} from './component/association-select';
-export {Paged} from './component/paged';
+// eslint-disable-line no-unused-vars
+// eslint-disable-line no-unused-vars
 
 /**
  * Plugin configure

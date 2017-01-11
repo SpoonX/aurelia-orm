@@ -1,28 +1,16 @@
-define(['exports', './component/association-select', './component/paged', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging'], function (exports, _associationSelect, _paged, _typer, _aureliaDependencyInjection, _aureliaApi, _aureliaMetadata, _aureliaValidation, _aureliaLogging) {
+define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging'], function (exports, _typer, _aureliaDependencyInjection, _aureliaApi, _aureliaMetadata, _aureliaValidation, _aureliaLogging) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.logger = exports.Paged = exports.AssociationSelect = exports.EntityManager = exports.Entity = exports.Metadata = exports.OrmMetadata = exports.DefaultRepository = exports.Repository = undefined;
+  exports.logger = exports.EntityManager = exports.Entity = exports.Metadata = exports.OrmMetadata = exports.DefaultRepository = exports.Repository = undefined;
   exports.idProperty = idProperty;
   exports.name = name;
   exports.repository = repository;
   exports.resource = resource;
   exports.validation = validation;
   exports.validatedResource = validatedResource;
-  Object.defineProperty(exports, 'AssociationSelect', {
-    enumerable: true,
-    get: function () {
-      return _associationSelect.AssociationSelect;
-    }
-  });
-  Object.defineProperty(exports, 'Paged', {
-    enumerable: true,
-    get: function () {
-      return _paged.Paged;
-    }
-  });
   exports.configure = configure;
   exports.data = data;
   exports.endpoint = endpoint;

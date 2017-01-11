@@ -1,6 +1,6 @@
 {
   "name": "aurelia-orm",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "Makes working with entities and calling your Rest API simple.",
   "keywords": [
     "aurelia",

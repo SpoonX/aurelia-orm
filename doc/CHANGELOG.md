@@ -1,3 +1,13 @@
+<a name="3.2.2"></a>
+## [3.2.2](https://github.com/SpoonX/aurelia-orm/compare/v3.2.1...v3.2.2) (2017-01-11)
+
+
+### Bug Fixes
+
+* **project:** import components ([55df81b](https://github.com/SpoonX/aurelia-orm/commit/55df81b))
+
+
+
 <a name="3.2.1"></a>
 ## [3.2.1](https://github.com/SpoonX/aurelia-orm/compare/v3.2.0...v3.2.1) (2017-01-11)
 

@@ -837,9 +837,6 @@ export function validatedResource(resourceName, ValidatorClass) {
   };
 }
 
-export { AssociationSelect } from './component/association-select';
-export { Paged } from './component/paged';
-
 export function configure(frameworkConfig, configCallback) {
   ValidationRules.customRule('hasAssociation', value => !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number'), `\${$displayName} must be an association.`);
 
