@@ -89,16 +89,40 @@ export class Repository {
   }
 
   /**
-   * Perform a find query for `path` and populate entities with the retrieved data.
+   * Perform a find query and populate entities with the retrieved data, limited to one result.
    *
-   * @param {string}           path
    * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
    * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
    *
    * @return {Promise<Entity|[Entity]>}
    */
-  findPath(path, criteria, raw) {
-    let findQuery = this.getTransport().find(path, criteria);
+  findOne(criteria, raw) {
+    return this.findPath(this.resource, criteria, raw, true);
+  }
+
+  /**
+   * Perform a find query for `path` and populate entities with the retrieved data.
+   *
+   * @param {string}           path
+   * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
+   * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
+   * @param {boolean}          [single] Whether or not this is a findOne.
+   *
+   * @return {Promise<Entity|[Entity]>}
+   */
+  findPath(path, criteria, raw, single) {
+    let transport = this.getTransport();
+    let findQuery;
+
+    if (single) {
+      if (typeof criteria === 'object' && criteria !== null) {
+        criteria.limit = 1;
+      }
+
+      findQuery = transport.findOne(path, criteria);
+    } else {
+      findQuery = transport.find(path, criteria);
+    }
 
     if (raw) {
       return findQuery;
