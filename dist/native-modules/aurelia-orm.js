@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.logger = exports.EntityManager = exports.Entity = exports.Metadata = exports.OrmMetadata = exports.DefaultRepository = exports.Repository = undefined;
+exports.logger = exports.Paged = exports.AssociationSelect = exports.EntityManager = exports.Entity = exports.Metadata = exports.OrmMetadata = exports.DefaultRepository = exports.Repository = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -13,6 +13,24 @@ exports.repository = repository;
 exports.resource = resource;
 exports.validation = validation;
 exports.validatedResource = validatedResource;
+
+var _associationSelect = require('./component/association-select');
+
+Object.defineProperty(exports, 'AssociationSelect', {
+  enumerable: true,
+  get: function get() {
+    return _associationSelect.AssociationSelect;
+  }
+});
+
+var _paged = require('./component/paged');
+
+Object.defineProperty(exports, 'Paged', {
+  enumerable: true,
+  get: function get() {
+    return _paged.Paged;
+  }
+});
 exports.configure = configure;
 exports.data = data;
 exports.endpoint = endpoint;
@@ -34,10 +52,6 @@ var _aureliaMetadata = require('aurelia-metadata');
 var _aureliaValidation = require('aurelia-validation');
 
 var _aureliaLogging = require('aurelia-logging');
-
-var _associationSelect = require('./component/association-select');
-
-var _paged = require('./component/paged');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

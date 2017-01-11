@@ -5,8 +5,6 @@ import {metadata} from 'aurelia-metadata';
 import {Validator,ValidationRules} from 'aurelia-validation';
 import {getLogger} from 'aurelia-logging';
 
-import {AssociationSelect} from './component/association-select';
-import {Paged} from './component/paged';
 
 /**
  * The Repository basis class
@@ -1385,8 +1383,8 @@ export function validatedResource(resourceName, ValidatorClass) {
 }
 
 // added for bundling
-// eslint-disable-line no-unused-vars
-// eslint-disable-line no-unused-vars
+export {AssociationSelect} from './component/association-select';
+export {Paged} from './component/paged';
 
 /**
  * Plugin configure

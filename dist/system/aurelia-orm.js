@@ -3,7 +3,7 @@
 System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging', './component/association-select', './component/paged'], function (_export, _context) {
   "use strict";
 
-  var typer, inject, transient, Container, Config, metadata, Validator, ValidationRules, getLogger, AssociationSelect, Paged, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, logger;
+  var typer, inject, transient, Container, Config, metadata, Validator, ValidationRules, getLogger, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, logger;
 
   function _possibleConstructorReturn(self, call) {
     if (!self) {
@@ -336,9 +336,15 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
     }, function (_aureliaLogging) {
       getLogger = _aureliaLogging.getLogger;
     }, function (_componentAssociationSelect) {
-      AssociationSelect = _componentAssociationSelect.AssociationSelect;
+      var _exportObj = {};
+      _exportObj.AssociationSelect = _componentAssociationSelect.AssociationSelect;
+
+      _export(_exportObj);
     }, function (_componentPaged) {
-      Paged = _componentPaged.Paged;
+      var _exportObj2 = {};
+      _exportObj2.Paged = _componentPaged.Paged;
+
+      _export(_exportObj2);
     }],
     execute: function () {
       _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {

@@ -7,9 +7,6 @@ import { metadata } from 'aurelia-metadata';
 import { Validator, ValidationRules } from 'aurelia-validation';
 import { getLogger } from 'aurelia-logging';
 
-import { AssociationSelect } from './component/association-select';
-import { Paged } from './component/paged';
-
 export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
   constructor(clientConfig) {
     this.transport = null;
@@ -839,6 +836,9 @@ export function validatedResource(resourceName, ValidatorClass) {
     validation(ValidatorClass)(target, propertyName);
   };
 }
+
+export { AssociationSelect } from './component/association-select';
+export { Paged } from './component/paged';
 
 export function configure(frameworkConfig, configCallback) {
   ValidationRules.customRule('hasAssociation', value => !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number'), `\${$displayName} must be an association.`);

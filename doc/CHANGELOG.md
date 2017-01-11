@@ -1,3 +1,18 @@
+<a name="3.2.1"></a>
+## [3.2.1](https://github.com/SpoonX/aurelia-orm/compare/v3.2.0...v3.2.1) (2017-01-11)
+
+
+### Bug Fixes
+
+* **project:** do not import components twice during build ([b6c1000](https://github.com/SpoonX/aurelia-orm/commit/b6c1000))
+
+
+### Features
+
+* **project:** export components to enable patching ([5be13c7](https://github.com/SpoonX/aurelia-orm/commit/5be13c7))
+
+
+
 <a name="3.2.0"></a>
 # [3.2.0](https://github.com/SpoonX/aurelia-orm/compare/v3.1.0...v3.2.0) (2017-01-11)
 
