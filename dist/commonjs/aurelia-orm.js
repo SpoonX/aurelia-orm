@@ -20,6 +20,7 @@ exports.data = data;
 exports.endpoint = endpoint;
 exports.ensurePropertyIsConfigurable = ensurePropertyIsConfigurable;
 exports.association = association;
+exports.enumeration = enumeration;
 exports.type = type;
 
 var _typer = require('typer');
@@ -91,10 +92,25 @@ var Repository = exports.Repository = (_dec = (0, _aureliaDependencyInjection.in
     return this.findPath(this.resource, criteria, raw);
   };
 
-  Repository.prototype.findPath = function findPath(path, criteria, raw) {
+  Repository.prototype.findOne = function findOne(criteria, raw) {
+    return this.findPath(this.resource, criteria, raw, true);
+  };
+
+  Repository.prototype.findPath = function findPath(path, criteria, raw, single) {
     var _this = this;
 
-    var findQuery = this.getTransport().find(path, criteria);
+    var transport = this.getTransport();
+    var findQuery = void 0;
+
+    if (single) {
+      if ((typeof criteria === 'undefined' ? 'undefined' : _typeof(criteria)) === 'object' && criteria !== null) {
+        criteria.limit = 1;
+      }
+
+      findQuery = transport.findOne(path, criteria);
+    } else {
+      findQuery = transport.find(path, criteria);
+    }
 
     if (raw) {
       return findQuery;
@@ -991,6 +1007,14 @@ function association(associationData) {
       type: associationData.entity ? 'entity' : 'collection',
       entity: associationData.entity || associationData.collection
     });
+  };
+}
+
+function enumeration(values) {
+  return function (target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+    OrmMetadata.forTarget(target.constructor).put('enumerations', propertyName, values);
   };
 }
 

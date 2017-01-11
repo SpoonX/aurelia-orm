@@ -68,15 +68,26 @@ export declare class Repository {
   find(criteria?: any, raw?: any): any;
   
   /**
-     * Perform a find query for `path` and populate entities with the retrieved data.
+     * Perform a find query and populate entities with the retrieved data, limited to one result.
      *
-     * @param {string}           path
      * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
      * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
      *
      * @return {Promise<Entity|[Entity]>}
      */
-  findPath(path?: any, criteria?: any, raw?: any): any;
+  findOne(criteria?: any, raw?: any): any;
+  
+  /**
+     * Perform a find query for `path` and populate entities with the retrieved data.
+     *
+     * @param {string}           path
+     * @param {{}|number|string} criteria Criteria to add to the query. A plain string or number will be used as relative path.
+     * @param {boolean}          [raw]    Set to true to get a POJO in stead of populated entities.
+     * @param {boolean}          [single] Whether or not this is a findOne.
+     *
+     * @return {Promise<Entity|[Entity]>}
+     */
+  findPath(path?: any, criteria?: any, raw?: any, single?: any): any;
   
   /**
      * Perform a count on the resource.
@@ -652,6 +663,17 @@ export declare function ensurePropertyIsConfigurable(target?: any, propertyName?
  * @decorator
  */
 export declare function association(associationData?: any): any;
+
+/**
+ * Registers the 'enumerations' for an attribute's values
+ *
+ * @param {*[]} values - a list of valid values for the entity's attribute
+ *
+ * @return {Function}
+ *
+ * @decorator
+ */
+export declare function enumeration(values?: any): any;
 
 /**
  * Set the 'types' metadata on the entity

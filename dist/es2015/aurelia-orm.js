@@ -51,8 +51,23 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
     return this.findPath(this.resource, criteria, raw);
   }
 
-  findPath(path, criteria, raw) {
-    let findQuery = this.getTransport().find(path, criteria);
+  findOne(criteria, raw) {
+    return this.findPath(this.resource, criteria, raw, true);
+  }
+
+  findPath(path, criteria, raw, single) {
+    let transport = this.getTransport();
+    let findQuery;
+
+    if (single) {
+      if (typeof criteria === 'object' && criteria !== null) {
+        criteria.limit = 1;
+      }
+
+      findQuery = transport.findOne(path, criteria);
+    } else {
+      findQuery = transport.find(path, criteria);
+    }
 
     if (raw) {
       return findQuery;
@@ -882,6 +897,14 @@ export function association(associationData) {
       type: associationData.entity ? 'entity' : 'collection',
       entity: associationData.entity || associationData.collection
     });
+  };
+}
+
+export function enumeration(values) {
+  return function (target, propertyName, descriptor) {
+    ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+    OrmMetadata.forTarget(target.constructor).put('enumerations', propertyName, values);
   };
 }
 

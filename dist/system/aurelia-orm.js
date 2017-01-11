@@ -299,6 +299,16 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
   _export('association', association);
 
+  function enumeration(values) {
+    return function (target, propertyName, descriptor) {
+      ensurePropertyIsConfigurable(target, propertyName, descriptor);
+
+      OrmMetadata.forTarget(target.constructor).put('enumerations', propertyName, values);
+    };
+  }
+
+  _export('enumeration', enumeration);
+
   function type(typeValue) {
     return function (target, propertyName, descriptor) {
       ensurePropertyIsConfigurable(target, propertyName, descriptor);
@@ -380,10 +390,25 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           return this.findPath(this.resource, criteria, raw);
         };
 
-        Repository.prototype.findPath = function findPath(path, criteria, raw) {
+        Repository.prototype.findOne = function findOne(criteria, raw) {
+          return this.findPath(this.resource, criteria, raw, true);
+        };
+
+        Repository.prototype.findPath = function findPath(path, criteria, raw, single) {
           var _this = this;
 
-          var findQuery = this.getTransport().find(path, criteria);
+          var transport = this.getTransport();
+          var findQuery = void 0;
+
+          if (single) {
+            if ((typeof criteria === 'undefined' ? 'undefined' : _typeof(criteria)) === 'object' && criteria !== null) {
+              criteria.limit = 1;
+            }
+
+            findQuery = transport.findOne(path, criteria);
+          } else {
+            findQuery = transport.find(path, criteria);
+          }
 
           if (raw) {
             return findQuery;

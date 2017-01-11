@@ -1,3 +1,13 @@
+<a name="3.2.0"></a>
+# [3.2.0](https://github.com/SpoonX/aurelia-orm/compare/v3.1.0...v3.2.0) (2017-01-11)
+
+
+### Features
+
+* **enumeration:** define valid values for a field ([aa204fc](https://github.com/SpoonX/aurelia-orm/commit/aa204fc))
+
+
+
 <a name="3.1.0"></a>
 # [3.1.0](https://github.com/SpoonX/aurelia-orm/compare/v3.1.0-0...v3.1.0) (2017-01-09)
 
