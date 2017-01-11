@@ -119,9 +119,9 @@ export class Repository {
         criteria.limit = 1;
       }
 
-      findQuery = this.getTransport().findOne(path, criteria);
+      findQuery = transport.findOne(path, criteria);
     } else {
-      findQuery = this.getTransport().find(path, criteria);
+      findQuery = transport.find(path, criteria);
     }
 
     if (raw) {
