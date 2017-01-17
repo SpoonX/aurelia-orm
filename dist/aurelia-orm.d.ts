@@ -699,6 +699,7 @@ export declare class AssociationSelect {
   hidePlaceholder: any;
   selectablePlaceholder: any;
   placeholderValue: any;
+  disabled: any;
   placeholderText: any;
   ownMeta: any;
   

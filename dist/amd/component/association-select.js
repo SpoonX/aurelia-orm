@@ -65,7 +65,7 @@ define(['exports', 'get-prop', 'aurelia-dependency-injection', 'aurelia-binding'
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
   }
 
-  var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15;
+  var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16;
 
   var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplating.customElement)('association-select'), _dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.BindingEngine, _aureliaOrm.EntityManager, Element), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
     function AssociationSelect(bindingEngine, entityManager) {
@@ -99,7 +99,9 @@ define(['exports', 'get-prop', 'aurelia-dependency-injection', 'aurelia-binding'
 
       _initDefineProp(this, 'placeholderValue', _descriptor14, this);
 
-      _initDefineProp(this, 'placeholderText', _descriptor15, this);
+      _initDefineProp(this, 'disabled', _descriptor15, this);
+
+      _initDefineProp(this, 'placeholderText', _descriptor16, this);
 
       this._subscriptions = [];
       this.bindingEngine = bindingEngine;
@@ -329,7 +331,12 @@ define(['exports', 'get-prop', 'aurelia-dependency-injection', 'aurelia-binding'
     initializer: function initializer() {
       return 0;
     }
-  }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [_aureliaTemplating.bindable], {
+  }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'disabled', [_aureliaTemplating.bindable], {
+    enumerable: true,
+    initializer: function initializer() {
+      return false;
+    }
+  }), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [_aureliaTemplating.bindable], {
     enumerable: true,
     initializer: null
   })), _class2)) || _class) || _class);

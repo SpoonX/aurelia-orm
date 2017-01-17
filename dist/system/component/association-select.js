@@ -3,7 +3,7 @@
 System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../aurelia-orm'], function (_export, _context) {
   "use strict";
 
-  var getProp, inject, bindingMode, BindingEngine, bindable, customElement, logger, EntityManager, Entity, OrmMetadata, _typeof, _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, AssociationSelect;
+  var getProp, inject, bindingMode, BindingEngine, bindable, customElement, logger, EntityManager, Entity, OrmMetadata, _typeof, _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, AssociationSelect;
 
   function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -106,7 +106,9 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
 
           _initDefineProp(this, 'placeholderValue', _descriptor14, this);
 
-          _initDefineProp(this, 'placeholderText', _descriptor15, this);
+          _initDefineProp(this, 'disabled', _descriptor15, this);
+
+          _initDefineProp(this, 'placeholderText', _descriptor16, this);
 
           this._subscriptions = [];
           this.bindingEngine = bindingEngine;
@@ -336,7 +338,12 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
         initializer: function initializer() {
           return 0;
         }
-      }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [bindable], {
+      }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'disabled', [bindable], {
+        enumerable: true,
+        initializer: function initializer() {
+          return false;
+        }
+      }), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [bindable], {
         enumerable: true,
         initializer: null
       })), _class2)) || _class) || _class));

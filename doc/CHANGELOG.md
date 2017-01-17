@@ -1,3 +1,13 @@
+<a name="3.3.0"></a>
+# [3.3.0](https://github.com/SpoonX/aurelia-orm/compare/v3.2.2...v3.3.0) (2017-01-17)
+
+
+### Features
+
+* **associationSelect:** add disabled as bindable ([44d9efa](https://github.com/SpoonX/aurelia-orm/commit/44d9efa))
+
+
+
 <a name="3.2.2"></a>
 ## [3.2.2](https://github.com/SpoonX/aurelia-orm/compare/v3.2.1...v3.2.2) (2017-01-11)
 

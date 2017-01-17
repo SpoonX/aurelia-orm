@@ -7,7 +7,7 @@ exports.AssociationSelect = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15;
+var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16;
 
 var _getProp = require('get-prop');
 
@@ -100,7 +100,9 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
 
     _initDefineProp(this, 'placeholderValue', _descriptor14, this);
 
-    _initDefineProp(this, 'placeholderText', _descriptor15, this);
+    _initDefineProp(this, 'disabled', _descriptor15, this);
+
+    _initDefineProp(this, 'placeholderText', _descriptor16, this);
 
     this._subscriptions = [];
     this.bindingEngine = bindingEngine;
@@ -330,7 +332,12 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
   initializer: function initializer() {
     return 0;
   }
-}), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [_aureliaTemplating.bindable], {
+}), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'disabled', [_aureliaTemplating.bindable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
+}), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [_aureliaTemplating.bindable], {
   enumerable: true,
   initializer: null
 })), _class2)) || _class) || _class);
