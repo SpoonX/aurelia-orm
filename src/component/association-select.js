@@ -35,6 +35,8 @@ export class AssociationSelect {
 
   @bindable placeholderValue = 0;
 
+  @bindable disabled = false;
+
   @bindable placeholderText;
 
   ownMeta;
