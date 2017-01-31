@@ -1,3 +1,18 @@
+<a name="4.0.0"></a>
+# [4.0.0](https://github.com/SpoonX/aurelia-orm/compare/v3.3.0...v4.0.0) (2017-01-31)
+
+
+### Bug Fixes
+
+* **association-select:** use model.bind instead of value.bind ([855c24a](https://github.com/SpoonX/aurelia-orm/commit/855c24a))
+
+
+### BREAKING CHANGES
+
+* association-select: Can break module for users that expect a string when given `undefined`, `null` or `[]`.
+
+
+
 <a name="3.3.0"></a>
 # [3.3.0](https://github.com/SpoonX/aurelia-orm/compare/v3.2.2...v3.3.0) (2017-01-17)
 
