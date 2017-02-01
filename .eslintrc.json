@@ -1,4 +1,6 @@
 {
   "extends": "./node_modules/spoonx-tools/.eslintrc.json",
-  "rules": {}
+  "rules": {
+    "max-lines": ["error", 400]
+  }
 }

@@ -102,6 +102,16 @@ Almost exactly the same as the `association` attribute, except for a `many` asso
 
 _This attribute does **not** accept arrays, but can be combined with the `association` attribute_.
 
+**Note:** When using `many-association.bind` on an entity that has multiple relations with the same resource, use the following format:
+
+```html
+<association-select
+  many-association.bind="{entity: data.category, property: 'categories'}"
+></association-select>
+```
+
+The `property` is the property name of the association on the parent entity.
+
 ### multiple
 This sets the component to a multi-select. **Defaults to `false`**.
 
