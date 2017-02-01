@@ -221,7 +221,7 @@ export class Repository {
 
       let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
 
-      populatedData[key] = repository.populateEntities(value, true);
+      populatedData[key] = repository.populateEntities(value, clean);
     }
 
     return entity.setData(populatedData, clean);
