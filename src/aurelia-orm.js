@@ -30,5 +30,3 @@ export function configure(frameworkConfig, configCallback) {
 }
 
 export const logger = getLogger('aurelia-orm');
-
-export {OrmMetadata} from './orm-metadata';
