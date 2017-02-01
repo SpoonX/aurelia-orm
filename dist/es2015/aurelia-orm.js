@@ -91,25 +91,25 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
     return this.getTransport().find(this.resource + '/count', criteria);
   }
 
-  populateEntities(data) {
+  populateEntities(data, clean) {
     if (!data) {
       return null;
     }
 
     if (!Array.isArray(data)) {
-      return this.getPopulatedEntity(data);
+      return this.getPopulatedEntity(data, null, clean);
     }
 
     let collection = [];
 
     data.forEach(source => {
-      collection.push(this.getPopulatedEntity(source));
+      collection.push(this.getPopulatedEntity(source, null, clean));
     });
 
     return collection;
   }
 
-  getPopulatedEntity(data, entity) {
+  getPopulatedEntity(data, entity, clean) {
     entity = entity || this.getNewEntity();
     let entityMetadata = entity.getMeta();
     let populatedData = {};
@@ -136,10 +136,10 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
 
       let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
 
-      populatedData[key] = repository.populateEntities(value);
+      populatedData[key] = repository.populateEntities(value, clean);
     }
 
-    return entity.setData(populatedData);
+    return entity.setData(populatedData, clean);
   }
 
   getNewEntity() {

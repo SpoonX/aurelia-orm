@@ -166,22 +166,23 @@ export class Repository {
    * Get new populated entity or entities based on supplied data including associations
    *
    * @param {{}|[{}]} data|[data] The data to populate with
+   * @param {boolean} [clean]     Mark the entities as clean or not
    *
    * @return {Entity|[Entity]}
    */
-  populateEntities(data) {
+  populateEntities(data, clean) {
     if (!data) {
       return null;
     }
 
     if (!Array.isArray(data)) {
-      return this.getPopulatedEntity(data);
+      return this.getPopulatedEntity(data, null, clean);
     }
 
     let collection = [];
 
     data.forEach(source => {
-      collection.push(this.getPopulatedEntity(source));
+      collection.push(this.getPopulatedEntity(source, null, clean));
     });
 
     return collection;
@@ -190,12 +191,13 @@ export class Repository {
   /**
    * Populate a (new) entity including associations
    *
-   * @param {{}}     data The data to populate with
-   * @param {Entity} [entity] optional. if not set, a new entity is returned
+   * @param {{}}      data     The data to populate with
+   * @param {Entity}  [entity] optional. if not set, a new entity is returned
+   * @param {boolean} [clean]  Mark the entities as clean or not
    *
    * @return {Entity}
    */
-  getPopulatedEntity(data, entity) {
+  getPopulatedEntity(data, entity, clean) {
     entity             = entity || this.getNewEntity();
     let entityMetadata = entity.getMeta();
     let populatedData  = {};
@@ -223,10 +225,10 @@ export class Repository {
 
       let repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
 
-      populatedData[key] = repository.populateEntities(value);
+      populatedData[key] = repository.populateEntities(value, clean);
     }
 
-    return entity.setData(populatedData);
+    return entity.setData(populatedData, clean);
   }
 
   /**

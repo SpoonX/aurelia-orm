@@ -1,3 +1,20 @@
+<a name="4.1.0"></a>
+# [4.1.0](https://github.com/SpoonX/aurelia-orm/compare/v4.0.0...v4.1.0) (2017-02-01)
+
+
+### Bug Fixes
+
+* **association-select:** use property on entity instead of resource ([9c58665](https://github.com/SpoonX/aurelia-orm/commit/9c58665))
+* **repository:** use clean instead of hardcoded true ([802c23f](https://github.com/SpoonX/aurelia-orm/commit/802c23f))
+
+
+### Features
+
+* **project:** expose metadata class ([a7e0746](https://github.com/SpoonX/aurelia-orm/commit/a7e0746))
+* **repository:** allow populating clean entities ([3fe5acb](https://github.com/SpoonX/aurelia-orm/commit/3fe5acb))
+
+
+
 <a name="4.0.0"></a>
 # [4.0.0](https://github.com/SpoonX/aurelia-orm/compare/v3.3.0...v4.0.0) (2017-01-31)
 

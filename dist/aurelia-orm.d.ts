@@ -102,20 +102,22 @@ export declare class Repository {
      * Get new populated entity or entities based on supplied data including associations
      *
      * @param {{}|[{}]} data|[data] The data to populate with
+     * @param {boolean} [clean]     Mark the entities as clean or not
      *
      * @return {Entity|[Entity]}
      */
-  populateEntities(data?: any): any;
+  populateEntities(data?: any, clean?: any): any;
   
   /**
      * Populate a (new) entity including associations
      *
-     * @param {{}}     data The data to populate with
-     * @param {Entity} [entity] optional. if not set, a new entity is returned
+     * @param {{}}      data     The data to populate with
+     * @param {Entity}  [entity] optional. if not set, a new entity is returned
+     * @param {boolean} [clean]  Mark the entities as clean or not
      *
      * @return {Entity}
      */
-  getPopulatedEntity(data?: any, entity?: any): any;
+  getPopulatedEntity(data?: any, entity?: any, clean?: any): any;
   
   /**
      * Get a new instance for entityReference.

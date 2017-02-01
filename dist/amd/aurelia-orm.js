@@ -151,7 +151,7 @@ define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aure
       return this.getTransport().find(this.resource + '/count', criteria);
     };
 
-    Repository.prototype.populateEntities = function populateEntities(data) {
+    Repository.prototype.populateEntities = function populateEntities(data, clean) {
       var _this2 = this;
 
       if (!data) {
@@ -159,19 +159,19 @@ define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aure
       }
 
       if (!Array.isArray(data)) {
-        return this.getPopulatedEntity(data);
+        return this.getPopulatedEntity(data, null, clean);
       }
 
       var collection = [];
 
       data.forEach(function (source) {
-        collection.push(_this2.getPopulatedEntity(source));
+        collection.push(_this2.getPopulatedEntity(source, null, clean));
       });
 
       return collection;
     };
 
-    Repository.prototype.getPopulatedEntity = function getPopulatedEntity(data, entity) {
+    Repository.prototype.getPopulatedEntity = function getPopulatedEntity(data, entity, clean) {
       entity = entity || this.getNewEntity();
       var entityMetadata = entity.getMeta();
       var populatedData = {};
@@ -198,10 +198,10 @@ define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aure
 
         var _repository = this.entityManager.getRepository(entityMetadata.fetch('associations', key).entity);
 
-        populatedData[key] = _repository.populateEntities(value);
+        populatedData[key] = _repository.populateEntities(value, clean);
       }
 
-      return entity.setData(populatedData);
+      return entity.setData(populatedData, clean);
     };
 
     Repository.prototype.getNewEntity = function getNewEntity() {

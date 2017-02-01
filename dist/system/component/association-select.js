@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 'aurelia-templating', '../aurelia-orm'], function (_export, _context) {
+System.register(["get-prop", "aurelia-dependency-injection", "aurelia-binding", "aurelia-templating", "../aurelia-orm"], function (_export, _context) {
   "use strict";
 
   var getProp, inject, bindingMode, BindingEngine, bindable, customElement, logger, EntityManager, Entity, OrmMetadata, _typeof, _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, AssociationSelect;
@@ -74,41 +74,41 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
         return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
       };
 
-      _export('AssociationSelect', AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
+      _export("AssociationSelect", AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
         function AssociationSelect(bindingEngine, entityManager) {
           
 
-          _initDefineProp(this, 'criteria', _descriptor, this);
+          _initDefineProp(this, "criteria", _descriptor, this);
 
-          _initDefineProp(this, 'repository', _descriptor2, this);
+          _initDefineProp(this, "repository", _descriptor2, this);
 
-          _initDefineProp(this, 'identifier', _descriptor3, this);
+          _initDefineProp(this, "identifier", _descriptor3, this);
 
-          _initDefineProp(this, 'property', _descriptor4, this);
+          _initDefineProp(this, "property", _descriptor4, this);
 
-          _initDefineProp(this, 'resource', _descriptor5, this);
+          _initDefineProp(this, "resource", _descriptor5, this);
 
-          _initDefineProp(this, 'options', _descriptor6, this);
+          _initDefineProp(this, "options", _descriptor6, this);
 
-          _initDefineProp(this, 'association', _descriptor7, this);
+          _initDefineProp(this, "association", _descriptor7, this);
 
-          _initDefineProp(this, 'manyAssociation', _descriptor8, this);
+          _initDefineProp(this, "manyAssociation", _descriptor8, this);
 
-          _initDefineProp(this, 'value', _descriptor9, this);
+          _initDefineProp(this, "value", _descriptor9, this);
 
-          _initDefineProp(this, 'error', _descriptor10, this);
+          _initDefineProp(this, "error", _descriptor10, this);
 
-          _initDefineProp(this, 'multiple', _descriptor11, this);
+          _initDefineProp(this, "multiple", _descriptor11, this);
 
-          _initDefineProp(this, 'hidePlaceholder', _descriptor12, this);
+          _initDefineProp(this, "hidePlaceholder", _descriptor12, this);
 
-          _initDefineProp(this, 'selectablePlaceholder', _descriptor13, this);
+          _initDefineProp(this, "selectablePlaceholder", _descriptor13, this);
 
-          _initDefineProp(this, 'placeholderValue', _descriptor14, this);
+          _initDefineProp(this, "placeholderValue", _descriptor14, this);
 
-          _initDefineProp(this, 'disabled', _descriptor15, this);
+          _initDefineProp(this, "disabled", _descriptor15, this);
 
-          _initDefineProp(this, 'placeholderText', _descriptor16, this);
+          _initDefineProp(this, "placeholderText", _descriptor16, this);
 
           this._subscriptions = [];
           this.bindingEngine = bindingEngine;
@@ -133,7 +133,7 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
           }
 
           if (!Array.isArray(value)) {
-            this.value = (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? getProp(value, this.identifier) : value;
+            this.value = (typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' ? getProp(value, this.identifier) : value;
 
             return;
           }
@@ -165,11 +165,11 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
           criteria.populate = false;
 
           if (this.manyAssociation) {
-            var assoc = this.manyAssociation;
+            var manyAssociation = this.manyAssociation;
 
             delete criteria.populate;
 
-            findPath = assoc.getResource() + '/' + assoc.getId() + '/' + findPath;
+            findPath = manyAssociation.resource + "/" + manyAssociation.entity.getId() + "/" + manyAssociation.property;
           } else if (this.association) {
             var associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -187,7 +187,7 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
 
         AssociationSelect.prototype.verifyAssociationValues = function verifyAssociationValues() {
           if (this.manyAssociation) {
-            return !!this.manyAssociation.getId();
+            return !!this.manyAssociation.entity.getId();
           }
 
           if (this.association) {
@@ -231,7 +231,7 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
 
         AssociationSelect.prototype.resourceChanged = function resourceChanged(resource) {
           if (!resource) {
-            logger.error('resource is ' + (typeof resource === 'undefined' ? 'undefined' : _typeof(resource)) + '. It should be a string or a reference');
+            logger.error("resource is " + (typeof resource === "undefined" ? "undefined" : _typeof(resource)) + ". It should be a string or a reference");
           }
 
           this.repository = this.entityManager.getRepository(resource);
@@ -257,7 +257,25 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
           this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
           if (this.manyAssociation) {
-            this.observe(this.manyAssociation);
+            if (this.manyAssociation instanceof Entity) {
+              this.manyAssociation = { entity: this.manyAssociation };
+            }
+
+            var manyAssociation = this.manyAssociation;
+
+            if (!manyAssociation.entity) {
+              throw new Error('Invalid value provided for many-association. ' + 'Expected instance of Entity, or object literal {entity, property}.');
+            }
+
+            var manyEntity = manyAssociation.entity;
+
+            if (!manyAssociation.property) {
+              manyAssociation.property = this.propertyForResource(manyEntity.getMeta(), this.repository.getResource());
+            }
+
+            manyAssociation.resource = manyEntity.getResource();
+
+            this.observe(manyEntity);
           }
 
           if (this.association) {
@@ -284,71 +302,71 @@ System.register(['get-prop', 'aurelia-dependency-injection', 'aurelia-binding', 
         };
 
         return AssociationSelect;
-      }(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
+      }(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "criteria", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [bindable], {
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "repository", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'identifier', [bindable], {
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "identifier", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return 'id';
         }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'property', [bindable], {
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "property", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return 'name';
         }
-      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [bindable], {
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "resource", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'options', [bindable], {
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "options", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'association', [bindable], {
+      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, "association", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, 'manyAssociation', [bindable], {
+      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, "manyAssociation", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, 'value', [_dec3], {
+      }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, "value", [_dec3], {
         enumerable: true,
         initializer: null
-      }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec4], {
+      }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "error", [_dec4], {
         enumerable: true,
         initializer: null
-      }), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, 'multiple', [bindable], {
+      }), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "multiple", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, 'hidePlaceholder', [bindable], {
+      }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "hidePlaceholder", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor13 = _applyDecoratedDescriptor(_class2.prototype, 'selectablePlaceholder', [bindable], {
+      }), _descriptor13 = _applyDecoratedDescriptor(_class2.prototype, "selectablePlaceholder", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor14 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderValue', [bindable], {
+      }), _descriptor14 = _applyDecoratedDescriptor(_class2.prototype, "placeholderValue", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return 0;
         }
-      }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, 'disabled', [bindable], {
+      }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, "disabled", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, 'placeholderText', [bindable], {
+      }), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, "placeholderText", [bindable], {
         enumerable: true,
         initializer: null
       })), _class2)) || _class) || _class));
 
-      _export('AssociationSelect', AssociationSelect);
+      _export("AssociationSelect", AssociationSelect);
     }
   };
 });
