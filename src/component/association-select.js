@@ -1,8 +1,8 @@
-import getProp from 'get-prop';
-import {inject} from 'aurelia-dependency-injection';
-import {bindingMode, BindingEngine} from 'aurelia-binding';
-import {bindable, customElement} from 'aurelia-templating';
-import {logger, EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
+import getProp from "get-prop";
+import {inject} from "aurelia-dependency-injection";
+import {bindingMode, BindingEngine} from "aurelia-binding";
+import {bindable, customElement} from "aurelia-templating";
+import {logger, EntityManager, Entity, OrmMetadata} from "../aurelia-orm";
 
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
@@ -64,7 +64,6 @@ export class AssociationSelect {
     return this.buildFind()
       .then(options => {
         let result   = options;
-
         this.options = Array.isArray(result) ? result : [result];
 
         this.setValue(reservedValue);
@@ -116,21 +115,21 @@ export class AssociationSelect {
    * @return {Promise}
    */
   buildFind() {
-    let repository    = this.repository;
-    let criteria      = this.getCriteria();
-    let findPath      = repository.getResource();
+    let repository = this.repository;
+    let criteria   = this.getCriteria();
+    let findPath   = repository.getResource();
 
     criteria.populate = false;
 
     // Check if there are `many` associations. If so, the repository find path changes.
     // the path will become `/:association/:id/:entity`.
     if (this.manyAssociation) {
-      let assoc = this.manyAssociation;
+      let manyAssociation = this.manyAssociation;
 
       // When disabling populate here, the API won't return any data.
       delete criteria.populate;
 
-      findPath = `${assoc.getResource()}/${assoc.getId()}/${findPath}`;
+      findPath = `${manyAssociation.resource}/${manyAssociation.entity.getId()}/${manyAssociation.property}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -154,7 +153,7 @@ export class AssociationSelect {
    */
   verifyAssociationValues() {
     if (this.manyAssociation) {
-      return !!this.manyAssociation.getId();
+      return !!this.manyAssociation.entity.getId();
     }
 
     if (this.association) {
@@ -250,7 +249,28 @@ export class AssociationSelect {
     this.ownMeta = OrmMetadata.forTarget(this.entityManager.resolveEntityReference(this.repository.getResource()));
 
     if (this.manyAssociation) {
-      this.observe(this.manyAssociation);
+      if (this.manyAssociation instanceof Entity) {
+        this.manyAssociation = {entity: this.manyAssociation};
+      }
+
+      let manyAssociation = this.manyAssociation;
+
+      if (!manyAssociation.entity) {
+        throw new Error(
+          'Invalid value provided for many-association. ' +
+          'Expected instance of Entity, or object literal {entity, property}.'
+        );
+      }
+
+      let manyEntity = manyAssociation.entity;
+
+      if (!manyAssociation.property) {
+        manyAssociation.property = this.propertyForResource(manyEntity.getMeta(), this.repository.getResource());
+      }
+
+      manyAssociation.resource = manyEntity.getResource();
+
+      this.observe(manyEntity);
     }
 
     if (this.association) {
