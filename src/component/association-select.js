@@ -63,7 +63,8 @@ export class AssociationSelect {
   load(reservedValue) {
     return this.buildFind()
       .then(options => {
-        let result   = options;
+        let result = options;
+
         this.options = Array.isArray(result) ? result : [result];
 
         this.setValue(reservedValue);
@@ -257,8 +258,8 @@ export class AssociationSelect {
 
       if (!manyAssociation.entity) {
         throw new Error(
-          'Invalid value provided for many-association. ' +
-          'Expected instance of Entity, or object literal {entity, property}.'
+          'Invalid value provided for many-association. '
+          + 'Expected instance of Entity, or object literal {entity, property}.'
         );
       }
 
