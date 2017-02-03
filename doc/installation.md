@@ -2,7 +2,7 @@
 
 Aurelia-orm needs an installation of [aurelia-api](https://www.npmjs.com/package/aurelia-api) and `aurelia-validation@0.6.6`.
 
-## Aureli-Cli
+## Aurelia-Cli
 
 Run `npm i aurelia-orm --save` from your project root.
 
