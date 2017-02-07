@@ -172,8 +172,6 @@ export class Entity {
     let requestBody = this.asObject(true);
     let response;
 
-    delete requestBody[this.getIdProperty()];
-
     return this.getTransport()
       .update(this.getResource(), this.getId(), requestBody)
       .then(updated => { response = updated; })
