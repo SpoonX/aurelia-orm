@@ -721,9 +721,7 @@ function _asObject(entity, shallow) {
       }
     });
 
-    if (asObjects.length > 0) {
-      pojo[propertyName] = asObjects;
-    }
+    pojo[propertyName] = asObjects;
   });
 
   return pojo;
