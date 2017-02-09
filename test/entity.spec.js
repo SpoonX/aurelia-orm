@@ -844,6 +844,32 @@ describe('Entity', function() {
         test: 'case'
       });
     });
+
+    it('Should return a POJO and include emoty arrays on associations.', function() {
+      let parentEntity = new WithAssociations();
+      let fooEntityOne = new Foo();
+      let fooEntityTwo = new Foo();
+      let customEntity = new Custom();
+
+      fooEntityOne.some  = 'value';
+      fooEntityOne.other = 'other value';
+      fooEntityTwo.what  = 'Jup';
+      customEntity.baby  = 'steps';
+
+      parentEntity.setData({
+        test: 'case',
+        foo: [],
+        bar: customEntity
+      });
+
+      expect(parentEntity.asObject()).toEqual({
+        foo: [],
+        bar: {
+          baby: 'steps'
+        },
+        test: 'case'
+      });
+    });
   });
 
   describe('.asJson()', function() {

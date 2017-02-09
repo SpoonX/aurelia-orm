@@ -1,3 +1,18 @@
+<a name="5.0.0-0"></a>
+# [5.0.0-0](https://github.com/SpoonX/aurelia-orm/compare/v4.1.1...v5.0.0-0) (2017-02-07)
+
+
+### Bug Fixes
+
+* **entity:** do not skip empty arrays ([fad77ec](https://github.com/SpoonX/aurelia-orm/commit/fad77ec))
+
+
+### BREAKING CHANGES
+
+* entity: toObject and toJSON will now return empty arrays instead of skipping completely
+
+
+
 <a name="4.1.1"></a>
 ## [4.1.1](https://github.com/SpoonX/aurelia-orm/compare/v4.1.0...v4.1.1) (2017-02-01)
 

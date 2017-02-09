@@ -1024,10 +1024,7 @@ function asObject(entity, shallow) {
       }
     });
 
-    // We don't send along empty arrays.
-    if (asObjects.length > 0) {
-      pojo[propertyName] = asObjects;
-    }
+    pojo[propertyName] = asObjects;
   });
 
   return pojo;

@@ -93,9 +93,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
         }
       });
 
-      if (asObjects.length > 0) {
-        pojo[propertyName] = asObjects;
-      }
+      pojo[propertyName] = asObjects;
     });
 
     return pojo;
