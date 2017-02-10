@@ -1,8 +1,10 @@
-import {logger} from '../aurelia-orm';
+import {logger, EntityManager} from '../aurelia-orm';
 import {bindingMode} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
+import {inject} from 'aurelia-dependency-injection';
 
 @customElement('paged')
+@inject(EntityManager)
 export class Paged {
 
   // https://github.com/aurelia/templating/issues/73, you still had to set `data` on .two-way when global
@@ -13,6 +15,10 @@ export class Paged {
   @bindable repository                                     = null;
   @bindable resource
   @bindable limit                                          = 30;
+
+  constructor(entityManager) {
+    this.entityManager = entityManager;
+  }
 
   /**
    * Attach to view
