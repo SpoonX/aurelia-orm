@@ -189,7 +189,7 @@ describe('Entity', function() {
       entity.idTag  = 1337;
 
       entity.save().then(response => {
-        expect(response.body).toEqual({foo: 'bar'});
+        expect(response.body).toEqual({idTag: 1337, foo: 'bar'});
         expect(response.path).toEqual('/with-resource/1337');
         expect(response.method).toEqual('PUT');
 
@@ -251,7 +251,7 @@ describe('Entity', function() {
       entity.id    = 1991;
 
       entity.save().then(response => {
-        expect(response.body).toEqual({bacon: 'great!'});
+        expect(response.body).toEqual({id: 1991, bacon: 'great!'});
         expect(response.path).toEqual('/default-entity/1991');
         expect(response.method).toEqual('PUT');
 
@@ -416,7 +416,7 @@ describe('Entity', function() {
       entity.city = {awesome: true};
 
       entity.update().then(response => {
-        expect(response.body).toEqual({foo: 'bar', city: {awesome: true}});
+        expect(response.body).toEqual({idTag: 666, foo: 'bar', city: {awesome: true}});
         expect(response.path).toEqual('/with-resource/666');
         expect(response.method).toEqual('PUT');
 
@@ -474,6 +474,7 @@ describe('Entity', function() {
         expect(response.path).toEqual('/withassociations/1');
         expect(response.method).toEqual('PUT');
         expect(response.body).toEqual({
+          id: 1,
           bar: {
             baby: 'steps'
           },
