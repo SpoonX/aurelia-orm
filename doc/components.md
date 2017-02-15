@@ -115,6 +115,11 @@ The `property` is the property name of the association on the parent entity.
 ### multiple
 This sets the component to a multi-select. **Defaults to `false`**.
 
+### type
+Some designs prefer checkboxes over a multi-select. The type bindable accepts
+the values `select` or `checkboxes`. It will default to select in case type is
+not defined, or if an invalid type is defined.
+
 ### criteria.bind
 Pass along filter criteria (as JSON or Object) to the element. These will be used to restrict the data returned from the API.
 

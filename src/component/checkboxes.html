@@ -1,0 +1,16 @@
+<template>
+
+  <template containerless repeat.for="option of options">
+    <div class="checkbox">
+      <label>
+        <input
+        type="checkbox"
+        name.bind="option[property]"
+        model.bind="option.id"
+        checked.bind="value">
+        ${option[property]}
+      </label>
+    </div>
+  </template>
+
+</template>

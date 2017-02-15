@@ -1,8 +1,8 @@
-import getProp from "get-prop";
-import {inject} from "aurelia-dependency-injection";
-import {bindingMode, BindingEngine} from "aurelia-binding";
-import {bindable, customElement} from "aurelia-templating";
-import {logger, EntityManager, Entity, OrmMetadata} from "../aurelia-orm";
+import getProp from 'get-prop';
+import {inject} from 'aurelia-dependency-injection';
+import {bindingMode, BindingEngine, computedFrom} from 'aurelia-binding';
+import {bindable, customElement} from 'aurelia-templating';
+import {logger, EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
 
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
@@ -39,6 +39,8 @@ export class AssociationSelect {
 
   @bindable placeholderText;
 
+  @bindable type = "select";
+
   ownMeta;
 
   /**
@@ -51,6 +53,16 @@ export class AssociationSelect {
     this._subscriptions = [];
     this.bindingEngine  = bindingEngine;
     this.entityManager  = entityManager;
+  }
+
+  typeAliases = {
+    checkboxes: 'checkboxes',
+    select    : 'select',
+  };
+
+  @computedFrom('type')
+  get view() {
+    return `./${this.typeAliases[this.type] || 'select'}.html`;
   }
 
   /**
