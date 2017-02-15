@@ -814,6 +814,7 @@ export declare class Paged {
   repository: any;
   resource: any;
   limit: any;
+  constructor(entityManager?: any);
   
   /**
      * Attach to view

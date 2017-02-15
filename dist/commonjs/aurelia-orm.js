@@ -393,8 +393,6 @@ var Entity = exports.Entity = (_dec3 = (0, _aureliaDependencyInjection.transient
     var requestBody = this.asObject(true);
     var response = void 0;
 
-    delete requestBody[this.getIdProperty()];
-
     return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(function (updated) {
       response = updated;
     }).then(function () {

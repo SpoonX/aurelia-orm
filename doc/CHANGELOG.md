@@ -1,3 +1,19 @@
+<a name="5.0.0-1"></a>
+# [5.0.0-1](https://github.com/SpoonX/aurelia-orm/compare/v5.0.0-0...v5.0.0-1) (2017-02-15)
+
+
+### Bug Fixes
+
+* **entity:** do not delete id from request body in update calls ([cfd6cf6](https://github.com/SpoonX/aurelia-orm/commit/cfd6cf6))
+* **paged:** inject the EntityManager ([e77e733](https://github.com/SpoonX/aurelia-orm/commit/e77e733))
+
+
+### BREAKING CHANGES
+
+* entity: id properties are now included in the request body of update calls. Fixes #185.
+
+
+
 <a name="5.0.0-0"></a>
 # [5.0.0-0](https://github.com/SpoonX/aurelia-orm/compare/v4.1.1...v5.0.0-0) (2017-02-07)
 

@@ -311,8 +311,6 @@ export let Entity = (_dec3 = transient(), _dec3(_class5 = class Entity {
     let requestBody = this.asObject(true);
     let response;
 
-    delete requestBody[this.getIdProperty()];
-
     return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(updated => {
       response = updated;
     }).then(() => this.saveCollections()).then(() => this.markClean()).then(() => response);

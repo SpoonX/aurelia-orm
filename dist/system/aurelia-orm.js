@@ -699,8 +699,6 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           var requestBody = this.asObject(true);
           var response = void 0;
 
-          delete requestBody[this.getIdProperty()];
-
           return this.getTransport().update(this.getResource(), this.getId(), requestBody).then(function (updated) {
             response = updated;
           }).then(function () {
