@@ -33,7 +33,7 @@ export class AssociationSelect {
 
   @bindable selectablePlaceholder = false;
 
-  @bindable placeholderValue = 0;
+  @bindable placeholderValue = null;
 
   @bindable disabled = false;
 
