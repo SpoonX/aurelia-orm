@@ -29,17 +29,21 @@ export class AssociationSelect {
 
   @bindable multiple = false;
 
-  @bindable hidePlaceholder = false;
+  @bindable hidePlaceholder;
 
   @bindable selectablePlaceholder = false;
 
-  @bindable placeholderValue = 0;
+  @bindable placeholderValue = null;
 
   @bindable disabled = false;
 
   @bindable placeholderText;
 
   ownMeta;
+
+  get showPlaceholder() {
+    return !((typeof this.hidePlaceholder === 'boolean') ? this.hidePlaceholder : this.multiple);
+  }
 
   /**
    * Create a new select element.
