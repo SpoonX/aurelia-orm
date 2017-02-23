@@ -9,6 +9,8 @@ import {logger, EntityManager, Entity, OrmMetadata} from "../aurelia-orm";
 export class AssociationSelect {
   @bindable criteria;
 
+  @bindable name = '';
+
   @bindable repository;
 
   @bindable identifier = 'id';
