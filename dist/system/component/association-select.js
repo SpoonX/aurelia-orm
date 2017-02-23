@@ -3,7 +3,7 @@
 System.register(["get-prop", "aurelia-dependency-injection", "aurelia-binding", "aurelia-templating", "../aurelia-orm"], function (_export, _context) {
   "use strict";
 
-  var getProp, inject, bindingMode, BindingEngine, bindable, customElement, logger, EntityManager, Entity, OrmMetadata, _typeof, _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, AssociationSelect;
+  var getProp, inject, bindingMode, BindingEngine, bindable, customElement, logger, EntityManager, Entity, OrmMetadata, _typeof, _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17, AssociationSelect;
 
   function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -80,35 +80,37 @@ System.register(["get-prop", "aurelia-dependency-injection", "aurelia-binding", 
 
           _initDefineProp(this, "criteria", _descriptor, this);
 
-          _initDefineProp(this, "repository", _descriptor2, this);
+          _initDefineProp(this, "name", _descriptor2, this);
 
-          _initDefineProp(this, "identifier", _descriptor3, this);
+          _initDefineProp(this, "repository", _descriptor3, this);
 
-          _initDefineProp(this, "property", _descriptor4, this);
+          _initDefineProp(this, "identifier", _descriptor4, this);
 
-          _initDefineProp(this, "resource", _descriptor5, this);
+          _initDefineProp(this, "property", _descriptor5, this);
 
-          _initDefineProp(this, "options", _descriptor6, this);
+          _initDefineProp(this, "resource", _descriptor6, this);
 
-          _initDefineProp(this, "association", _descriptor7, this);
+          _initDefineProp(this, "options", _descriptor7, this);
 
-          _initDefineProp(this, "manyAssociation", _descriptor8, this);
+          _initDefineProp(this, "association", _descriptor8, this);
 
-          _initDefineProp(this, "value", _descriptor9, this);
+          _initDefineProp(this, "manyAssociation", _descriptor9, this);
 
-          _initDefineProp(this, "error", _descriptor10, this);
+          _initDefineProp(this, "value", _descriptor10, this);
 
-          _initDefineProp(this, "multiple", _descriptor11, this);
+          _initDefineProp(this, "error", _descriptor11, this);
 
-          _initDefineProp(this, "hidePlaceholder", _descriptor12, this);
+          _initDefineProp(this, "multiple", _descriptor12, this);
 
-          _initDefineProp(this, "selectablePlaceholder", _descriptor13, this);
+          _initDefineProp(this, "hidePlaceholder", _descriptor13, this);
 
-          _initDefineProp(this, "placeholderValue", _descriptor14, this);
+          _initDefineProp(this, "selectablePlaceholder", _descriptor14, this);
 
-          _initDefineProp(this, "disabled", _descriptor15, this);
+          _initDefineProp(this, "placeholderValue", _descriptor15, this);
 
-          _initDefineProp(this, "placeholderText", _descriptor16, this);
+          _initDefineProp(this, "disabled", _descriptor16, this);
+
+          _initDefineProp(this, "placeholderText", _descriptor17, this);
 
           this._subscriptions = [];
           this.bindingEngine = bindingEngine;
@@ -305,63 +307,68 @@ System.register(["get-prop", "aurelia-dependency-injection", "aurelia-binding", 
       }(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "criteria", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "repository", [bindable], {
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "name", [bindable], {
+        enumerable: true,
+        initializer: function initializer() {
+          return '';
+        }
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "repository", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "identifier", [bindable], {
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "identifier", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return 'id';
         }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "property", [bindable], {
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "property", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return 'name';
         }
-      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "resource", [bindable], {
+      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "resource", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "options", [bindable], {
+      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, "options", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, "association", [bindable], {
+      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, "association", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, "manyAssociation", [bindable], {
+      }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, "manyAssociation", [bindable], {
         enumerable: true,
         initializer: null
-      }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, "value", [_dec3], {
+      }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "value", [_dec3], {
         enumerable: true,
         initializer: null
-      }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "error", [_dec4], {
+      }), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "error", [_dec4], {
         enumerable: true,
         initializer: null
-      }), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "multiple", [bindable], {
+      }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "multiple", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "hidePlaceholder", [bindable], {
+      }), _descriptor13 = _applyDecoratedDescriptor(_class2.prototype, "hidePlaceholder", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor13 = _applyDecoratedDescriptor(_class2.prototype, "selectablePlaceholder", [bindable], {
+      }), _descriptor14 = _applyDecoratedDescriptor(_class2.prototype, "selectablePlaceholder", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor14 = _applyDecoratedDescriptor(_class2.prototype, "placeholderValue", [bindable], {
+      }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, "placeholderValue", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return 0;
         }
-      }), _descriptor15 = _applyDecoratedDescriptor(_class2.prototype, "disabled", [bindable], {
+      }), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, "disabled", [bindable], {
         enumerable: true,
         initializer: function initializer() {
           return false;
         }
-      }), _descriptor16 = _applyDecoratedDescriptor(_class2.prototype, "placeholderText", [bindable], {
+      }), _descriptor17 = _applyDecoratedDescriptor(_class2.prototype, "placeholderText", [bindable], {
         enumerable: true,
         initializer: null
       })), _class2)) || _class) || _class));

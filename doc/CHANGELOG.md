@@ -1,3 +1,13 @@
+<a name="5.0.0-2"></a>
+# [5.0.0-2](https://github.com/SpoonX/aurelia-orm/compare/v5.0.0-1...v5.0.0-2) (2017-02-23)
+
+
+### Bug Fixes
+
+* **association-select:** add name attribute ([19b40fd](https://github.com/SpoonX/aurelia-orm/commit/19b40fd))
+
+
+
 <a name="5.0.0-1"></a>
 # [5.0.0-1](https://github.com/SpoonX/aurelia-orm/compare/v5.0.0-0...v5.0.0-1) (2017-02-15)
 

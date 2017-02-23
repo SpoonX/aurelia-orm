@@ -688,6 +688,7 @@ export declare function enumeration(values?: any): any;
 export declare function type(typeValue?: any): any;
 export declare class AssociationSelect {
   criteria: any;
+  name: any;
   repository: any;
   identifier: any;
   property: any;
