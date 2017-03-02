@@ -332,6 +332,28 @@ describe('Entity', function() {
     });
   });
 
+  describe('.clear()', function() {
+    it('Should set the entity\'s properties to its original values', function() {
+      let entity = constructEntity(WithName);
+
+      entity.setData({
+              id: 667,
+              name: "original"
+            }).markClean();
+
+            
+      entity.setData({name: "dirty"});      
+      expect(entity.isNew()).toBe(false);
+      expect(entity.clear().name).toBe("original");
+      
+      let newEntity = constructEntity(WithName);
+
+      expect(newEntity.isNew()).toBe(true);
+      newEntity.name = "not really dirty since I'm new";
+      expect(newEntity.name).toBe("not really dirty since I'm new");
+    });
+  });
+
   describe('.reset()', function() {
     it('Should properly reset the entity to the clean status including associations', function() {
       let entity = constructEntity(WithAssociations);
