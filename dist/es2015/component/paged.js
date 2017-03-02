@@ -114,7 +114,7 @@ export let Paged = (_dec = customElement('paged'), _dec2 = inject(EntityManager)
 
   resourceChanged(resource) {
     if (!resource) {
-      logger.error(`resource is ${ typeof resource }. It should be a string or a reference`);
+      logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
     }
 
     this.repository = this.entityManager.getRepository(resource);
