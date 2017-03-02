@@ -586,6 +586,14 @@ define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aure
       return this.markClean();
     };
 
+    Entity.prototype.clear = function clear() {
+      if (!this.isNew()) {
+        return this.setData(this.__cleanValues.data.entity);
+      }
+
+      return this;
+    };
+
     Entity.getResource = function getResource() {
       return OrmMetadata.forTarget(this).fetch('resource');
     };

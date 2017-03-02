@@ -394,7 +394,19 @@ export class Entity {
 
     return this.markClean();
   }
+  /**
+   * Sets the entity's properties to their clean values
+   *
+   * @return {Entity} itself
+   * @chainable
+   */
+  clear() {
+    if(!this.isNew()) {
+      return this.setData(this.__cleanValues.data.entity);
+    }
 
+    return this;
+  }
   /**
    * Get the resource name of this entity's reference (static).
    *

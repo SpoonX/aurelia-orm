@@ -140,7 +140,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
       delete criteria.populate;
 
-      findPath = `${ manyAssociation.resource }/${ manyAssociation.entity.getId() }/${ manyAssociation.property }`;
+      findPath = `${manyAssociation.resource}/${manyAssociation.entity.getId()}/${manyAssociation.property}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -198,7 +198,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
   resourceChanged(resource) {
     if (!resource) {
-      logger.error(`resource is ${ typeof resource }. It should be a string or a reference`);
+      logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
     }
 
     this.repository = this.entityManager.getRepository(resource);

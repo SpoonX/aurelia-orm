@@ -19,7 +19,7 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
       this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
 
       if (!this.transport) {
-        throw new Error(`No transport found for '${ this.getMeta().fetch('endpoint') || 'default' }'.`);
+        throw new Error(`No transport found for '${this.getMeta().fetch('endpoint') || 'default'}'.`);
       }
     }
 
@@ -470,6 +470,14 @@ export let Entity = (_dec3 = transient(), _dec3(_class5 = class Entity {
     return this.markClean();
   }
 
+  clear() {
+    if (!this.isNew()) {
+      return this.setData(this.__cleanValues.data.entity);
+    }
+
+    return this;
+  }
+
   static getResource() {
     return OrmMetadata.forTarget(this).fetch('resource');
   }
@@ -871,7 +879,7 @@ export function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
     descriptor.configurable = true;
 
     if (!Reflect.defineProperty(target, propertyName, descriptor)) {
-      logger.warn(`Cannot make configurable property '${ propertyName }' of object`, target);
+      logger.warn(`Cannot make configurable property '${propertyName}' of object`, target);
     }
   }
 }
