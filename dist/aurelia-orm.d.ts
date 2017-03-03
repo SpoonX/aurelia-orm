@@ -379,6 +379,14 @@ export declare class Entity {
   reset(shallow?: any): any;
   
   /**
+     * Sets the entity's properties to their clean values
+     *
+     * @return {Entity} itself
+     * @chainable
+     */
+  clear(): any;
+  
+  /**
      * Get the resource name of this entity's reference (static).
      *
      * @return {string|null}

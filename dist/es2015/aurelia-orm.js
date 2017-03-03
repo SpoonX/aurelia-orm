@@ -470,6 +470,14 @@ export let Entity = (_dec3 = transient(), _dec3(_class5 = class Entity {
     return this.markClean();
   }
 
+  clear() {
+    if (!this.isNew()) {
+      return this.setData(this.__cleanValues.data.entity);
+    }
+
+    return this;
+  }
+
   static getResource() {
     return OrmMetadata.forTarget(this).fetch('resource');
   }
