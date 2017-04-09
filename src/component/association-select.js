@@ -1,9 +1,11 @@
-import getProp from "get-prop";
-import {inject} from "aurelia-dependency-injection";
-import {bindingMode, BindingEngine} from "aurelia-binding";
-import {bindable, customElement} from "aurelia-templating";
-import {logger, EntityManager, Entity, OrmMetadata} from "../aurelia-orm";
+import getProp from 'get-prop';
+import {inject} from 'aurelia-dependency-injection';
+import {bindingMode, BindingEngine} from 'aurelia-binding';
+import {bindable, customElement} from 'aurelia-templating';
+import {logger, EntityManager, Entity, OrmMetadata} from '../aurelia-orm';
+import {resolvedView} from 'aurelia-view-manager';
 
+@resolvedView('spoonx/orm', 'association-select')
 @customElement('association-select')
 @inject(BindingEngine, EntityManager, Element)
 export class AssociationSelect {
