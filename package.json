@@ -76,7 +76,7 @@
     "aurelia-logging": "^1.0.0",
     "aurelia-metadata": "^1.0.0",
     "aurelia-templating": "^1.0.0",
-    "aurelia-validation": "^0.13.0",
+    "aurelia-validation": "^0.14.0",
     "get-prop": "^0.0.10",
     "typer": "^1.1.0"
   },
