@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'aurelia-dependency-injection'], function (_export, _context) {
+System.register(['../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'aurelia-dependency-injection', 'aurelia-view-manager'], function (_export, _context) {
   "use strict";
 
-  var logger, EntityManager, bindingMode, bindable, customElement, inject, _typeof, _dec, _dec2, _dec3, _dec4, _dec5, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, Paged;
+  var logger, EntityManager, bindingMode, bindable, customElement, inject, resolvedView, _typeof, _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, Paged;
 
   function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -61,6 +61,8 @@ System.register(['../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'aur
       customElement = _aureliaTemplating.customElement;
     }, function (_aureliaDependencyInjection) {
       inject = _aureliaDependencyInjection.inject;
+    }, function (_aureliaViewManager) {
+      resolvedView = _aureliaViewManager.resolvedView;
     }],
     execute: function () {
       _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -69,7 +71,7 @@ System.register(['../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'aur
         return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
       };
 
-      _export('Paged', Paged = (_dec = customElement('paged'), _dec2 = inject(EntityManager), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec5 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
+      _export('Paged', Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/orm', 'paged'), _dec3 = inject(EntityManager), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec5 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec6 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = function () {
         function Paged(entityManager) {
           
 
@@ -159,17 +161,17 @@ System.register(['../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'aur
         };
 
         return Paged;
-      }(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec3], {
+      }(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec4], {
         enumerable: true,
         initializer: function initializer() {
           return [];
         }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec4], {
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec5], {
         enumerable: true,
         initializer: function initializer() {
           return 1;
         }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec5], {
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec6], {
         enumerable: true,
         initializer: null
       }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
@@ -188,7 +190,7 @@ System.register(['../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'aur
         initializer: function initializer() {
           return 30;
         }
-      })), _class2)) || _class) || _class));
+      })), _class2)) || _class) || _class) || _class));
 
       _export('Paged', Paged);
     }

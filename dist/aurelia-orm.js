@@ -4,6 +4,7 @@ import {Config} from 'aurelia-api';
 import {metadata} from 'aurelia-metadata';
 import {Validator,ValidationRules} from 'aurelia-validation';
 import {getLogger} from 'aurelia-logging';
+import {Config as ViewManagerConfig} from 'aurelia-view-manager';
 
 
 /**
@@ -1393,7 +1394,6 @@ export function validatedResource(resourceName, ValidatorClass) {
 
 // eslint-disable-line no-unused-vars
 // eslint-disable-line no-unused-vars
-
 /**
  * Plugin configure
  *
@@ -1412,6 +1412,10 @@ export function configure(frameworkConfig, configCallback) {
   let entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
+
+  frameworkConfig.container.get(ViewManagerConfig).configureNamespace('spoonx/orm', {
+     location: './view/{{framework}}/{{view}}.html'
+  });
 
   frameworkConfig.globalResources('./component/association-select');
   frameworkConfig.globalResources('./component/paged');

@@ -2,8 +2,10 @@ import {logger, EntityManager} from '../aurelia-orm';
 import {bindingMode} from 'aurelia-binding';
 import {bindable, customElement} from 'aurelia-templating';
 import {inject} from 'aurelia-dependency-injection';
+import {resolvedView} from 'aurelia-view-manager';
 
 @customElement('paged')
+@resolvedView('spoonx/orm', 'paged')
 @inject(EntityManager)
 export class Paged {
 

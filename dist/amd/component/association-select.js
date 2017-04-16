@@ -1,4 +1,4 @@
-define(["exports", "get-prop", "aurelia-dependency-injection", "aurelia-binding", "aurelia-templating", "../aurelia-orm"], function (exports, _getProp, _aureliaDependencyInjection, _aureliaBinding, _aureliaTemplating, _aureliaOrm) {
+define(["exports", "get-prop", "aurelia-dependency-injection", "aurelia-binding", "aurelia-templating", "../aurelia-orm", "aurelia-view-manager"], function (exports, _getProp, _aureliaDependencyInjection, _aureliaBinding, _aureliaTemplating, _aureliaOrm, _aureliaViewManager) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -65,9 +65,9 @@ define(["exports", "get-prop", "aurelia-dependency-injection", "aurelia-binding"
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
   }
 
-  var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17;
+  var _dec, _dec2, _dec3, _dec4, _dec5, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17;
 
-  var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplating.customElement)('association-select'), _dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.BindingEngine, _aureliaOrm.EntityManager, Element), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
+  var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplating.customElement)('association-select'), _dec2 = (0, _aureliaViewManager.resolvedView)('spoonx/orm', 'association-select'), _dec3 = (0, _aureliaDependencyInjection.inject)(_aureliaBinding.BindingEngine, _aureliaOrm.EntityManager, Element), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec5 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = function () {
     function AssociationSelect(bindingEngine, entityManager) {
       
 
@@ -330,10 +330,10 @@ define(["exports", "get-prop", "aurelia-dependency-injection", "aurelia-binding"
   }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, "manyAssociation", [_aureliaTemplating.bindable], {
     enumerable: true,
     initializer: null
-  }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "value", [_dec3], {
+  }), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "value", [_dec4], {
     enumerable: true,
     initializer: null
-  }), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "error", [_dec4], {
+  }), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "error", [_dec5], {
     enumerable: true,
     initializer: null
   }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "multiple", [_aureliaTemplating.bindable], {
@@ -364,5 +364,5 @@ define(["exports", "get-prop", "aurelia-dependency-injection", "aurelia-binding"
   }), _descriptor17 = _applyDecoratedDescriptor(_class2.prototype, "placeholderText", [_aureliaTemplating.bindable], {
     enumerable: true,
     initializer: null
-  })), _class2)) || _class) || _class);
+  })), _class2)) || _class) || _class) || _class);
 });

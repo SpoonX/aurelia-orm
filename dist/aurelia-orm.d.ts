@@ -3,6 +3,7 @@ import {Config} from 'aurelia-api';
 import {metadata} from 'aurelia-metadata';
 import {Validator,ValidationRules} from 'aurelia-validation';
 import {getLogger} from 'aurelia-logging';
+import {Config as ViewManagerConfig,resolvedView} from 'aurelia-view-manager';
 import {bindingMode,BindingEngine} from 'aurelia-binding';
 import {bindable,customElement} from 'aurelia-templating';
 

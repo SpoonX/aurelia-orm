@@ -1,4 +1,4 @@
-var _dec, _dec2, _dec3, _dec4, _dec5, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -47,8 +47,9 @@ import { logger, EntityManager } from '../aurelia-orm';
 import { bindingMode } from 'aurelia-binding';
 import { bindable, customElement } from 'aurelia-templating';
 import { inject } from 'aurelia-dependency-injection';
+import { resolvedView } from 'aurelia-view-manager';
 
-export let Paged = (_dec = customElement('paged'), _dec2 = inject(EntityManager), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec5 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = class Paged {
+export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/orm', 'paged'), _dec3 = inject(EntityManager), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec5 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec6 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = class Paged {
 
   constructor(entityManager) {
     _initDefineProp(this, 'data', _descriptor, this);
@@ -114,7 +115,7 @@ export let Paged = (_dec = customElement('paged'), _dec2 = inject(EntityManager)
 
   resourceChanged(resource) {
     if (!resource) {
-      logger.error(`resource is ${ typeof resource }. It should be a string or a reference`);
+      logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
     }
 
     this.repository = this.entityManager.getRepository(resource);
@@ -133,17 +134,17 @@ export let Paged = (_dec = customElement('paged'), _dec2 = inject(EntityManager)
       this.error = error;
     });
   }
-}, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec3], {
+}, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec4], {
   enumerable: true,
   initializer: function () {
     return [];
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec4], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec5], {
   enumerable: true,
   initializer: function () {
     return 1;
   }
-}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec5], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec6], {
   enumerable: true,
   initializer: null
 }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
@@ -162,4 +163,4 @@ export let Paged = (_dec = customElement('paged'), _dec2 = inject(EntityManager)
   initializer: function () {
     return 30;
   }
-})), _class2)) || _class) || _class);
+})), _class2)) || _class) || _class) || _class);

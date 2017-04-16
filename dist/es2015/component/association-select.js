@@ -1,4 +1,4 @@
-var _dec, _dec2, _dec3, _dec4, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17;
+var _dec, _dec2, _dec3, _dec4, _dec5, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16, _descriptor17;
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -48,8 +48,9 @@ import { inject } from "aurelia-dependency-injection";
 import { bindingMode, BindingEngine } from "aurelia-binding";
 import { bindable, customElement } from "aurelia-templating";
 import { logger, EntityManager, Entity, OrmMetadata } from "../aurelia-orm";
+import { resolvedView } from 'aurelia-view-manager';
 
-export let AssociationSelect = (_dec = customElement('association-select'), _dec2 = inject(BindingEngine, EntityManager, Element), _dec3 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = class AssociationSelect {
+export let AssociationSelect = (_dec = customElement('association-select'), _dec2 = resolvedView('spoonx/orm', 'association-select'), _dec3 = inject(BindingEngine, EntityManager, Element), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec5 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = class AssociationSelect {
   constructor(bindingEngine, entityManager) {
     _initDefineProp(this, "criteria", _descriptor, this);
 
@@ -140,7 +141,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
       delete criteria.populate;
 
-      findPath = `${ manyAssociation.resource }/${ manyAssociation.entity.getId() }/${ manyAssociation.property }`;
+      findPath = `${manyAssociation.resource}/${manyAssociation.entity.getId()}/${manyAssociation.property}`;
     } else if (this.association) {
       let associations = Array.isArray(this.association) ? this.association : [this.association];
 
@@ -198,7 +199,7 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 
   resourceChanged(resource) {
     if (!resource) {
-      logger.error(`resource is ${ typeof resource }. It should be a string or a reference`);
+      logger.error(`resource is ${typeof resource}. It should be a string or a reference`);
     }
 
     this.repository = this.entityManager.getRepository(resource);
@@ -298,10 +299,10 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 }), _descriptor9 = _applyDecoratedDescriptor(_class2.prototype, "manyAssociation", [bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "value", [_dec3], {
+}), _descriptor10 = _applyDecoratedDescriptor(_class2.prototype, "value", [_dec4], {
   enumerable: true,
   initializer: null
-}), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "error", [_dec4], {
+}), _descriptor11 = _applyDecoratedDescriptor(_class2.prototype, "error", [_dec5], {
   enumerable: true,
   initializer: null
 }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "multiple", [bindable], {
@@ -332,4 +333,4 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
 }), _descriptor17 = _applyDecoratedDescriptor(_class2.prototype, "placeholderText", [bindable], {
   enumerable: true,
   initializer: null
-})), _class2)) || _class) || _class);
+})), _class2)) || _class) || _class) || _class);

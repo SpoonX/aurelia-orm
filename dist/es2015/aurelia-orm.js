@@ -6,6 +6,7 @@ import { Config } from 'aurelia-api';
 import { metadata } from 'aurelia-metadata';
 import { Validator, ValidationRules } from 'aurelia-validation';
 import { getLogger } from 'aurelia-logging';
+import { Config as ViewManagerConfig } from 'aurelia-view-manager';
 
 export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
   constructor(clientConfig) {
@@ -19,7 +20,7 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
       this.transport = this.clientConfig.getEndpoint(this.getMeta().fetch('endpoint'));
 
       if (!this.transport) {
-        throw new Error(`No transport found for '${ this.getMeta().fetch('endpoint') || 'default' }'.`);
+        throw new Error(`No transport found for '${this.getMeta().fetch('endpoint') || 'default'}'.`);
       }
     }
 
@@ -848,6 +849,10 @@ export function configure(frameworkConfig, configCallback) {
 
   configCallback(entityManagerInstance);
 
+  frameworkConfig.container.get(ViewManagerConfig).configureNamespace('spoonx/orm', {
+    location: './view/{{framework}}/{{view}}.html'
+  });
+
   frameworkConfig.globalResources('./component/association-select');
   frameworkConfig.globalResources('./component/paged');
 }
@@ -879,7 +884,7 @@ export function ensurePropertyIsConfigurable(target, propertyName, descriptor) {
     descriptor.configurable = true;
 
     if (!Reflect.defineProperty(target, propertyName, descriptor)) {
-      logger.warn(`Cannot make configurable property '${ propertyName }' of object`, target);
+      logger.warn(`Cannot make configurable property '${propertyName}' of object`, target);
     }
   }
 }

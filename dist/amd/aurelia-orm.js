@@ -1,4 +1,4 @@
-define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging'], function (exports, _typer, _aureliaDependencyInjection, _aureliaApi, _aureliaMetadata, _aureliaValidation, _aureliaLogging) {
+define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging', 'aurelia-view-manager'], function (exports, _typer, _aureliaDependencyInjection, _aureliaApi, _aureliaMetadata, _aureliaValidation, _aureliaLogging, _aureliaViewManager) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -972,6 +972,10 @@ define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aure
     var entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
     configCallback(entityManagerInstance);
+
+    frameworkConfig.container.get(_aureliaViewManager.Config).configureNamespace('spoonx/orm', {
+      location: './view/{{framework}}/{{view}}.html'
+    });
 
     frameworkConfig.globalResources('./component/association-select');
     frameworkConfig.globalResources('./component/paged');

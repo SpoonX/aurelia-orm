@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging'], function (_export, _context) {
+System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aurelia-metadata', 'aurelia-validation', 'aurelia-logging', 'aurelia-view-manager'], function (_export, _context) {
   "use strict";
 
-  var typer, inject, transient, Container, Config, metadata, Validator, ValidationRules, getLogger, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, logger;
+  var typer, inject, transient, Container, Config, metadata, Validator, ValidationRules, getLogger, ViewManagerConfig, _typeof, _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6, Repository, DefaultRepository, OrmMetadata, Metadata, Entity, EntityManager, logger;
 
   function _possibleConstructorReturn(self, call) {
     if (!self) {
@@ -236,6 +236,10 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
     configCallback(entityManagerInstance);
 
+    frameworkConfig.container.get(ViewManagerConfig).configureNamespace('spoonx/orm', {
+      location: './view/{{framework}}/{{view}}.html'
+    });
+
     frameworkConfig.globalResources('./component/association-select');
     frameworkConfig.globalResources('./component/paged');
   }
@@ -333,6 +337,8 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
       ValidationRules = _aureliaValidation.ValidationRules;
     }, function (_aureliaLogging) {
       getLogger = _aureliaLogging.getLogger;
+    }, function (_aureliaViewManager) {
+      ViewManagerConfig = _aureliaViewManager.Config;
     }],
     execute: function () {
       _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {

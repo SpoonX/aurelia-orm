@@ -37,6 +37,8 @@ var _aureliaValidation = require('aurelia-validation');
 
 var _aureliaLogging = require('aurelia-logging');
 
+var _aureliaViewManager = require('aurelia-view-manager');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -956,6 +958,10 @@ function configure(frameworkConfig, configCallback) {
   var entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
+
+  frameworkConfig.container.get(_aureliaViewManager.Config).configureNamespace('spoonx/orm', {
+    location: './view/{{framework}}/{{view}}.html'
+  });
 
   frameworkConfig.globalResources('./component/association-select');
   frameworkConfig.globalResources('./component/paged');

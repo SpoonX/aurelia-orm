@@ -7,7 +7,7 @@ exports.Paged = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
 var _aureliaOrm = require('../aurelia-orm');
 
@@ -16,6 +16,8 @@ var _aureliaBinding = require('aurelia-binding');
 var _aureliaTemplating = require('aurelia-templating');
 
 var _aureliaDependencyInjection = require('aurelia-dependency-injection');
+
+var _aureliaViewManager = require('aurelia-view-manager');
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -62,7 +64,7 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged'), _dec2 = (0, _aureliaDependencyInjection.inject)(_aureliaOrm.EntityManager), _dec3 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec5 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = (_class2 = function () {
+var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged'), _dec2 = (0, _aureliaViewManager.resolvedView)('spoonx/orm', 'paged'), _dec3 = (0, _aureliaDependencyInjection.inject)(_aureliaOrm.EntityManager), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec5 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec6 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = function () {
   function Paged(entityManager) {
     
 
@@ -152,17 +154,17 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
   };
 
   return Paged;
-}(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec3], {
+}(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec4], {
   enumerable: true,
   initializer: function initializer() {
     return [];
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec4], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec5], {
   enumerable: true,
   initializer: function initializer() {
     return 1;
   }
-}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec5], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec6], {
   enumerable: true,
   initializer: null
 }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [_aureliaTemplating.bindable], {
@@ -181,4 +183,4 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
   initializer: function initializer() {
     return 30;
   }
-})), _class2)) || _class) || _class);
+})), _class2)) || _class) || _class) || _class);

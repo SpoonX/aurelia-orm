@@ -1,6 +1,6 @@
 {
   "name": "aurelia-orm",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Makes working with entities and calling your Rest API simple.",
   "keywords": [
     "aurelia",
@@ -29,6 +29,7 @@
     "aurelia-metadata": "^1.0.0",
     "aurelia-templating": "^1.0.0",
     "aurelia-validation": "^0.13.0",
+    "aurelia-view-manager": "^0.1.0",
     "get-prop": "^0.0.10",
     "typer": "^1.1.0"
   }
