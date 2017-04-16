@@ -3,8 +3,10 @@ import {inject} from "aurelia-dependency-injection";
 import {bindingMode, BindingEngine} from "aurelia-binding";
 import {bindable, customElement} from "aurelia-templating";
 import {logger, EntityManager, Entity, OrmMetadata} from "../aurelia-orm";
+import {resolvedView} from 'aurelia-view-manager';
 
 @customElement('association-select')
+@resolvedView('spoonx/orm', 'association-select')
 @inject(BindingEngine, EntityManager, Element)
 export class AssociationSelect {
   @bindable criteria;
