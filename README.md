@@ -30,7 +30,7 @@ We've simplified installation and usage! This plugin should now be installed usi
 
 You can find usage examples and the documentation at [aurelia-orm-doc](http://aurelia-orm.spoonx.org/).
 
-The [changelog](doc/changelog.md) provides you with information about important changes.
+The [changelog](doc/CHANGELOG.md) provides you with information about important changes.
 
 ## Uses
 

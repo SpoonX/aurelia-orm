@@ -5,6 +5,7 @@ import {Entity} from './entity';
 
 import {AssociationSelect} from './component/association-select'; // eslint-disable-line no-unused-vars
 import {Paged} from './component/paged'; // eslint-disable-line no-unused-vars
+import {Config as ViewManagerConfig} from 'aurelia-view-manager';
 
 /**
  * Plugin configure
@@ -24,6 +25,10 @@ export function configure(frameworkConfig, configCallback) {
   let entityManagerInstance = frameworkConfig.container.get(EntityManager);
 
   configCallback(entityManagerInstance);
+
+  frameworkConfig.container.get(ViewManagerConfig).configureNamespace('spoonx/orm', {
+     location: './view/{{framework}}/{{view}}.html'
+  });
 
   frameworkConfig.globalResources('./component/association-select');
   frameworkConfig.globalResources('./component/paged');
