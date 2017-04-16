@@ -1,3 +1,8 @@
+<a name="6.0.1"></a>
+## [6.0.1](https://github.com/SpoonX/aurelia-orm/compare/v6.0.0...v6.0.1) (2017-04-16)
+
+
+
 <a name="5.0.0"></a>
 # [5.0.0](https://github.com/SpoonX/aurelia-orm/compare/v5.0.0-2...v5.0.0) (2017-03-03)
 
