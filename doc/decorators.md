@@ -189,6 +189,7 @@ The accepted types are:
 * float
 * boolean
 * bool
+* json
 * smart (autodetect based on value)
 
 ## @endpoint()
