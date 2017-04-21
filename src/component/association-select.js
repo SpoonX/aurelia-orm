@@ -241,10 +241,9 @@ export class AssociationSelect {
     }
   }
 
-  /**
-   * When attached to the DOM, initialize the component.
-   */
-  attached() {
+  bind() {
+    this.resourceChanged(this.resource);
+
     if (!this.association && !this.manyAssociation) {
       this.load(this.value);
 
