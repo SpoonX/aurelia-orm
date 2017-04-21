@@ -795,11 +795,7 @@ export declare class AssociationSelect {
      * @param  {{}} oldVal
      */
   criteriaChanged(newVal?: any, oldVal?: any): any;
-  
-  /**
-     * When attached to the DOM, initialize the component.
-     */
-  attached(): any;
+  bind(): any;
   
   /**
      * Find the name of the property in meta, reversed by resource.

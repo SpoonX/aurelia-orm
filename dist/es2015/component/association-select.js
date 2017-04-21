@@ -215,7 +215,9 @@ export let AssociationSelect = (_dec = customElement('association-select'), _dec
     }
   }
 
-  attached() {
+  bind() {
+    this.resourceChanged(this.resource);
+
     if (!this.association && !this.manyAssociation) {
       this.load(this.value);
 

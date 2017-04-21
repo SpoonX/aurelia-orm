@@ -1,3 +1,13 @@
+<a name="6.0.2"></a>
+## [6.0.2](https://github.com/SpoonX/aurelia-orm/compare/v6.0.1...v6.0.2) (2017-04-21)
+
+
+### Bug Fixes
+
+* **associationSelect:** fix value binding ([0d38982](https://github.com/SpoonX/aurelia-orm/commit/0d38982))
+
+
+
 <a name="6.0.1"></a>
 ## [6.0.1](https://github.com/SpoonX/aurelia-orm/compare/v6.0.0...v6.0.1) (2017-04-16)
 

@@ -243,7 +243,9 @@ var AssociationSelect = exports.AssociationSelect = (_dec = (0, _aureliaTemplati
     }
   };
 
-  AssociationSelect.prototype.attached = function attached() {
+  AssociationSelect.prototype.bind = function bind() {
+    this.resourceChanged(this.resource);
+
     if (!this.association && !this.manyAssociation) {
       this.load(this.value);
 

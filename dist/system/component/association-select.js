@@ -251,7 +251,9 @@ System.register(["get-prop", "aurelia-dependency-injection", "aurelia-binding", 
           }
         };
 
-        AssociationSelect.prototype.attached = function attached() {
+        AssociationSelect.prototype.bind = function bind() {
+          this.resourceChanged(this.resource);
+
           if (!this.association && !this.manyAssociation) {
             this.load(this.value);
 
