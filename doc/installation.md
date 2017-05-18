@@ -4,6 +4,8 @@ Aurelia-orm needs an installation of [aurelia-api](https://www.npmjs.com/package
 
 ## Aurelia-Cli
 
+Start by following the instructions for the dependencies of orm, [aurelia-api](https://github.com/SpoonX/aurelia-api) and [aurelia-view-manager](https://github.com/SpoonX/aurelia-view-manager). When done, resume with the other steps.
+
 Run `npm i aurelia-orm --save` from your project root.
 
 It also has submodules and makes use of `get-prop` and `typer`. So, add following to the `build.bundles.dependencies` section of `aurelia-project/aurelia.json`.
@@ -18,8 +20,8 @@ It also has submodules and makes use of `get-prop` and `typer`. So, add followin
     "path": "../node_modules/aurelia-orm/dist/amd",
     "main": "aurelia-orm",
     "resources": [
-      "component/association-select.html",
-      "component/paged.html"
+      "component/view/bootstrap/association-select.html",
+      "component/view/bootstrap/paged.html"
     ]
   },
   {
