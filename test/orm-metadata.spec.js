@@ -9,6 +9,7 @@ describe('OrmMetadata', function() {
       expect(meta instanceof Metadata).toBe(true);
       expect(meta.metadata).toEqual({
         repository: DefaultRepository,
+        identifier: null,
         resource: null,
         endpoint: null,
         name: null,
@@ -24,6 +25,7 @@ describe('OrmMetadata', function() {
       expect(meta instanceof Metadata).toBe(true);
       expect(meta.metadata).toEqual({
         repository: DefaultRepository,
+        identifier: null,
         resource: null,
         name: null,
         endpoint: null,

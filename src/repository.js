@@ -55,6 +55,28 @@ export class Repository {
   }
 
   /**
+   * Set the identifier
+   *
+   * @param {string} identifier
+   * @return {Repository} this
+   * @chainable
+   */
+  setIdentifier(identifier) {
+    this.identifier = identifier;
+
+    return this;
+  }
+
+  /**
+   * Get the identifier
+   *
+   * @return {string|null}
+   */
+  getIdentifier() {
+    return this.identifier;
+  }
+
+  /**
    * Set the resource
    *
    * @param {string} resource

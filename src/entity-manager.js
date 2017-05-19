@@ -47,7 +47,9 @@ export class EntityManager {
    * @chainable
    */
   registerEntity(EntityClass) {
-    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
+    let meta = OrmMetadata.forTarget(EntityClass);
+
+    this.entities[meta.fetch('identifier') || meta.fetch('resource')] = EntityClass;
 
     return this;
   }
@@ -61,11 +63,16 @@ export class EntityManager {
    * @throws {Error}
    */
   getRepository(entity) {
-    let reference = this.resolveEntityReference(entity);
-    let resource  = entity;
+    let reference  = this.resolveEntityReference(entity);
+    let identifier = entity;
+    let resource   = entity;
 
     if (typeof reference.getResource === 'function') {
       resource = reference.getResource() || resource;
+    }
+
+    if (typeof reference.getIdentifier === 'function') {
+      identifier = reference.getIdentifier() || resource;
     }
 
     if (typeof resource !== 'string') {
@@ -90,11 +97,12 @@ export class EntityManager {
     // Tell the repository instance what resource it should use.
     instance.setMeta(metaData);
     instance.resource      = resource;
+    instance.identifier    = identifier;
     instance.entityManager = this;
 
     if (instance instanceof DefaultRepository) {
       // This is a default repository. We'll cache this instance.
-      this.repositories[resource] = instance;
+      this.repositories[identifier] = instance;
     }
 
     return instance;
@@ -133,6 +141,7 @@ export class EntityManager {
     let reference = this.resolveEntityReference(entity);
     let instance  = this.container.get(reference);
     let resource  = reference.getResource();
+    let identifier = reference.getIdentifier() || resource;
 
     if (!resource) {
       if (typeof entity !== 'string') {
@@ -140,6 +149,7 @@ export class EntityManager {
       }
 
       resource = entity;
+      identifier = entity;
     }
 
     // Set the validator.
@@ -149,6 +159,8 @@ export class EntityManager {
       instance.setValidator(validator);
     }
 
-    return instance.setResource(resource).setRepository(this.getRepository(resource));
+    return instance.setResource(resource)
+      .setIdentifier(identifier)
+      .setRepository(this.getRepository(identifier));
   }
 }

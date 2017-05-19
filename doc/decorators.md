@@ -43,6 +43,20 @@ class HelloWorld {}
 class HelloWorld {}
 ```
 
+## @identifier()
+
+This decorator comes in handy when you have the same resource name for multiple endpoints. Without it, aurelia-orm will use the resource decorator. The identifier will be used to register and retrieve the repository for the given entity.
+
+When left empty, the name of the class (.toLowerCase()) will be used as the resource name. This is usually fine. 
+
+> **NOTE:** Leaving the decorator without a value is bad idea for bundling, because the bundler renames your modules it will not longer match. For more information see [bundling](https://github.com/SpoonX/aurelia-orm#bundling)
+
+```js
+// Sets the identifier to "i-want-bacon"
+@identifier('i-want-bacon')
+class HelloWorld {}
+```
+
 ## @resource()
 
 This decorator is probably the most important one. Without it, aurelia-orm won't know what your **custom entity** is all about. The resource maps to the API endpoint it represents. Simply put, resource `foo` maps to `/foo`.
