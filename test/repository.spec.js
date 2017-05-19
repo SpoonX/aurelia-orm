@@ -76,6 +76,22 @@ describe('Repository', function() {
     });
   });
 
+  describe('.setIdentifier()', function() {
+    it('Should set the identifier.', function() {
+      let repository = new Repository(getApiConfig());
+
+      repository.setIdentifier('foo');
+
+      expect(repository.identifier).toBe('foo');
+    });
+
+    it('Should return self.', function() {
+      let repository = new Repository(getApiConfig());
+
+      expect(repository.setIdentifier('foo')).toBe(repository);
+    });
+  });
+
   describe('.setResource()', function() {
     it('Should set the resource.', function() {
       let repository = new Repository(getApiConfig());

@@ -21,6 +21,7 @@ export class Metadata {
   constructor() {
     this.metadata = {
       repository  : DefaultRepository,
+      identifier  : null,
       resource    : null,
       endpoint    : null,
       name        : null,
