@@ -1,6 +1,7 @@
 import {EntityManager} from '../src/entity-manager';
 import {Container} from 'aurelia-dependency-injection';
 import {WithResource} from './resources/entity/with-resource';
+import {WithIdentifier} from './resources/entity/with-identifier';
 import {WithCustomRepository} from './resources/entity/with-custom-repository';
 import {SimpleCustom} from './resources/repository/simple-custom';
 import {DefaultRepository} from  '../src/default-repository';
@@ -14,6 +15,14 @@ describe('EntityManager', function() {
       entityManager.registerEntities([WithResource]);
 
       expect(entityManager.entities).toEqual({'with-resource': WithResource});
+    });
+
+    it('Should register entities with the manager and identifier decorator', function() {
+      let entityManager = new EntityManager(new Container());
+
+      entityManager.registerEntities([WithIdentifier]);
+
+      expect(entityManager.entities).toEqual({'with-identifier': WithIdentifier});
     });
 
     it('Should return self.', function() {
@@ -36,6 +45,14 @@ describe('EntityManager', function() {
       entityManager.registerEntity(WithResource);
 
       expect(entityManager.entities).toEqual({'with-resource': WithResource});
+    });
+
+    it('Should register an entity with the manager and identifier decorator', function() {
+      let entityManager = new EntityManager(new Container());
+
+      entityManager.registerEntity(WithIdentifier);
+
+      expect(entityManager.entities).toEqual({'with-identifier': WithIdentifier});
     });
 
     xit('Should throw when register with non-Entity', function() {
@@ -70,6 +87,22 @@ describe('EntityManager', function() {
       entityManager.registerEntity(WithResource);
 
       expect(entityManager.getRepository(WithResource) instanceof DefaultRepository).toBe(true);
+    });
+
+    it('Should return the default repository when no custom specified. (Entity resource)', function() {
+      let entityManager = new EntityManager(new Container());
+
+      entityManager.registerEntity(WithIdentifier);
+
+      expect(entityManager.getRepository('with-identifier') instanceof DefaultRepository).toBe(true);
+    });
+
+    it('Should return the default repository when no custom specified. (Entity reference)', function() {
+      let entityManager = new EntityManager(new Container());
+
+      entityManager.registerEntity(WithIdentifier);
+
+      expect(entityManager.getRepository(WithIdentifier) instanceof DefaultRepository).toBe(true);
     });
 
     it('Should return the custom repository when specified.', function() {
@@ -162,6 +195,20 @@ describe('EntityManager', function() {
       entityManager.registerEntity(WithResource);
 
       expect(entityManager.getEntity('with-resource') instanceof WithResource).toBe(true);
+    });
+
+    it('Should return a new `WithIdentifier` instance (Entity reference).', function() {
+      let entityManager = new EntityManager(new Container());
+
+      expect(entityManager.getEntity(WithIdentifier) instanceof WithIdentifier).toBe(true);
+    });
+
+    it('Should return a new `WithIdentifier` instance (Entity resource).', function() {
+      let entityManager = new EntityManager(new Container());
+
+      entityManager.registerEntity(WithIdentifier);
+
+      expect(entityManager.getEntity('with-identifier') instanceof WithIdentifier).toBe(true);
     });
 
     it('Should return a new `Entity` instance.', function() {

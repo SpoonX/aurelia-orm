@@ -407,6 +407,37 @@ export class Entity {
 
     return this;
   }
+
+  /**
+   * Get the identifier name of this entity's reference (static).
+   *
+   * @return {string|null}
+   */
+  static getIdentifier() {
+    return OrmMetadata.forTarget(this).fetch('identifier');
+  }
+
+  /**
+   * Get the identifier name of this entity instance
+   *
+   * @return {string|null}
+   */
+  getIdentifier() {
+    return this.__identifier || this.getMeta().fetch('identifier');
+  }
+
+  /**
+   * Set this instance's identifier.
+   *
+   * @param {string} identifier
+   *
+   * @return {Entity} itself
+   * @chainable
+   */
+  setIdentifier(identifier) {
+    return this.define('__identifier', identifier);
+  }
+
   /**
    * Get the resource name of this entity's reference (static).
    *
