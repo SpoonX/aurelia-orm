@@ -184,6 +184,14 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
   _export('idProperty', idProperty);
 
+  function identifier(identifierName) {
+    return function (target) {
+      OrmMetadata.forTarget(target).put('identifier', identifierName || target.name.toLowerCase());
+    };
+  }
+
+  _export('identifier', identifier);
+
   function name(entityName) {
     return function (target) {
       OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
@@ -376,6 +384,16 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           return this.meta;
         };
 
+        Repository.prototype.setIdentifier = function setIdentifier(identifier) {
+          this.identifier = identifier;
+
+          return this;
+        };
+
+        Repository.prototype.getIdentifier = function getIdentifier() {
+          return this.identifier;
+        };
+
         Repository.prototype.setResource = function setResource(resource) {
           this.resource = resource;
 
@@ -552,6 +570,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
           this.metadata = {
             repository: DefaultRepository,
+            identifier: null,
             resource: null,
             endpoint: null,
             name: null,
@@ -890,6 +909,18 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           return this;
         };
 
+        Entity.getIdentifier = function getIdentifier() {
+          return OrmMetadata.forTarget(this).fetch('identifier');
+        };
+
+        Entity.prototype.getIdentifier = function getIdentifier() {
+          return this.__identifier || this.getMeta().fetch('identifier');
+        };
+
+        Entity.prototype.setIdentifier = function setIdentifier(identifier) {
+          return this.define('__identifier', identifier);
+        };
+
         Entity.getResource = function getResource() {
           return OrmMetadata.forTarget(this).fetch('resource');
         };
@@ -1000,17 +1031,24 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
         };
 
         EntityManager.prototype.registerEntity = function registerEntity(EntityClass) {
-          this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
+          var meta = OrmMetadata.forTarget(EntityClass);
+
+          this.entities[meta.fetch('identifier') || meta.fetch('resource')] = EntityClass;
 
           return this;
         };
 
         EntityManager.prototype.getRepository = function getRepository(entity) {
           var reference = this.resolveEntityReference(entity);
+          var identifier = entity;
           var resource = entity;
 
           if (typeof reference.getResource === 'function') {
             resource = reference.getResource() || resource;
+          }
+
+          if (typeof reference.getIdentifier === 'function') {
+            identifier = reference.getIdentifier() || resource;
           }
 
           if (typeof resource !== 'string') {
@@ -1031,10 +1069,11 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
           instance.setMeta(metaData);
           instance.resource = resource;
+          instance.identifier = identifier;
           instance.entityManager = this;
 
           if (instance instanceof DefaultRepository) {
-            this.repositories[resource] = instance;
+            this.repositories[identifier] = instance;
           }
 
           return instance;
@@ -1058,6 +1097,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
           var reference = this.resolveEntityReference(entity);
           var instance = this.container.get(reference);
           var resource = reference.getResource();
+          var identifier = reference.getIdentifier() || resource;
 
           if (!resource) {
             if (typeof entity !== 'string') {
@@ -1065,6 +1105,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
             }
 
             resource = entity;
+            identifier = entity;
           }
 
           if (instance.hasValidation() && !instance.getValidator()) {
@@ -1073,7 +1114,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
             instance.setValidator(validator);
           }
 
-          return instance.setResource(resource).setRepository(this.getRepository(resource));
+          return instance.setResource(resource).setIdentifier(identifier).setRepository(this.getRepository(identifier));
         };
 
         return EntityManager;

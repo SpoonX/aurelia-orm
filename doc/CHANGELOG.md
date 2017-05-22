@@ -1,3 +1,13 @@
+<a name="6.1.0"></a>
+# [6.1.0](https://github.com/SpoonX/aurelia-orm/compare/v6.0.2...v6.1.0) (2017-05-22)
+
+
+### Features
+
+* **project:** add identifier decorator to support the duplicated resources ([286453f](https://github.com/SpoonX/aurelia-orm/commit/286453f))
+
+
+
 <a name="6.0.2"></a>
 ## [6.0.2](https://github.com/SpoonX/aurelia-orm/compare/v6.0.1...v6.0.2) (2017-04-21)
 

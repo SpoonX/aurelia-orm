@@ -35,6 +35,16 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
     return this.meta;
   }
 
+  setIdentifier(identifier) {
+    this.identifier = identifier;
+
+    return this;
+  }
+
+  getIdentifier() {
+    return this.identifier;
+  }
+
   setResource(resource) {
     this.resource = resource;
 
@@ -179,6 +189,7 @@ export let Metadata = (_temp = _class4 = class Metadata {
   constructor() {
     this.metadata = {
       repository: DefaultRepository,
+      identifier: null,
       resource: null,
       endpoint: null,
       name: null,
@@ -479,6 +490,18 @@ export let Entity = (_dec3 = transient(), _dec3(_class5 = class Entity {
     return this;
   }
 
+  static getIdentifier() {
+    return OrmMetadata.forTarget(this).fetch('identifier');
+  }
+
+  getIdentifier() {
+    return this.__identifier || this.getMeta().fetch('identifier');
+  }
+
+  setIdentifier(identifier) {
+    return this.define('__identifier', identifier);
+  }
+
   static getResource() {
     return OrmMetadata.forTarget(this).fetch('resource');
   }
@@ -715,6 +738,12 @@ export function idProperty(propertyName) {
   };
 }
 
+export function identifier(identifierName) {
+  return function (target) {
+    OrmMetadata.forTarget(target).put('identifier', identifierName || target.name.toLowerCase());
+  };
+}
+
 export function name(entityName) {
   return function (target) {
     OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
@@ -758,17 +787,24 @@ export let EntityManager = (_dec4 = inject(Container), _dec4(_class6 = class Ent
   }
 
   registerEntity(EntityClass) {
-    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
+    let meta = OrmMetadata.forTarget(EntityClass);
+
+    this.entities[meta.fetch('identifier') || meta.fetch('resource')] = EntityClass;
 
     return this;
   }
 
   getRepository(entity) {
     let reference = this.resolveEntityReference(entity);
+    let identifier = entity;
     let resource = entity;
 
     if (typeof reference.getResource === 'function') {
       resource = reference.getResource() || resource;
+    }
+
+    if (typeof reference.getIdentifier === 'function') {
+      identifier = reference.getIdentifier() || resource;
     }
 
     if (typeof resource !== 'string') {
@@ -789,10 +825,11 @@ export let EntityManager = (_dec4 = inject(Container), _dec4(_class6 = class Ent
 
     instance.setMeta(metaData);
     instance.resource = resource;
+    instance.identifier = identifier;
     instance.entityManager = this;
 
     if (instance instanceof DefaultRepository) {
-      this.repositories[resource] = instance;
+      this.repositories[identifier] = instance;
     }
 
     return instance;
@@ -816,6 +853,7 @@ export let EntityManager = (_dec4 = inject(Container), _dec4(_class6 = class Ent
     let reference = this.resolveEntityReference(entity);
     let instance = this.container.get(reference);
     let resource = reference.getResource();
+    let identifier = reference.getIdentifier() || resource;
 
     if (!resource) {
       if (typeof entity !== 'string') {
@@ -823,6 +861,7 @@ export let EntityManager = (_dec4 = inject(Container), _dec4(_class6 = class Ent
       }
 
       resource = entity;
+      identifier = entity;
     }
 
     if (instance.hasValidation() && !instance.getValidator()) {
@@ -831,7 +870,7 @@ export let EntityManager = (_dec4 = inject(Container), _dec4(_class6 = class Ent
       instance.setValidator(validator);
     }
 
-    return instance.setResource(resource).setRepository(this.getRepository(resource));
+    return instance.setResource(resource).setIdentifier(identifier).setRepository(this.getRepository(identifier));
   }
 }) || _class6);
 

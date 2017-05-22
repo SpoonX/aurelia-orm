@@ -10,6 +10,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _dec, _class, _dec2, _class3, _class4, _temp, _dec3, _class5, _dec4, _class6;
 
 exports.idProperty = idProperty;
+exports.identifier = identifier;
 exports.name = name;
 exports.repository = repository;
 exports.resource = resource;
@@ -74,6 +75,16 @@ var Repository = exports.Repository = (_dec = (0, _aureliaDependencyInjection.in
 
   Repository.prototype.getMeta = function getMeta() {
     return this.meta;
+  };
+
+  Repository.prototype.setIdentifier = function setIdentifier(identifier) {
+    this.identifier = identifier;
+
+    return this;
+  };
+
+  Repository.prototype.getIdentifier = function getIdentifier() {
+    return this.identifier;
   };
 
   Repository.prototype.setResource = function setResource(resource) {
@@ -245,6 +256,7 @@ var Metadata = exports.Metadata = (_temp = _class4 = function () {
 
     this.metadata = {
       repository: DefaultRepository,
+      identifier: null,
       resource: null,
       endpoint: null,
       name: null,
@@ -580,6 +592,18 @@ var Entity = exports.Entity = (_dec3 = (0, _aureliaDependencyInjection.transient
     return this;
   };
 
+  Entity.getIdentifier = function getIdentifier() {
+    return OrmMetadata.forTarget(this).fetch('identifier');
+  };
+
+  Entity.prototype.getIdentifier = function getIdentifier() {
+    return this.__identifier || this.getMeta().fetch('identifier');
+  };
+
+  Entity.prototype.setIdentifier = function setIdentifier(identifier) {
+    return this.define('__identifier', identifier);
+  };
+
   Entity.getResource = function getResource() {
     return OrmMetadata.forTarget(this).fetch('resource');
   };
@@ -818,6 +842,12 @@ function idProperty(propertyName) {
   };
 }
 
+function identifier(identifierName) {
+  return function (target) {
+    OrmMetadata.forTarget(target).put('identifier', identifierName || target.name.toLowerCase());
+  };
+}
+
 function name(entityName) {
   return function (target) {
     OrmMetadata.forTarget(target).put('name', entityName || target.name.toLowerCase());
@@ -865,17 +895,24 @@ var EntityManager = exports.EntityManager = (_dec4 = (0, _aureliaDependencyInjec
   };
 
   EntityManager.prototype.registerEntity = function registerEntity(EntityClass) {
-    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
+    var meta = OrmMetadata.forTarget(EntityClass);
+
+    this.entities[meta.fetch('identifier') || meta.fetch('resource')] = EntityClass;
 
     return this;
   };
 
   EntityManager.prototype.getRepository = function getRepository(entity) {
     var reference = this.resolveEntityReference(entity);
+    var identifier = entity;
     var resource = entity;
 
     if (typeof reference.getResource === 'function') {
       resource = reference.getResource() || resource;
+    }
+
+    if (typeof reference.getIdentifier === 'function') {
+      identifier = reference.getIdentifier() || resource;
     }
 
     if (typeof resource !== 'string') {
@@ -896,10 +933,11 @@ var EntityManager = exports.EntityManager = (_dec4 = (0, _aureliaDependencyInjec
 
     instance.setMeta(metaData);
     instance.resource = resource;
+    instance.identifier = identifier;
     instance.entityManager = this;
 
     if (instance instanceof DefaultRepository) {
-      this.repositories[resource] = instance;
+      this.repositories[identifier] = instance;
     }
 
     return instance;
@@ -923,6 +961,7 @@ var EntityManager = exports.EntityManager = (_dec4 = (0, _aureliaDependencyInjec
     var reference = this.resolveEntityReference(entity);
     var instance = this.container.get(reference);
     var resource = reference.getResource();
+    var identifier = reference.getIdentifier() || resource;
 
     if (!resource) {
       if (typeof entity !== 'string') {
@@ -930,6 +969,7 @@ var EntityManager = exports.EntityManager = (_dec4 = (0, _aureliaDependencyInjec
       }
 
       resource = entity;
+      identifier = entity;
     }
 
     if (instance.hasValidation() && !instance.getValidator()) {
@@ -938,7 +978,7 @@ var EntityManager = exports.EntityManager = (_dec4 = (0, _aureliaDependencyInjec
       instance.setValidator(validator);
     }
 
-    return instance.setResource(resource).setRepository(this.getRepository(resource));
+    return instance.setResource(resource).setIdentifier(identifier).setRepository(this.getRepository(identifier));
   };
 
   return EntityManager;

@@ -43,6 +43,22 @@ export declare class Repository {
   getMeta(): any;
   
   /**
+     * Set the identifier
+     *
+     * @param {string} identifier
+     * @return {Repository} this
+     * @chainable
+     */
+  setIdentifier(identifier?: any): any;
+  
+  /**
+     * Get the identifier
+     *
+     * @return {string|null}
+     */
+  getIdentifier(): any;
+  
+  /**
      * Set the resource
      *
      * @param {string} resource
@@ -388,6 +404,30 @@ export declare class Entity {
   clear(): any;
   
   /**
+     * Get the identifier name of this entity's reference (static).
+     *
+     * @return {string|null}
+     */
+  static getIdentifier(): any;
+  
+  /**
+     * Get the identifier name of this entity instance
+     *
+     * @return {string|null}
+     */
+  getIdentifier(): any;
+  
+  /**
+     * Set this instance's identifier.
+     *
+     * @param {string} identifier
+     *
+     * @return {Entity} itself
+     * @chainable
+     */
+  setIdentifier(identifier?: any): any;
+  
+  /**
      * Get the resource name of this entity's reference (static).
      *
      * @return {string|null}
@@ -505,6 +545,17 @@ export declare class Entity {
  * @decorator
  */
 export declare function idProperty(propertyName?: any): any;
+
+/**
+ * Set the 'identifierName' metadata on the entity
+ *
+ * @param {string} identifierName The name of the identifier
+ *
+ * @return {function}
+ *
+ * @decorator
+ */
+export declare function identifier(identifierName?: any): any;
 
 /**
  * Set the 'name' metadata on the entity

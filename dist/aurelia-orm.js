@@ -60,6 +60,28 @@ export class Repository {
   }
 
   /**
+   * Set the identifier
+   *
+   * @param {string} identifier
+   * @return {Repository} this
+   * @chainable
+   */
+  setIdentifier(identifier) {
+    this.identifier = identifier;
+
+    return this;
+  }
+
+  /**
+   * Get the identifier
+   *
+   * @return {string|null}
+   */
+  getIdentifier() {
+    return this.identifier;
+  }
+
+  /**
    * Set the resource
    *
    * @param {string} resource
@@ -294,6 +316,7 @@ export class Metadata {
   constructor() {
     this.metadata = {
       repository  : DefaultRepository,
+      identifier  : null,
       resource    : null,
       endpoint    : null,
       name        : null,
@@ -792,6 +815,37 @@ export class Entity {
 
     return this;
   }
+
+  /**
+   * Get the identifier name of this entity's reference (static).
+   *
+   * @return {string|null}
+   */
+  static getIdentifier() {
+    return OrmMetadata.forTarget(this).fetch('identifier');
+  }
+
+  /**
+   * Get the identifier name of this entity instance
+   *
+   * @return {string|null}
+   */
+  getIdentifier() {
+    return this.__identifier || this.getMeta().fetch('identifier');
+  }
+
+  /**
+   * Set this instance's identifier.
+   *
+   * @param {string} identifier
+   *
+   * @return {Entity} itself
+   * @chainable
+   */
+  setIdentifier(identifier) {
+    return this.define('__identifier', identifier);
+  }
+
   /**
    * Get the resource name of this entity's reference (static).
    *
@@ -1166,6 +1220,21 @@ export function idProperty(propertyName) {
 }
 
 /**
+ * Set the 'identifierName' metadata on the entity
+ *
+ * @param {string} identifierName The name of the identifier
+ *
+ * @return {function}
+ *
+ * @decorator
+ */
+export function identifier(identifierName) {
+  return function(target) {
+    OrmMetadata.forTarget(target).put('identifier', identifierName || target.name.toLowerCase());
+  };
+}
+
+/**
  * Set the 'name' metadata on the entity
  *
  * @param {string} entityName=target.name.toLowerCase The (custom) name to use
@@ -1269,7 +1338,9 @@ export class EntityManager {
    * @chainable
    */
   registerEntity(EntityClass) {
-    this.entities[OrmMetadata.forTarget(EntityClass).fetch('resource')] = EntityClass;
+    let meta = OrmMetadata.forTarget(EntityClass);
+
+    this.entities[meta.fetch('identifier') || meta.fetch('resource')] = EntityClass;
 
     return this;
   }
@@ -1283,11 +1354,16 @@ export class EntityManager {
    * @throws {Error}
    */
   getRepository(entity) {
-    let reference = this.resolveEntityReference(entity);
-    let resource  = entity;
+    let reference  = this.resolveEntityReference(entity);
+    let identifier = entity;
+    let resource   = entity;
 
     if (typeof reference.getResource === 'function') {
       resource = reference.getResource() || resource;
+    }
+
+    if (typeof reference.getIdentifier === 'function') {
+      identifier = reference.getIdentifier() || resource;
     }
 
     if (typeof resource !== 'string') {
@@ -1312,11 +1388,12 @@ export class EntityManager {
     // Tell the repository instance what resource it should use.
     instance.setMeta(metaData);
     instance.resource      = resource;
+    instance.identifier    = identifier;
     instance.entityManager = this;
 
     if (instance instanceof DefaultRepository) {
       // This is a default repository. We'll cache this instance.
-      this.repositories[resource] = instance;
+      this.repositories[identifier] = instance;
     }
 
     return instance;
@@ -1355,6 +1432,7 @@ export class EntityManager {
     let reference = this.resolveEntityReference(entity);
     let instance  = this.container.get(reference);
     let resource  = reference.getResource();
+    let identifier = reference.getIdentifier() || resource;
 
     if (!resource) {
       if (typeof entity !== 'string') {
@@ -1362,6 +1440,7 @@ export class EntityManager {
       }
 
       resource = entity;
+      identifier = entity;
     }
 
     // Set the validator.
@@ -1371,7 +1450,9 @@ export class EntityManager {
       instance.setValidator(validator);
     }
 
-    return instance.setResource(resource).setRepository(this.getRepository(resource));
+    return instance.setResource(resource)
+      .setIdentifier(identifier)
+      .setRepository(this.getRepository(identifier));
   }
 }
 
