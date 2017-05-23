@@ -1,3 +1,13 @@
+<a name="6.1.1"></a>
+## [6.1.1](https://github.com/SpoonX/aurelia-orm/compare/v6.1.0...v6.1.1) (2017-05-23)
+
+
+### Bug Fixes
+
+* **entity-manager:** return the correct cached instance based on the identifier property ([3aaf18e](https://github.com/SpoonX/aurelia-orm/commit/3aaf18e))
+
+
+
 <a name="6.1.0"></a>
 # [6.1.0](https://github.com/SpoonX/aurelia-orm/compare/v6.0.2...v6.1.0) (2017-05-22)
 

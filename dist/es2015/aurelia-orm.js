@@ -811,8 +811,8 @@ export let EntityManager = (_dec4 = inject(Container), _dec4(_class6 = class Ent
       throw new Error('Unable to find resource for entity.');
     }
 
-    if (this.repositories[resource]) {
-      return this.repositories[resource];
+    if (this.repositories[identifier]) {
+      return this.repositories[identifier];
     }
 
     let metaData = OrmMetadata.forTarget(reference);

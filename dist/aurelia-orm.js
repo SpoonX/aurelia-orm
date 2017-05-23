@@ -1371,8 +1371,8 @@ export class EntityManager {
     }
 
     // Cached instance available. Return.
-    if (this.repositories[resource]) {
-      return this.repositories[resource];
+    if (this.repositories[identifier]) {
+      return this.repositories[identifier];
     }
 
     // Get instance of repository

@@ -917,8 +917,8 @@ var EntityManager = exports.EntityManager = (_dec4 = (0, _aureliaDependencyInjec
       throw new Error('Unable to find resource for entity.');
     }
 
-    if (this.repositories[resource]) {
-      return this.repositories[resource];
+    if (this.repositories[identifier]) {
+      return this.repositories[identifier];
     }
 
     var metaData = OrmMetadata.forTarget(reference);
