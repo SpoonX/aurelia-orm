@@ -10,7 +10,7 @@ import {WithAssociations} from './resources/entity/with-associations';
 import {WithName} from './resources/entity/with-name';
 import {Entity} from '../src/entity';
 import {Config, Rest} from 'aurelia-api';
-import {StandardValidator, ValidationRules, ValidationError} from 'aurelia-validation';
+import {StandardValidator, ValidationRules, ValidateResult} from 'aurelia-validation';
 import {bootstrap} from 'aurelia-bootstrapper';
 
 describe('Entity', function() {
@@ -702,15 +702,15 @@ describe('Entity', function() {
     it('Should return true if validation meta is not true.', function(done) {
       let entity = constructEntity(WithResource);
 
-      entity.validate().then(res=>expect(res.length).toBe(0)).then(done);
+      entity.validate().then(res => expect(res.length).toBe(0)).then(done);
     });
 
     it('Should use validator with object rules', function(done) {
       let entity = constructEntity(WithValidation);
 
       entity.validate().then(res => {
-        expect(res.length).not.toBe(0);
-        expect(res[0] instanceof ValidationError).toBe(true);
+        expect(res[0].valid).toBe(false);
+        expect(res[0] instanceof ValidateResult).toBe(true);
         expect(res[0].message).toBe('Foo is required.');
       }).then(done);
     });
@@ -727,8 +727,9 @@ describe('Entity', function() {
       let entity = constructEntity(WithValidation);
 
       entity.validate('bar', ValidationRules.ensure('bar').required().rules).then(res => {
-        expect(res.length).not.toBe(0);
-        expect(res[0] instanceof ValidationError).toBe(true);
+        expect(res.length).toBe(1);
+        expect(res[0].valid).toBe(false);
+        expect(res[0] instanceof ValidateResult).toBe(true);
         expect(res[0].message).toBe('Bar is required.');
       }).then(done);
     });
@@ -737,8 +738,9 @@ describe('Entity', function() {
       let entity = constructEntity(WithAssociationValidation);
 
       entity.validate().then(res => {
-        expect(res.length).not.toBe(0);
-        expect(res[0] instanceof ValidationError).toBe(true);
+        expect(res.length).toBe(1);
+        expect(res[0].valid).toBe(false);
+        expect(res[0] instanceof ValidateResult).toBe(true);
         expect(res[0].message).toBe('Foo must be an association.');
       }).then(done);
     });
@@ -748,7 +750,7 @@ describe('Entity', function() {
       entity.foo = 1;
 
       entity.validate().then(res => {
-        expect(res.length).toBe(0);
+        expect(res[0].valid).toBe(true);
       }).then(done);
     });
   });
