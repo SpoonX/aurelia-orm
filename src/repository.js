@@ -255,7 +255,7 @@ export class Repository {
    * @return {Entity}
    */
   getNewEntity() {
-    return this.entityManager.getEntity(this.resource);
+    return this.entityManager.getEntity(this.identifier || this.resource);
   }
 
   /**
