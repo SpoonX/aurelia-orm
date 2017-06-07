@@ -189,9 +189,9 @@ export class ViewModel {
   create () {
     // Validate, and persist entity to the server.
     this.newArticle.validate()
-      .then(validationErrors => {
-        if (validationErrors.length !== 0) {
-          throw validationErrors[0];
+      .then(validateResults => {
+        if (!validateResults[0].valid) {
+          throw validateResults[0];
         }
         // Validation passed, persist entity.
         return this.newArticle.save()

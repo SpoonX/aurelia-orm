@@ -260,7 +260,7 @@ If validation is not enabled on the entity, it is considered valid.
 
 ### Returns
 
-Promise<[ValidationError]>
+Promise<[ValidateResult]>
 
 ---------
 

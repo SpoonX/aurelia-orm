@@ -150,10 +150,9 @@ export class Create {
     this.requestInFlight = true;
 
     this.entity.validate()
-      .then(validationErrors => {
-        if (validationErrors.length !== 0) {
-          console.error(error);
-          throw validationErrors[0];
+      .then(validateResults => {
+        if (!validateResults[0].valid) {
+          throw validateResults[0];
         }
 
         return this.entity.save();

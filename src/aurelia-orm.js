@@ -18,7 +18,7 @@ export function configure(frameworkConfig, configCallback) {
   // add hasAssociation custom validation rule
   ValidationRules.customRule(
     'hasAssociation',
-    value => !!((value instanceof Entity && typeof value.id === 'number') || typeof value === 'number'),
+    value => (value instanceof Entity && typeof value.id === 'number') || typeof value === 'number',
     `\${$displayName} must be an association.`    // eslint-disable-line quotes
   );
 
