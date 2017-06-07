@@ -1,3 +1,13 @@
+<a name="6.1.2"></a>
+## [6.1.2](https://github.com/SpoonX/aurelia-orm/compare/v6.1.1...v6.1.2) (2017-06-07)
+
+
+### Bug Fixes
+
+* **repository:** use identifier property if defined ([197d18e](https://github.com/SpoonX/aurelia-orm/commit/197d18e)), closes [#294](https://github.com/SpoonX/aurelia-orm/issues/294)
+
+
+
 <a name="6.1.1"></a>
 ## [6.1.1](https://github.com/SpoonX/aurelia-orm/compare/v6.1.0...v6.1.1) (2017-05-23)
 

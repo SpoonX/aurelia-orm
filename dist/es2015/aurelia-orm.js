@@ -154,7 +154,7 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
   }
 
   getNewEntity() {
-    return this.entityManager.getEntity(this.resource);
+    return this.entityManager.getEntity(this.identifier || this.resource);
   }
 
   getNewPopulatedEntity() {
@@ -882,7 +882,7 @@ export function validatedResource(resourceName, ValidatorClass) {
 }
 
 export function configure(frameworkConfig, configCallback) {
-  ValidationRules.customRule('hasAssociation', value => !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number'), `\${$displayName} must be an association.`);
+  ValidationRules.customRule('hasAssociation', value => value instanceof Entity && typeof value.id === 'number' || typeof value === 'number', `\${$displayName} must be an association.`);
 
   let entityManagerInstance = frameworkConfig.container.get(EntityManager);
 

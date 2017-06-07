@@ -237,7 +237,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
 
   function configure(frameworkConfig, configCallback) {
     ValidationRules.customRule('hasAssociation', function (value) {
-      return !!(value instanceof Entity && typeof value.id === 'number' || typeof value === 'number');
+      return value instanceof Entity && typeof value.id === 'number' || typeof value === 'number';
     }, '${$displayName} must be an association.');
 
     var entityManagerInstance = frameworkConfig.container.get(EntityManager);
@@ -509,7 +509,7 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
         };
 
         Repository.prototype.getNewEntity = function getNewEntity() {
-          return this.entityManager.getEntity(this.resource);
+          return this.entityManager.getEntity(this.identifier || this.resource);
         };
 
         Repository.prototype.getNewPopulatedEntity = function getNewPopulatedEntity() {

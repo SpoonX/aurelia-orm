@@ -512,7 +512,7 @@ export declare class Entity {
      * all properties will be validated.
      * @param {Rule<*, *>[]|null} rules Optional. If unspecified, the rules will be looked up using
      * the metadata for the object created by ValidationRules....on(class/object)
-     * @return {Promise<ValidationError[]>}
+     * @return {Promise<ValidateResult[]>}
      */
   validate(propertyName?: any, rules?: any): any;
   
