@@ -19,6 +19,7 @@ Creating an entity is simple.
 ```js
 import {Entity} from 'aurelia-orm';
 
+@resource()
 export class Product extends Entity {
 }
 ```
