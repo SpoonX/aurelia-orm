@@ -29,11 +29,10 @@ import {UserEntity}    from 'entity/user';
 @inject(EntityManager)
 export class SomeUpdateViewModel {
   constructor (entityManager) {
-    // Return the repository configured for user
+    // Return the repository configured for user, otherwise it returns the DefaultRepository
     entityManager.getRepository('user');
     
     // Return the repository by Entity class
-    // That only works for Entities, that have the @repository() decorator
     entityManager.getRepository(UserEntity);
   }
 }
