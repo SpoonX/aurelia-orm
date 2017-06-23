@@ -24,13 +24,16 @@ A `Repository` instance.
 ```js
 import {inject}        from 'aurelia-framework';
 import {EntityManager} from 'aurelia-orm';
-import UserEntity      from 'entity/user';
+import {UserEntity}    from 'entity/user';
 
 @inject(EntityManager)
 export class SomeUpdateViewModel {
   constructor (entityManager) {
-    // Return the repository configured for user
+    // Return the repository configured for user, otherwise it returns the DefaultRepository
     entityManager.getRepository('user');
+    
+    // Return the repository by Entity class
+    entityManager.getRepository(UserEntity);
   }
 }
 ```
@@ -59,7 +62,7 @@ An `Entity` instance.
 ```js
 import {inject}        from 'aurelia-framework';
 import {EntityManager} from 'aurelia-orm';
-import UserEntity      from 'entity/user';
+import {UserEntity}    from 'entity/user';
 
 @inject(EntityManager)
 export class SomeUpdateViewModel {
@@ -96,7 +99,7 @@ Itself to allow chaining.
 ```js
 import {inject}        from 'aurelia-framework';
 import {EntityManager} from 'aurelia-orm';
-import UserEntity      from 'entity/user';
+import {UserEntity}    from 'entity/user';
 
 @inject(EntityManager)
 export class SomeViewModel {
@@ -125,10 +128,10 @@ Itself to allow chaining.
 ### Examples
 
 ```js
-import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'aurelia-orm';
-import UserEntity      from 'entity/user';
-import CategoryEntity  from 'entity/category';
+import {inject}         from 'aurelia-framework';
+import {EntityManager}  from 'aurelia-orm';
+import {UserEntity}     from 'entity/user';
+import {CategoryEntity} from 'entity/category';
 
 @inject(EntityManager)
 export class SomeViewModel {

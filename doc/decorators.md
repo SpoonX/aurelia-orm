@@ -61,7 +61,7 @@ class HelloWorld {}
 
 This decorator is probably the most important one. Without it, aurelia-orm won't know what your **custom entity** is all about. The resource maps to the API endpoint it represents. Simply put, resource `foo` maps to `/foo`.
 
-When left empty, the name of the class (.toLowerCase()) will be used as the resource name. This is usually fine.
+When left empty, the name of the class (.toLowerCase()) will be used as the resource name. This is usually fine but **not recommended** if you uglify/minify your sources later, because of the shortended class name.
 
 ```js
 // Defaults to resource "helloworld"

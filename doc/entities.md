@@ -19,11 +19,12 @@ Creating an entity is simple.
 ```js
 import {Entity} from 'aurelia-orm';
 
+@resource("product")
 export class Product extends Entity {
 }
 ```
 
-That's it! That's all that's needed to create an entity.
+That's it! That creates an entity named `product` with the API resource path `/product`.
 
 ### Registering
 
