@@ -31,6 +31,10 @@ export class SomeUpdateViewModel {
   constructor (entityManager) {
     // Return the repository configured for user
     entityManager.getRepository('user');
+    
+    // Return the repository by Entity class
+    // That only works for Entities, that have the @repository() decorator
+    entityManager.getRepository(UserEntity);
   }
 }
 ```
@@ -59,7 +63,7 @@ An `Entity` instance.
 ```js
 import {inject}        from 'aurelia-framework';
 import {EntityManager} from 'aurelia-orm';
-import {UserEntity}      from 'entity/user';
+import {UserEntity}    from 'entity/user';
 
 @inject(EntityManager)
 export class SomeUpdateViewModel {
@@ -125,10 +129,10 @@ Itself to allow chaining.
 ### Examples
 
 ```js
-import {inject}        from 'aurelia-framework';
-import {EntityManager} from 'aurelia-orm';
-import {UserEntity}      from 'entity/user';
-import {CategoryEntity}  from 'entity/category';
+import {inject}         from 'aurelia-framework';
+import {EntityManager}  from 'aurelia-orm';
+import {UserEntity}     from 'entity/user';
+import {CategoryEntity} from 'entity/category';
 
 @inject(EntityManager)
 export class SomeViewModel {
