@@ -24,7 +24,7 @@ export class Product extends Entity {
 }
 ```
 
-That's it! That creates an entity named "product" with the API resource path "product".
+That's it! That creates an entity named `product` with the API resource path `/product`.
 
 ### Registering
 
