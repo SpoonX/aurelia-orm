@@ -478,7 +478,7 @@ export class Entity {
    */
   destroy() {
     if (!this.getId()) {
-      throw new Error('Required value "id" missing on entity.');
+      throw new Error('Required value for @idProperty missing on entity.');
     }
 
     return this.getTransport().destroy(this.getResource(), this.getId());
