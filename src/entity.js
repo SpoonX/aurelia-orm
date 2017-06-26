@@ -139,7 +139,9 @@ export class Entity {
     return this.getTransport()
       .create(this.getResource(), this.asObject(true))
       .then(created => {
-        if (created===null||created[this.getIdProperty()]===undefined) throw new Error('The API resource did not return the id property "'+this.getIdProperty()+'"');
+        if (created === null || created[this.getIdProperty()] === undefined) {
+          throw new Error('The API resource did not return the id property "'+this.getIdProperty()+'"');
+        }
         this.setId(created[this.getIdProperty()]);
         response = created;
       })
