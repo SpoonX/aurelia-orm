@@ -140,7 +140,7 @@ export class Entity {
       .create(this.getResource(), this.asObject(true))
       .then(created => {
         if (created === null || created[this.getIdProperty()] === undefined) {
-          throw new Error('The API resource did not return the id property "'+this.getIdProperty()+'"');
+          throw new Error('The API resource did not return @idProperty for entity.');
         }
         this.setId(created[this.getIdProperty()]);
         response = created;
@@ -161,7 +161,7 @@ export class Entity {
    */
   update() {
     if (this.isNew()) {
-      throw new Error('Required value for property "'+this.getIdProperty()+'" missing on entity.');
+      throw new Error('Required value for @idProperty missing on entity.');
     }
 
     // We're clean, no need to update.

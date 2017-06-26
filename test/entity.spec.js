@@ -467,7 +467,7 @@ describe('Entity', function() {
 
       expect(function() {
         entity.update();
-      }).toThrowError(Error, 'Required value "id" missing on entity.');
+      }).toThrowError(Error, 'Required value for @idProperty missing on entity.');
     });
 
     it('Should call .update on REST with nested body (associations).', function(done) {
@@ -632,7 +632,7 @@ describe('Entity', function() {
 
       expect(function() {
         entity.destroy();
-      }).toThrowError(Error, 'Required value "id" missing on entity.');
+      }).toThrowError(Error, 'Required value for @idProperty missing on entity.');
     });
   });
 
