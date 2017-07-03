@@ -13,6 +13,7 @@ export class Paged {
   @bindable({defaultBindingMode: bindingMode.twoWay}) data = [];
   @bindable({defaultBindingMode: bindingMode.twoWay}) page = 1;
   @bindable({defaultBindingMode: bindingMode.twoWay}) error;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) loading = false;
   @bindable criteria
   @bindable repository                                     = null;
   @bindable resource
@@ -123,13 +124,15 @@ export class Paged {
     criteria.skip  = (this.page * this.limit) - this.limit;
     criteria.limit = this.limit;
     this.error     = null;
-
+    this.loading = true;
     this.repository.find(criteria, true)
       .then(result => {
         this.data = result;
+        this.loading = false;
       })
       .catch(error => {
         this.error = error;
+        this.loading = false;
       });
   }
 }
