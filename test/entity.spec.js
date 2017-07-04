@@ -209,6 +209,7 @@ describe('Entity', function() {
         expect(response.body).toEqual({bacon: 'great!'});
         expect(response.path).toEqual('/default-entity');
         expect(response.method).toEqual('POST');
+        expect(entity.id).toBeGreaterThan(0);
 
         done();
       });
@@ -254,6 +255,7 @@ describe('Entity', function() {
         expect(response.body).toEqual({id: 1991, bacon: 'great!'});
         expect(response.path).toEqual('/default-entity/1991');
         expect(response.method).toEqual('PUT');
+        expect(entity.id).toBe(1991);
 
         done();
       });
