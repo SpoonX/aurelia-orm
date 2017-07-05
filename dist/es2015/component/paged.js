@@ -54,11 +54,11 @@ export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/
   constructor(entityManager) {
     _initDefineProp(this, 'data', _descriptor, this);
 
-    _initDefineProp(this, 'page', _descriptor2, this);
+    _initDefineProp(this, 'loading', _descriptor2, this);
 
-    _initDefineProp(this, 'error', _descriptor3, this);
+    _initDefineProp(this, 'page', _descriptor3, this);
 
-    _initDefineProp(this, 'loading', _descriptor4, this);
+    _initDefineProp(this, 'error', _descriptor4, this);
 
     _initDefineProp(this, 'criteria', _descriptor5, this);
 
@@ -130,15 +130,13 @@ export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/
     criteria.limit = this.limit;
     this.error = null;
     this.loading = true;
-    console.log("Paged: GetData(): loading = " + this.loading);
+
     this.repository.find(criteria, true).then(result => {
       this.data = result;
       this.loading = false;
-      console.log("Paged: GetData() done: loading = " + this.loading);
     }).catch(error => {
       this.error = error;
       this.loading = false;
-      console.log("Paged: GetData() errored: loading = " + this.loading);
     });
   }
 }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec4], {
@@ -146,19 +144,19 @@ export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/
   initializer: function () {
     return [];
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec5], {
-  enumerable: true,
-  initializer: function () {
-    return 1;
-  }
-}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec6], {
-  enumerable: true,
-  initializer: null
-}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'loading', [_dec7], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'loading', [_dec5], {
   enumerable: true,
   initializer: function () {
     return false;
   }
+}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec6], {
+  enumerable: true,
+  initializer: function () {
+    return 1;
+  }
+}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec7], {
+  enumerable: true,
+  initializer: null
 }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
   enumerable: true,
   initializer: null
