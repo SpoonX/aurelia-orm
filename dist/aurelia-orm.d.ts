@@ -867,6 +867,7 @@ export declare class Paged {
   data: any;
   page: any;
   error: any;
+  loading: any;
   criteria: any;
   repository: any;
   resource: any;
