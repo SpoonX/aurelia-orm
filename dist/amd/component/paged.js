@@ -57,9 +57,9 @@ define(['exports', '../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'a
     throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
   }
 
-  var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+  var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
 
-  var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged'), _dec2 = (0, _aureliaViewManager.resolvedView)('spoonx/orm', 'paged'), _dec3 = (0, _aureliaDependencyInjection.inject)(_aureliaOrm.EntityManager), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec5 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec6 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = function () {
+  var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged'), _dec2 = (0, _aureliaViewManager.resolvedView)('spoonx/orm', 'paged'), _dec3 = (0, _aureliaDependencyInjection.inject)(_aureliaOrm.EntityManager), _dec4 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec5 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec6 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec7 = (0, _aureliaTemplating.bindable)({ defaultBindingMode: _aureliaBinding.bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = function () {
     function Paged(entityManager) {
       
 
@@ -69,13 +69,15 @@ define(['exports', '../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'a
 
       _initDefineProp(this, 'error', _descriptor3, this);
 
-      _initDefineProp(this, 'criteria', _descriptor4, this);
+      _initDefineProp(this, 'loading', _descriptor4, this);
 
-      _initDefineProp(this, 'repository', _descriptor5, this);
+      _initDefineProp(this, 'criteria', _descriptor5, this);
 
-      _initDefineProp(this, 'resource', _descriptor6, this);
+      _initDefineProp(this, 'repository', _descriptor6, this);
 
-      _initDefineProp(this, 'limit', _descriptor7, this);
+      _initDefineProp(this, 'resource', _descriptor7, this);
+
+      _initDefineProp(this, 'limit', _descriptor8, this);
 
       this.entityManager = entityManager;
     }
@@ -140,11 +142,16 @@ define(['exports', '../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'a
       criteria.skip = this.page * this.limit - this.limit;
       criteria.limit = this.limit;
       this.error = null;
-
+      this.loading = true;
+      console.log("Paged: GetData(): loading = " + this.loading);
       this.repository.find(criteria, true).then(function (result) {
         _this.data = result;
+        _this.loading = false;
+        console.log("Paged: GetData() done: loading = " + _this.loading);
       }).catch(function (error) {
         _this.error = error;
+        _this.loading = false;
+        console.log("Paged: GetData() errored: loading = " + _this.loading);
       });
     };
 
@@ -162,18 +169,23 @@ define(['exports', '../aurelia-orm', 'aurelia-binding', 'aurelia-templating', 'a
   }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec6], {
     enumerable: true,
     initializer: null
-  }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [_aureliaTemplating.bindable], {
+  }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'loading', [_dec7], {
+    enumerable: true,
+    initializer: function initializer() {
+      return false;
+    }
+  }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [_aureliaTemplating.bindable], {
     enumerable: true,
     initializer: null
-  }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [_aureliaTemplating.bindable], {
+  }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [_aureliaTemplating.bindable], {
     enumerable: true,
     initializer: function initializer() {
       return null;
     }
-  }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [_aureliaTemplating.bindable], {
+  }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [_aureliaTemplating.bindable], {
     enumerable: true,
     initializer: null
-  }), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'limit', [_aureliaTemplating.bindable], {
+  }), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, 'limit', [_aureliaTemplating.bindable], {
     enumerable: true,
     initializer: function initializer() {
       return 30;

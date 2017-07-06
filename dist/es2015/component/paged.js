@@ -1,4 +1,4 @@
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -49,7 +49,7 @@ import { bindable, customElement } from 'aurelia-templating';
 import { inject } from 'aurelia-dependency-injection';
 import { resolvedView } from 'aurelia-view-manager';
 
-export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/orm', 'paged'), _dec3 = inject(EntityManager), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec5 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec6 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = class Paged {
+export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/orm', 'paged'), _dec3 = inject(EntityManager), _dec4 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec5 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec6 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec7 = bindable({ defaultBindingMode: bindingMode.twoWay }), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = class Paged {
 
   constructor(entityManager) {
     _initDefineProp(this, 'data', _descriptor, this);
@@ -58,13 +58,15 @@ export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/
 
     _initDefineProp(this, 'error', _descriptor3, this);
 
-    _initDefineProp(this, 'criteria', _descriptor4, this);
+    _initDefineProp(this, 'loading', _descriptor4, this);
 
-    _initDefineProp(this, 'repository', _descriptor5, this);
+    _initDefineProp(this, 'criteria', _descriptor5, this);
 
-    _initDefineProp(this, 'resource', _descriptor6, this);
+    _initDefineProp(this, 'repository', _descriptor6, this);
 
-    _initDefineProp(this, 'limit', _descriptor7, this);
+    _initDefineProp(this, 'resource', _descriptor7, this);
+
+    _initDefineProp(this, 'limit', _descriptor8, this);
 
     this.entityManager = entityManager;
   }
@@ -127,11 +129,16 @@ export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/
     criteria.skip = this.page * this.limit - this.limit;
     criteria.limit = this.limit;
     this.error = null;
-
+    this.loading = true;
+    console.log("Paged: GetData(): loading = " + this.loading);
     this.repository.find(criteria, true).then(result => {
       this.data = result;
+      this.loading = false;
+      console.log("Paged: GetData() done: loading = " + this.loading);
     }).catch(error => {
       this.error = error;
+      this.loading = false;
+      console.log("Paged: GetData() errored: loading = " + this.loading);
     });
   }
 }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'data', [_dec4], {
@@ -147,18 +154,23 @@ export let Paged = (_dec = customElement('paged'), _dec2 = resolvedView('spoonx/
 }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec6], {
   enumerable: true,
   initializer: null
-}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'loading', [_dec7], {
+  enumerable: true,
+  initializer: function () {
+    return false;
+  }
+}), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [bindable], {
+}), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'repository', [bindable], {
   enumerable: true,
   initializer: function () {
     return null;
   }
-}), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [bindable], {
+}), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'resource', [bindable], {
   enumerable: true,
   initializer: null
-}), _descriptor7 = _applyDecoratedDescriptor(_class2.prototype, 'limit', [bindable], {
+}), _descriptor8 = _applyDecoratedDescriptor(_class2.prototype, 'limit', [bindable], {
   enumerable: true,
   initializer: function () {
     return 30;

@@ -10,13 +10,14 @@ import {resolvedView} from 'aurelia-view-manager';
 export class Paged {
 
   // https://github.com/aurelia/templating/issues/73, you still had to set `data` on .two-way when global
-  @bindable({defaultBindingMode: bindingMode.twoWay}) data = [];
-  @bindable({defaultBindingMode: bindingMode.twoWay}) page = 1;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) data    = [];
+  @bindable({defaultBindingMode: bindingMode.twoWay}) loading = false;
+  @bindable({defaultBindingMode: bindingMode.twoWay}) page    = 1;
   @bindable({defaultBindingMode: bindingMode.twoWay}) error;
   @bindable criteria
-  @bindable repository                                     = null;
+  @bindable repository                                        = null;
   @bindable resource
-  @bindable limit                                          = 30;
+  @bindable limit                                             = 30;
 
   constructor(entityManager) {
     this.entityManager = entityManager;
@@ -123,13 +124,16 @@ export class Paged {
     criteria.skip  = (this.page * this.limit) - this.limit;
     criteria.limit = this.limit;
     this.error     = null;
+    this.loading   = true;
 
     this.repository.find(criteria, true)
       .then(result => {
-        this.data = result;
+        this.data    = result;
+        this.loading = false;
       })
       .catch(error => {
-        this.error = error;
+        this.error   = error;
+        this.loading = false;
       });
   }
 }
