@@ -68,11 +68,11 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
 
     _initDefineProp(this, 'data', _descriptor, this);
 
-    _initDefineProp(this, 'loading', _descriptor2, this);
+    _initDefineProp(this, 'page', _descriptor2, this);
 
-    _initDefineProp(this, 'page', _descriptor3, this);
+    _initDefineProp(this, 'error', _descriptor3, this);
 
-    _initDefineProp(this, 'error', _descriptor4, this);
+    _initDefineProp(this, 'loading', _descriptor4, this);
 
     _initDefineProp(this, 'criteria', _descriptor5, this);
 
@@ -146,13 +146,15 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
     criteria.limit = this.limit;
     this.error = null;
     this.loading = true;
-
+    console.log("Paged: GetData(): loading = " + this.loading);
     this.repository.find(criteria, true).then(function (result) {
       _this.data = result;
       _this.loading = false;
+      console.log("Paged: GetData() done: loading = " + _this.loading);
     }).catch(function (error) {
       _this.error = error;
       _this.loading = false;
+      console.log("Paged: GetData() errored: loading = " + _this.loading);
     });
   };
 
@@ -162,19 +164,19 @@ var Paged = exports.Paged = (_dec = (0, _aureliaTemplating.customElement)('paged
   initializer: function initializer() {
     return [];
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'loading', [_dec5], {
-  enumerable: true,
-  initializer: function initializer() {
-    return false;
-  }
-}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec6], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'page', [_dec5], {
   enumerable: true,
   initializer: function initializer() {
     return 1;
   }
-}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec7], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'error', [_dec6], {
   enumerable: true,
   initializer: null
+}), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'loading', [_dec7], {
+  enumerable: true,
+  initializer: function initializer() {
+    return false;
+  }
 }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'criteria', [_aureliaTemplating.bindable], {
   enumerable: true,
   initializer: null
