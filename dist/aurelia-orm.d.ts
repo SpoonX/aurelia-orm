@@ -865,6 +865,7 @@ export declare class AssociationSelect {
 }
 export declare class Paged {
   data: any;
+  loading: any;
   page: any;
   error: any;
   criteria: any;

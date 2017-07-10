@@ -1,3 +1,14 @@
+<a name="6.2.0"></a>
+# [6.2.0](https://github.com/SpoonX/aurelia-orm/compare/v6.1.2...v6.2.0) (2017-07-10)
+
+
+### Features
+
+* **paged:** add loading flag ([be04557](https://github.com/SpoonX/aurelia-orm/commit/be04557))
+* **paged:** add loading flag ([6886e6b](https://github.com/SpoonX/aurelia-orm/commit/6886e6b))
+
+
+
 <a name="6.1.2"></a>
 ## [6.1.2](https://github.com/SpoonX/aurelia-orm/compare/v6.1.1...v6.1.2) (2017-06-07)
 
