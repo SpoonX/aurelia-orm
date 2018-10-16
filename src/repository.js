@@ -181,17 +181,15 @@ export class Repository {
       let value = data[key];
 
       if (entityMetadata.has('types', key)) {
-        
-        var entityType =  entityMetadata.fetch('types', key);
-
-        if(entityType === 'Date')
+       var dataType =  entityMetadata.fetch('types', key);
+       if(dataType === 'date' || dataType === 'datetime')
         {
           if(value){
-            populatedData[key] = typer.default.cast(value, entityType);
+            populatedData[key] = typer.default.cast(value, dataType);
           }
         }
         else{
-           populatedData[key] = typer.default.cast(value, entityType);
+           populatedData[key] = typer.default.cast(value, dataType);
         }
                 
         continue;
