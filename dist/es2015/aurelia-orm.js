@@ -134,7 +134,13 @@ export let Repository = (_dec = inject(Config), _dec(_class = class Repository {
       let value = data[key];
 
       if (entityMetadata.has('types', key)) {
-        populatedData[key] = typer.cast(value, entityMetadata.fetch('types', key));
+        const dataType = entityMetadata.fetch('types', key);
+
+        if ((dataType === 'date' || dataType === 'datetime') && !value) {
+          continue;
+        }
+
+        populatedData[key] = typer.cast(value, dataType);
 
         continue;
       }

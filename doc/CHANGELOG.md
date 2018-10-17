@@ -1,3 +1,21 @@
+<a name="7.0.0"></a>
+# [7.0.0](https://github.com/SpoonX/aurelia-orm/compare/v6.2.0...v7.0.0) (2018-10-17)
+
+
+### Bug Fixes
+
+* **project:** update github token for travis ([81b712f](https://github.com/SpoonX/aurelia-orm/commit/81b712f))
+* **Repository:** default empty dates to null ([0086a0a](https://github.com/SpoonX/aurelia-orm/commit/0086a0a))
+* **Repository:** define variable dataType ([6c97663](https://github.com/SpoonX/aurelia-orm/commit/6c97663))
+* **Repository:** properly call casting method ([255d66c](https://github.com/SpoonX/aurelia-orm/commit/255d66c))
+
+
+### BREAKING CHANGES
+
+* **Repository:** this change makes it so that the date value will no longer be a Date instance based on null, but instead will just be null.
+
+
+
 <a name="6.2.0"></a>
 # [6.2.0](https://github.com/SpoonX/aurelia-orm/compare/v6.1.2...v6.2.0) (2017-07-10)
 

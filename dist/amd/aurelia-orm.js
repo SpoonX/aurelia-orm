@@ -196,7 +196,13 @@ define(['exports', 'typer', 'aurelia-dependency-injection', 'aurelia-api', 'aure
         var value = data[key];
 
         if (entityMetadata.has('types', key)) {
-          populatedData[key] = _typer2.default.cast(value, entityMetadata.fetch('types', key));
+          var dataType = entityMetadata.fetch('types', key);
+
+          if ((dataType === 'date' || dataType === 'datetime') && !value) {
+            continue;
+          }
+
+          populatedData[key] = _typer2.default.cast(value, dataType);
 
           continue;
         }

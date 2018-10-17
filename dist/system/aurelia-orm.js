@@ -489,7 +489,13 @@ System.register(['typer', 'aurelia-dependency-injection', 'aurelia-api', 'aureli
             var value = data[key];
 
             if (entityMetadata.has('types', key)) {
-              populatedData[key] = typer.cast(value, entityMetadata.fetch('types', key));
+              var dataType = entityMetadata.fetch('types', key);
+
+              if ((dataType === 'date' || dataType === 'datetime') && !value) {
+                continue;
+              }
+
+              populatedData[key] = typer.cast(value, dataType);
 
               continue;
             }
