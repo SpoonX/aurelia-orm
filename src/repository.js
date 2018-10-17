@@ -231,13 +231,11 @@ export class Repository {
       if (entityMetadata.has('types', key)) {
         const dataType = entityMetadata.fetch('types', key);
 
-        if (dataType === 'date' || dataType === 'datetime') {
-          if (value) {
-            populatedData[key] = typer.default.cast(value, dataType);
-          }
-        } else {
-          populatedData[key] = typer.cast(value, dataType);
+        if ((dataType === 'date' || dataType === 'datetime') && !value) {
+          continue;
         }
+
+        populatedData[key] = typer.cast(value, dataType);
 
         continue;
       }
