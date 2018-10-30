@@ -1,3 +1,13 @@
+<a name="7.0.1"></a>
+## [7.0.1](https://github.com/SpoonX/aurelia-orm/compare/v7.0.0...v7.0.1) (2018-10-30)
+
+
+### Bug Fixes
+
+* Fix identifier on association-select ([7ad048d](https://github.com/SpoonX/aurelia-orm/commit/7ad048d))
+
+
+
 <a name="7.0.0"></a>
 # [7.0.0](https://github.com/SpoonX/aurelia-orm/compare/v6.2.0...v7.0.0) (2018-10-17)
 
